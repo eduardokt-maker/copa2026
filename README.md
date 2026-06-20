@@ -11,6 +11,7 @@ Exibir uma tela inicial bonita e de impacto com as selecoes participantes da Cop
 - Python com servidor HTTP da biblioteca padrao.
 - HTML, CSS e JavaScript sem dependencias externas obrigatorias.
 - Dados iniciais servidos por endpoint JSON local.
+- Interface mobile-first, com barra inferior para uso em celular.
 
 ## Como rodar
 
