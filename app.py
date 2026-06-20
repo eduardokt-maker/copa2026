@@ -2,15 +2,20 @@ from __future__ import annotations
 
 import json
 import os
+import re
+import unicodedata
+import urllib.request
+from html.parser import HTMLParser
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import parse_qs, urlparse
 
 
 APP_NAME = "copa2026"
-APP_VERSION = "2026.06.20-mobile-history-cards-v1"
+APP_VERSION = "2026.06.20-roster-detail-screen-v1"
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
+SQUAD_SOURCE_URL = "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_squads"
 
 
 TEAMS = [
@@ -120,14 +125,152 @@ for team in TEAMS:
     team.update(WORLD_CUP_HISTORY[team["code"]])
 
 
+TEAM_BY_CODE = {team["code"]: team for team in TEAMS}
+ROSTER_CACHE: dict[str, list[dict[str, str]]] = {}
+
+
+def normalize_key(value: str) -> str:
+    ascii_text = unicodedata.normalize("NFD", value).encode("ascii", "ignore").decode("ascii")
+    return re.sub(r"[^a-z0-9]+", " ", ascii_text.lower()).strip()
+
+
+def clean_text(value: str) -> str:
+    value = re.sub(r"\[[^\]]+\]", "", value)
+    value = re.sub(r"\s+", " ", value)
+    return value.strip()
+
+
+class SquadTableParser(HTMLParser):
+    def __init__(self, target_heading: str):
+        super().__init__()
+        self.target_heading = normalize_key(target_heading)
+        self.heading_tag: str | None = None
+        self.heading_text: list[str] = []
+        self.current_heading_matches = False
+        self.in_target_table = False
+        self.done = False
+        self.row: list[str] | None = None
+        self.cell_text: list[str] | None = None
+        self.players: list[dict[str, str]] = []
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if self.done:
+            return
+        if tag in {"h2", "h3"}:
+            self.heading_tag = tag
+            self.heading_text = []
+            return
+        if self.current_heading_matches and tag == "table":
+            self.in_target_table = True
+            return
+        if self.in_target_table and tag == "tr":
+            self.row = []
+            return
+        if self.row is not None and tag in {"td", "th"}:
+            self.cell_text = []
+
+    def handle_data(self, data: str) -> None:
+        if self.done:
+            return
+        if self.heading_tag is not None:
+            self.heading_text.append(data)
+        if self.cell_text is not None:
+            self.cell_text.append(data)
+
+    def handle_endtag(self, tag: str) -> None:
+        if self.done:
+            return
+        if self.heading_tag == tag:
+            heading = clean_text("".join(self.heading_text))
+            self.current_heading_matches = normalize_key(heading) == self.target_heading
+            self.heading_tag = None
+            self.heading_text = []
+            return
+        if self.cell_text is not None and tag in {"td", "th"}:
+            if self.row is not None:
+                self.row.append(clean_text("".join(self.cell_text)))
+            self.cell_text = None
+            return
+        if self.row is not None and tag == "tr":
+            player = parse_player_row(self.row)
+            if player:
+                self.players.append(player)
+            self.row = None
+            return
+        if self.in_target_table and tag == "table":
+            self.in_target_table = False
+            self.done = bool(self.players)
+
+
+def parse_player_row(cells: list[str]) -> dict[str, str] | None:
+    if len(cells) < 7 or cells[0].lower().startswith("no"):
+        return None
+    position_match = re.search(r"(GK|DF|MF|FW)", cells[1])
+    name = re.sub(r"\s*\(captain\)\s*", "", cells[2], flags=re.IGNORECASE)
+    club = cells[-1]
+    if not name or not club or not position_match:
+        return None
+    return {"number": cells[0], "position": position_match.group(1), "name": name, "club": club}
+
+
+def fetch_roster(team: dict) -> list[dict[str, str]]:
+    code = team["code"]
+    if code in ROSTER_CACHE:
+        return ROSTER_CACHE[code]
+    request = urllib.request.Request(
+        SQUAD_SOURCE_URL,
+        headers={"User-Agent": f"{APP_NAME}/{APP_VERSION} roster reader"},
+    )
+    with urllib.request.urlopen(request, timeout=12) as response:
+        html = response.read().decode("utf-8", errors="replace")
+    parser = SquadTableParser(team["name"])
+    parser.feed(html)
+    ROSTER_CACHE[code] = parser.players
+    return parser.players
+
+
 class CopaHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=str(STATIC_DIR), **kwargs)
 
     def do_GET(self) -> None:
-        path = urlparse(self.path).path
+        parsed_url = urlparse(self.path)
+        path = parsed_url.path
         if path == "/api/teams":
             self.send_json({"teams": TEAMS, "count": len(TEAMS), "version": APP_VERSION})
+            return
+        if path == "/api/roster":
+            query = parse_qs(parsed_url.query)
+            code = query.get("code", [""])[0]
+            team = TEAM_BY_CODE.get(code)
+            if not team:
+                self.send_json({"ok": False, "error": "Selecao nao encontrada."}, status=404)
+                return
+            try:
+                players = fetch_roster(team)
+                self.send_json(
+                    {
+                        "ok": True,
+                        "team": team,
+                        "players": players,
+                        "count": len(players),
+                        "source": SQUAD_SOURCE_URL,
+                        "version": APP_VERSION,
+                    }
+                )
+            except Exception as exc:
+                self.send_json(
+                    {
+                        "ok": False,
+                        "team": team,
+                        "players": [],
+                        "count": 0,
+                        "error": "Elenco indisponivel no momento.",
+                        "detail": str(exc),
+                        "source": SQUAD_SOURCE_URL,
+                        "version": APP_VERSION,
+                    }
+                )
             return
         if path == "/api/status":
             self.send_json({"app": APP_NAME, "version": APP_VERSION, "ok": True})
@@ -136,9 +279,9 @@ class CopaHandler(SimpleHTTPRequestHandler):
             self.path = "/index.html"
         super().do_GET()
 
-    def send_json(self, payload: dict) -> None:
+    def send_json(self, payload: dict, status: int = 200) -> None:
         body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
-        self.send_response(200)
+        self.send_response(status)
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Content-Length", str(len(body)))
         self.end_headers()

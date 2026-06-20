@@ -299,6 +299,11 @@ h2 {
   transform: translateY(-2px);
 }
 
+.team-card:focus-visible {
+  outline: 3px solid rgba(243, 199, 95, 0.76);
+  outline-offset: 3px;
+}
+
 .team-card::after {
   content: "";
   position: absolute;
@@ -399,6 +404,145 @@ h2 {
 .tag.champion {
   background: rgba(243, 199, 95, 0.3);
   color: #74520c;
+}
+
+.roster-screen {
+  max-width: 880px;
+  margin: 0 auto;
+}
+
+.back-button {
+  min-height: 42px;
+  border: 1px solid rgba(243, 199, 95, 0.75);
+  border-radius: 7px;
+  background: rgba(243, 199, 95, 0.16);
+  color: #fff3c7;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-weight: 850;
+}
+
+.roster-hero {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 14px;
+  border: 1px solid rgba(210, 224, 238, 0.72);
+  border-radius: 8px;
+  background:
+    linear-gradient(150deg, rgba(255, 255, 255, 0.98), rgba(230, 243, 255, 0.9)),
+    #f5faff;
+  color: #102033;
+  padding: 16px;
+}
+
+.roster-hero img {
+  width: 74px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 5px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.14);
+}
+
+.roster-hero span {
+  display: block;
+  color: #5c6d82;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.roster-hero h2 {
+  margin-top: 3px;
+  color: #102033;
+}
+
+.roster-hero p {
+  margin: 4px 0 0;
+  color: #647387;
+}
+
+.roster-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.roster-summary strong {
+  color: var(--gold);
+  font-size: 18px;
+}
+
+.roster-summary a {
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 7px 10px;
+}
+
+.roster-list {
+  display: grid;
+  gap: 8px;
+}
+
+.player-row {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) 48px;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid rgba(210, 224, 238, 0.72);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.94);
+  color: #102033;
+  padding: 10px;
+}
+
+.player-number,
+.player-position {
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  font-weight: 900;
+}
+
+.player-number {
+  min-height: 36px;
+  background: #0f3158;
+  color: #fff;
+}
+
+.player-row strong,
+.player-row small {
+  display: block;
+}
+
+.player-row strong {
+  font-size: 15px;
+  line-height: 1.2;
+}
+
+.player-row small {
+  margin-top: 3px;
+  color: #637083;
+  font-size: 12px;
+}
+
+.player-position {
+  min-height: 32px;
+  background: rgba(90, 167, 255, 0.16);
+  color: #174f87;
+  font-size: 12px;
+}
+
+.roster-empty {
+  border: 1px dashed rgba(255, 255, 255, 0.28);
+  border-radius: 8px;
+  color: var(--muted);
+  padding: 18px;
+  text-align: center;
 }
 
 footer {
@@ -642,6 +786,62 @@ footer {
   .tag {
     padding: 4px 6px;
     font-size: 10px;
+  }
+
+  .roster-screen {
+    max-width: none;
+  }
+
+  .back-button {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .roster-hero {
+    align-items: flex-start;
+    gap: 11px;
+    margin-top: 10px;
+    padding: 12px;
+  }
+
+  .roster-hero img {
+    width: 58px;
+    height: 40px;
+  }
+
+  .roster-hero h2 {
+    font-size: 20px;
+  }
+
+  .roster-hero p {
+    font-size: 12px;
+  }
+
+  .roster-summary {
+    margin: 10px 0;
+  }
+
+  .player-row {
+    grid-template-columns: 34px minmax(0, 1fr) 40px;
+    gap: 8px;
+    padding: 8px;
+  }
+
+  .player-number {
+    min-height: 32px;
+  }
+
+  .player-row strong {
+    font-size: 14px;
+  }
+
+  .player-row small {
+    font-size: 11px;
+  }
+
+  .player-position {
+    min-height: 29px;
+    font-size: 11px;
   }
 
   footer {

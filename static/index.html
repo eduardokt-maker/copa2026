@@ -87,6 +87,23 @@
 
       <section class="filters" id="filters" aria-label="Visualizacao das selecoes"></section>
       <section class="team-grid" id="teamGrid" aria-live="polite"></section>
+
+      <section class="roster-screen" id="rosterScreen" hidden aria-live="polite">
+        <button class="back-button" id="backToTeams" type="button">Voltar</button>
+        <div class="roster-hero">
+          <img id="rosterFlag" alt="" />
+          <div>
+            <span id="rosterKicker">Elenco da selecao</span>
+            <h2 id="rosterTitle">Selecao</h2>
+            <p id="rosterSubtitle">Jogadores e clubes</p>
+          </div>
+        </div>
+        <div class="roster-summary">
+          <span><strong id="rosterCount">0</strong> jogadores</span>
+          <a id="rosterSource" href="https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_squads" target="_blank" rel="noreferrer">fonte</a>
+        </div>
+        <div class="roster-list" id="rosterList"></div>
+      </section>
     </main>
 
     <footer>
