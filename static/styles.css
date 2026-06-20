@@ -538,12 +538,27 @@ h2 {
 
 .player-club {
   justify-self: stretch;
-  border-left: 1px solid rgba(16, 32, 51, 0.1);
-  color: #637083;
+  min-height: 34px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid rgba(23, 79, 135, 0.12);
+  border-radius: 7px;
+  background: rgba(90, 167, 255, 0.09);
+  color: #37506e;
   font-size: 12px;
   font-weight: 800;
   line-height: 1.25;
-  padding-left: 10px;
+  padding: 6px 8px;
+}
+
+.player-club img {
+  width: 22px;
+  height: 15px;
+  flex: 0 0 auto;
+  border-radius: 2px;
+  object-fit: cover;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12);
 }
 
 .player-position {
@@ -861,8 +876,6 @@ footer {
 
   .player-club {
     grid-column: 2;
-    border-left: 0;
-    padding-left: 0;
     font-size: 11px;
   }
 

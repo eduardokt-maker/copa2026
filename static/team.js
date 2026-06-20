@@ -42,7 +42,16 @@ function renderRosterPlayers(players) {
 
     const club = document.createElement("span");
     club.className = "player-club";
-    club.textContent = player.club;
+    if (player.club_flag) {
+      const flag = document.createElement("img");
+      flag.src = player.club_flag;
+      flag.alt = "";
+      flag.loading = "lazy";
+      club.appendChild(flag);
+    }
+    const clubText = document.createElement("span");
+    clubText.textContent = player.club_country ? `${player.club} · ${player.club_country}` : player.club;
+    club.appendChild(clubText);
 
     const position = document.createElement("span");
     position.className = "player-position";

@@ -12,7 +12,7 @@ from urllib.parse import parse_qs, urlparse
 
 
 APP_NAME = "copa2026"
-APP_VERSION = "2026.06.20-origin-club-label-v1"
+APP_VERSION = "2026.06.20-club-country-badge-v1"
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
 SQUAD_SOURCE_URL = "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_squads"
@@ -156,6 +156,34 @@ CLUB_NAME_OVERRIDES = {
     "TSG Hoffenheim": "Turn- und Sportgemeinschaft Hoffenheim",
 }
 
+FEDERATION_COUNTRY_NAMES = {
+    "Albanian Football Association": "Albania",
+    "Argentine Football Association": "Argentina",
+    "Brazilian Football Confederation": "Brasil",
+    "Bulgarian Football Union": "Bulgaria",
+    "Croatian Football Federation": "Croacia",
+    "Danish Football Association": "Dinamarca",
+    "English Football Association": "Inglaterra",
+    "Football Association of the Czech Republic": "Republica Tcheca",
+    "French Football Federation": "Franca",
+    "German Football Association": "Alemanha",
+    "Hellenic Football Federation": "Grecia",
+    "Italian Football Federation": "Italia",
+    "Mexican Football Federation": "Mexico",
+    "Portuguese Football Federation": "Portugal",
+    "Royal Belgian Football Association": "Belgica",
+    "Royal Dutch Football Association": "Paises Baixos",
+    "Royal Spanish Football Federation": "Espanha",
+    "Russian Football Union": "Russia",
+    "Saudi Arabian Football Federation": "Arabia Saudita",
+    "Scottish Football Association": "Escocia",
+    "Swiss Football Association": "Suica",
+    "The Football Association": "Inglaterra",
+    "Turkish Football Federation": "Turquia",
+    "Ukrainian Association of Football": "Ucrania",
+    "United States Soccer Federation": "Estados Unidos",
+}
+
 
 def normalize_key(value: str) -> str:
     ascii_text = unicodedata.normalize("NFD", value).encode("ascii", "ignore").decode("ascii")
@@ -172,6 +200,16 @@ def expand_club_name(club: str) -> str:
     return CLUB_NAME_OVERRIDES.get(club, club)
 
 
+def normalize_asset_url(url: str) -> str:
+    if url.startswith("//"):
+        return f"https:{url}"
+    return url
+
+
+def country_from_federation(federation: str) -> str:
+    return FEDERATION_COUNTRY_NAMES.get(federation, federation)
+
+
 class SquadTableParser(HTMLParser):
     def __init__(self, target_heading: str):
         super().__init__()
@@ -183,6 +221,8 @@ class SquadTableParser(HTMLParser):
         self.done = False
         self.row: list[str] | None = None
         self.cell_text: list[str] | None = None
+        self.cell_flag_alt: str | None = None
+        self.cell_flag_src: str | None = None
         self.players: list[dict[str, str]] = []
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
@@ -200,6 +240,15 @@ class SquadTableParser(HTMLParser):
             return
         if self.row is not None and tag in {"td", "th"}:
             self.cell_text = []
+            self.cell_flag_alt = None
+            self.cell_flag_src = None
+            return
+        if self.cell_text is not None and tag == "img":
+            attrs_dict = dict(attrs)
+            if attrs_dict.get("alt") and self.cell_flag_alt is None:
+                self.cell_flag_alt = attrs_dict["alt"]
+            if attrs_dict.get("src") and self.cell_flag_src is None:
+                self.cell_flag_src = normalize_asset_url(attrs_dict["src"])
 
     def handle_data(self, data: str) -> None:
         if self.done:
@@ -220,8 +269,13 @@ class SquadTableParser(HTMLParser):
             return
         if self.cell_text is not None and tag in {"td", "th"}:
             if self.row is not None:
-                self.row.append(clean_text("".join(self.cell_text)))
+                cell_value = clean_text("".join(self.cell_text))
+                if self.cell_flag_alt or self.cell_flag_src:
+                    cell_value = f"{cell_value} [[flag_alt:{self.cell_flag_alt or ''}]] [[flag_src:{self.cell_flag_src or ''}]]"
+                self.row.append(cell_value)
             self.cell_text = None
+            self.cell_flag_alt = None
+            self.cell_flag_src = None
             return
         if self.row is not None and tag == "tr":
             player = parse_player_row(self.row)
@@ -239,10 +293,23 @@ def parse_player_row(cells: list[str]) -> dict[str, str] | None:
         return None
     position_match = re.search(r"(GK|DF|MF|FW)", cells[1])
     name = re.sub(r"\s*\(captain\)\s*", "", cells[2], flags=re.IGNORECASE)
-    club = expand_club_name(cells[-1])
+    club_cell = cells[-1]
+    flag_alt_match = re.search(r"\[\[flag_alt:(.*?)\]\]", club_cell)
+    flag_src_match = re.search(r"\[\[flag_src:(.*?)\]\]", club_cell)
+    club = clean_text(re.sub(r"\s*\[\[flag_(?:alt|src):.*?\]\]", "", club_cell))
+    club = expand_club_name(club)
+    club_country = country_from_federation(flag_alt_match.group(1)) if flag_alt_match else ""
+    club_flag = flag_src_match.group(1) if flag_src_match else ""
     if not name or not club or not position_match:
         return None
-    return {"number": cells[0], "position": position_match.group(1), "name": name, "club": club}
+    return {
+        "number": cells[0],
+        "position": position_match.group(1),
+        "name": name,
+        "club": club,
+        "club_country": club_country,
+        "club_flag": club_flag,
+    }
 
 
 def fetch_roster(team: dict) -> list[dict[str, str]]:
