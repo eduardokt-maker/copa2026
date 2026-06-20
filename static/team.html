@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Selecao | copa2026</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body class="detail-page">
+    <main>
+      <section class="roster-screen" aria-live="polite">
+        <a class="back-button back-link" href="/">Voltar para tela inicial</a>
+        <div class="roster-hero">
+          <img id="rosterFlag" alt="" />
+          <div>
+            <span>Elenco da selecao</span>
+            <h1 id="rosterTitle">Selecao</h1>
+            <p id="rosterSubtitle">Jogadores e clubes</p>
+          </div>
+        </div>
+        <div class="roster-summary">
+          <span><strong id="rosterCount">0</strong> jogadores</span>
+          <a id="rosterSource" href="https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_squads" target="_blank" rel="noreferrer">fonte</a>
+        </div>
+        <div class="roster-list" id="rosterList"></div>
+      </section>
+    </main>
+
+    <script src="/team.js"></script>
+  </body>
+</html>
