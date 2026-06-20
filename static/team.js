@@ -31,8 +31,11 @@ function renderRosterPlayers(players) {
     const name = document.createElement("strong");
     name.textContent = player.name;
     const club = document.createElement("small");
+    const clubLabel = document.createElement("span");
+    clubLabel.className = "player-club-label";
+    clubLabel.textContent = "Time de origem";
     club.textContent = player.club;
-    info.append(name, club);
+    info.append(name, clubLabel, club);
 
     const position = document.createElement("span");
     position.className = "player-position";

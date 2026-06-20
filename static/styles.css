@@ -527,6 +527,7 @@ h2 {
 }
 
 .player-row strong,
+.player-club-label,
 .player-row small {
   display: block;
 }
@@ -537,9 +538,18 @@ h2 {
 }
 
 .player-row small {
-  margin-top: 3px;
+  margin-top: 2px;
   color: #637083;
   font-size: 12px;
+}
+
+.player-club-label {
+  margin-top: 6px;
+  color: #174f87;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0;
+  text-transform: uppercase;
 }
 
 .player-position {
@@ -854,6 +864,10 @@ footer {
 
   .player-row small {
     font-size: 11px;
+  }
+
+  .player-club-label {
+    font-size: 8px;
   }
 
   .player-position {

@@ -12,7 +12,7 @@ from urllib.parse import parse_qs, urlparse
 
 
 APP_NAME = "copa2026"
-APP_VERSION = "2026.06.20-dedicated-team-page-v1"
+APP_VERSION = "2026.06.20-origin-club-label-v1"
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
 SQUAD_SOURCE_URL = "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_squads"
@@ -128,6 +128,34 @@ for team in TEAMS:
 TEAM_BY_CODE = {team["code"]: team for team in TEAMS}
 ROSTER_CACHE: dict[str, list[dict[str, str]]] = {}
 
+CLUB_NAME_OVERRIDES = {
+    "AC Milan": "Associazione Calcio Milan",
+    "AEK Athens": "Athlitiki Enosis Konstantinoupoleos Athens",
+    "AIK": "Allmanna Idrottsklubben",
+    "APOEL": "Athletikos Podosferikos Omilos Ellinon Lefkosias",
+    "AZ Alkmaar": "Alkmaar Zaanstreek",
+    "BSC Young Boys": "Berner Sport Club Young Boys",
+    "CSKA Moscow": "Central Sports Club of the Army Moscow",
+    "DC United": "District of Columbia United",
+    "FC Dallas": "Football Club Dallas",
+    "FC Porto": "Futebol Clube do Porto",
+    "FC Seoul": "Football Club Seoul",
+    "FC Utrecht": "Football Club Utrecht",
+    "FCSB": "Fotbal Club FCSB",
+    "LA Galaxy": "Los Angeles Galaxy",
+    "LASK": "Linzer Athletik-Sport-Klub",
+    "MLS": "Major League Soccer",
+    "NY Red Bulls": "New York Red Bulls",
+    "PAOK": "Panthessalonikios Athlitikos Omilos Konstantinoupoliton",
+    "PSV Eindhoven": "Philips Sport Vereniging Eindhoven",
+    "RB Leipzig": "RasenBallsport Leipzig",
+    "Real Madrid": "Real Madrid Club de Futbol",
+    "SC Braga": "Sporting Clube de Braga",
+    "SL Benfica": "Sport Lisboa e Benfica",
+    "Sporting CP": "Sporting Clube de Portugal",
+    "TSG Hoffenheim": "Turn- und Sportgemeinschaft Hoffenheim",
+}
+
 
 def normalize_key(value: str) -> str:
     ascii_text = unicodedata.normalize("NFD", value).encode("ascii", "ignore").decode("ascii")
@@ -138,6 +166,10 @@ def clean_text(value: str) -> str:
     value = re.sub(r"\[[^\]]+\]", "", value)
     value = re.sub(r"\s+", " ", value)
     return value.strip()
+
+
+def expand_club_name(club: str) -> str:
+    return CLUB_NAME_OVERRIDES.get(club, club)
 
 
 class SquadTableParser(HTMLParser):
@@ -207,7 +239,7 @@ def parse_player_row(cells: list[str]) -> dict[str, str] | None:
         return None
     position_match = re.search(r"(GK|DF|MF|FW)", cells[1])
     name = re.sub(r"\s*\(captain\)\s*", "", cells[2], flags=re.IGNORECASE)
-    club = cells[-1]
+    club = expand_club_name(cells[-1])
     if not name or not club or not position_match:
         return None
     return {"number": cells[0], "position": position_match.group(1), "name": name, "club": club}
