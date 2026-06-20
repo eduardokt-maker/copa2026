@@ -1,13 +1,14 @@
 from __future__ import annotations
 
 import json
+import os
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse
 
 
 APP_NAME = "copa2026"
-APP_VERSION = "2026.06.20-presentation-v1"
+APP_VERSION = "2026.06.20-render-ready-v1"
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
 
@@ -89,7 +90,13 @@ class CopaHandler(SimpleHTTPRequestHandler):
         self.wfile.write(body)
 
 
-def run(host: str = "127.0.0.1", port: int = 8086) -> None:
+def run(host: str | None = None, port: int | None = None) -> None:
+    host = host or os.getenv("HOST", "127.0.0.1")
+    port_from_env = os.getenv("PORT")
+    if port is None:
+        port = int(port_from_env) if port_from_env else 8086
+    if port_from_env and host == "127.0.0.1":
+        host = "0.0.0.0"
     for candidate_port in range(port, port + 10):
         try:
             server = ThreadingHTTPServer((host, candidate_port), CopaHandler)

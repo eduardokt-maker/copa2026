@@ -26,6 +26,16 @@ Depois acesse:
 http://127.0.0.1:8086
 ```
 
+## Publicacao no Render
+
+O projeto ja inclui `render.yaml` e esta preparado para Web Service no Render.
+
+Configuracao esperada:
+
+- Build command: `pip install -r requirements.txt`
+- Start command: `python app.py`
+- Runtime: Python
+
 ## Futuras funcionalidades
 
 - Tabelas de grupos.
