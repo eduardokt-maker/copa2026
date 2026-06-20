@@ -40,6 +40,8 @@ function renderTeams() {
   grid.innerHTML = "";
 
   visible.forEach((team) => {
+    const titleLabel = team.titles === 1 ? "titulo" : "titulos";
+    const cupLabel = team.appearances === 1 ? "participacao" : "participacoes";
     const card = document.createElement("article");
     card.className = "team-card";
     card.innerHTML = `
@@ -49,6 +51,16 @@ function renderTeams() {
           <h3>${team.country}</h3>
           <p>${team.name}</p>
         </div>
+      </div>
+      <div class="cup-stats" aria-label="Historico em Copas do Mundo">
+        <span>
+          <strong>${team.appearances}</strong>
+          <small>${cupLabel}</small>
+        </span>
+        <span>
+          <strong>${team.titles}</strong>
+          <small>${titleLabel}</small>
+        </span>
       </div>
       <div class="team-meta">
         <span class="tag">${team.confederation}</span>

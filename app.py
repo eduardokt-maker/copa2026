@@ -8,7 +8,7 @@ from urllib.parse import urlparse
 
 
 APP_NAME = "copa2026"
-APP_VERSION = "2026.06.20-mobile-all-teams-cards-v1"
+APP_VERSION = "2026.06.20-mobile-history-cards-v1"
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
 
@@ -63,6 +63,61 @@ TEAMS = [
     {"name": "Uruguay", "country": "Uruguai", "code": "uy", "confederation": "CONMEBOL", "region": "America do Sul"},
     {"name": "Uzbekistan", "country": "Uzbequistao", "code": "uz", "confederation": "AFC", "region": "Asia", "debut": True},
 ]
+
+
+WORLD_CUP_HISTORY = {
+    "dz": {"appearances": 5, "titles": 0},
+    "ar": {"appearances": 19, "titles": 3},
+    "au": {"appearances": 7, "titles": 0},
+    "at": {"appearances": 8, "titles": 0},
+    "be": {"appearances": 15, "titles": 0},
+    "ba": {"appearances": 2, "titles": 0},
+    "br": {"appearances": 23, "titles": 5},
+    "ca": {"appearances": 3, "titles": 0},
+    "cv": {"appearances": 1, "titles": 0},
+    "co": {"appearances": 7, "titles": 0},
+    "hr": {"appearances": 7, "titles": 0},
+    "cw": {"appearances": 1, "titles": 0},
+    "cz": {"appearances": 2, "titles": 0},
+    "cd": {"appearances": 2, "titles": 0},
+    "ec": {"appearances": 5, "titles": 0},
+    "eg": {"appearances": 4, "titles": 0},
+    "gb-eng": {"appearances": 17, "titles": 1},
+    "fr": {"appearances": 17, "titles": 2},
+    "de": {"appearances": 21, "titles": 4},
+    "gh": {"appearances": 5, "titles": 0},
+    "ht": {"appearances": 2, "titles": 0},
+    "ir": {"appearances": 7, "titles": 0},
+    "iq": {"appearances": 2, "titles": 0},
+    "ci": {"appearances": 4, "titles": 0},
+    "jp": {"appearances": 8, "titles": 0},
+    "jo": {"appearances": 1, "titles": 0},
+    "mx": {"appearances": 18, "titles": 0},
+    "ma": {"appearances": 7, "titles": 0},
+    "nl": {"appearances": 12, "titles": 0},
+    "nz": {"appearances": 3, "titles": 0},
+    "no": {"appearances": 4, "titles": 0},
+    "pa": {"appearances": 2, "titles": 0},
+    "py": {"appearances": 9, "titles": 0},
+    "pt": {"appearances": 9, "titles": 0},
+    "qa": {"appearances": 2, "titles": 0},
+    "sa": {"appearances": 7, "titles": 0},
+    "gb-sct": {"appearances": 9, "titles": 0},
+    "sn": {"appearances": 4, "titles": 0},
+    "za": {"appearances": 4, "titles": 0},
+    "kr": {"appearances": 12, "titles": 0},
+    "es": {"appearances": 17, "titles": 1},
+    "se": {"appearances": 13, "titles": 0},
+    "ch": {"appearances": 13, "titles": 0},
+    "tn": {"appearances": 7, "titles": 0},
+    "tr": {"appearances": 3, "titles": 0},
+    "us": {"appearances": 12, "titles": 0},
+    "uy": {"appearances": 15, "titles": 2},
+    "uz": {"appearances": 1, "titles": 0},
+}
+
+for team in TEAMS:
+    team.update(WORLD_CUP_HISTORY[team["code"]])
 
 
 class CopaHandler(SimpleHTTPRequestHandler):
