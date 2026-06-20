@@ -8,7 +8,7 @@ from urllib.parse import urlparse
 
 
 APP_NAME = "copa2026"
-APP_VERSION = "2026.06.20-mobile-first-v1"
+APP_VERSION = "2026.06.20-mobile-all-teams-cards-v1"
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
 

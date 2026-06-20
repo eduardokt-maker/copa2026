@@ -5,7 +5,6 @@ const teamCount = document.querySelector("#teamCount");
 const bottomLinks = document.querySelectorAll(".bottom-nav a");
 
 let teams = [];
-let activeConfederation = "Todas";
 
 function flagUrl(code) {
   return `https://flagcdn.com/w160/${code}.png`;
@@ -19,33 +18,22 @@ function normalize(value) {
 }
 
 function renderFilters() {
-  const confederations = ["Todas", ...new Set(teams.map((team) => team.confederation))].sort((a, b) => {
-    if (a === "Todas") return -1;
-    if (b === "Todas") return 1;
-    return a.localeCompare(b);
-  });
-
   filters.innerHTML = "";
-  confederations.forEach((confederation) => {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.textContent = confederation;
-    button.className = confederation === activeConfederation ? "active" : "";
-    button.addEventListener("click", () => {
-      activeConfederation = confederation;
-      renderFilters();
-      renderTeams();
-    });
-    filters.appendChild(button);
-  });
+  filters.classList.add("single-filter");
+
+  const button = document.createElement("button");
+  button.type = "button";
+  button.textContent = "Todas";
+  button.className = "active";
+  button.setAttribute("aria-current", "true");
+  filters.appendChild(button);
 }
 
 function renderTeams() {
   const query = normalize(searchInput.value.trim());
   const visible = teams.filter((team) => {
-    const matchesConfederation = activeConfederation === "Todas" || team.confederation === activeConfederation;
     const searchable = normalize(`${team.name} ${team.country} ${team.region} ${team.confederation}`);
-    return matchesConfederation && searchable.includes(query);
+    return searchable.includes(query);
   });
 
   teamCount.textContent = String(visible.length);

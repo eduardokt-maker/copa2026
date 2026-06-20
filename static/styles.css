@@ -261,25 +261,34 @@ h2 {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 18px;
+  margin-bottom: 14px;
+}
+
+.filters.single-filter {
+  margin-bottom: 12px;
+}
+
+.filters.single-filter button {
+  min-width: 86px;
+  justify-content: center;
 }
 
 .team-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(225px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
   gap: 12px;
 }
 
 .team-card {
   position: relative;
-  min-height: 152px;
+  min-height: 136px;
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 8px;
   background:
     linear-gradient(160deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.03)),
     var(--panel);
-  padding: 14px;
+  padding: 13px;
   transition: border-color 0.18s ease, transform 0.18s ease;
 }
 
@@ -301,13 +310,13 @@ h2 {
 
 .team-head {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   align-items: center;
 }
 
 .team-card img {
-  width: 58px;
-  height: 40px;
+  width: 54px;
+  height: 36px;
   border-radius: 4px;
 }
 
@@ -326,8 +335,8 @@ h2 {
 .team-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 16px;
+  gap: 5px;
+  margin-top: 13px;
 }
 
 .tag {
@@ -525,30 +534,32 @@ footer {
   }
 
   .filters {
-    position: sticky;
-    top: 0;
+    position: static;
     z-index: 5;
     flex-wrap: nowrap;
-    overflow-x: auto;
-    margin-left: -14px;
-    margin-right: -14px;
-    padding: 8px 14px;
-    background: rgba(6, 17, 31, 0.88);
-    backdrop-filter: blur(14px);
+    overflow: visible;
+    margin-left: 0;
+    margin-right: 0;
+    padding: 0;
+    background: transparent;
+    backdrop-filter: none;
   }
 
   .filters button {
     flex: 0 0 auto;
+    min-height: 34px;
+    padding: 7px 10px;
+    font-size: 13px;
   }
 
   .team-grid {
     grid-template-columns: 1fr;
-    gap: 10px;
+    gap: 8px;
   }
 
   .team-card {
-    min-height: 126px;
-    padding: 13px;
+    min-height: 106px;
+    padding: 10px;
   }
 
   .team-card:hover {
@@ -556,16 +567,25 @@ footer {
   }
 
   .team-card img {
-    width: 64px;
-    height: 44px;
+    width: 50px;
+    height: 34px;
   }
 
   .team-card h3 {
-    font-size: 18px;
+    font-size: 16px;
+  }
+
+  .team-card p {
+    font-size: 12px;
   }
 
   .team-meta {
-    margin-top: 14px;
+    margin-top: 9px;
+  }
+
+  .tag {
+    padding: 4px 6px;
+    font-size: 10px;
   }
 
   footer {
