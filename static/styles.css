@@ -211,6 +211,21 @@ main {
   padding: 26px clamp(18px, 4vw, 48px) 42px;
 }
 
+body.roster-open {
+  background: linear-gradient(145deg, #071a2e 0%, #0b1220 100%);
+}
+
+body.roster-open .hero,
+body.roster-open footer,
+body.roster-open .bottom-nav {
+  display: none;
+}
+
+body.roster-open main {
+  min-height: 100vh;
+  padding-top: 14px;
+}
+
 .mobile-focus {
   display: none;
 }
@@ -291,6 +306,7 @@ h2 {
   color: #102033;
   padding: 13px;
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.16);
+  cursor: pointer;
   transition: border-color 0.18s ease, transform 0.18s ease;
 }
 

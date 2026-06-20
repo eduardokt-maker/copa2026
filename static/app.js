@@ -94,6 +94,7 @@ function renderTeams() {
 }
 
 function setListVisible(isVisible) {
+  document.body.classList.toggle("roster-open", !isVisible);
   listSections.forEach((section) => {
     section.hidden = !isVisible;
   });
@@ -142,7 +143,7 @@ async function openRoster(team) {
   rosterSubtitle.textContent = `${team.name} · jogadores e clubes`;
   rosterCount.textContent = "0";
   renderRosterMessage("Carregando elenco...");
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  window.scrollTo({ top: 0, behavior: "auto" });
 
   try {
     const response = await fetch(`/api/roster?code=${encodeURIComponent(team.code)}`);
@@ -172,7 +173,7 @@ async function boot() {
 searchInput.addEventListener("input", renderTeams);
 backToTeams.addEventListener("click", () => {
   setListVisible(true);
-  window.scrollTo({ top: grid.offsetTop - 20, behavior: "smooth" });
+  window.scrollTo({ top: grid.offsetTop - 20, behavior: "auto" });
 });
 bottomLinks.forEach((link) => {
   link.addEventListener("click", () => {
