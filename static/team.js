@@ -5,6 +5,13 @@ const rosterCount = document.querySelector("#rosterCount");
 const rosterSource = document.querySelector("#rosterSource");
 const rosterList = document.querySelector("#rosterList");
 
+const positionLabels = {
+  GK: "Goleiro · Goalkeeper",
+  DF: "Defesa · Defender",
+  MF: "Meio-campo · Midfielder",
+  FW: "Ataque · Forward",
+};
+
 function flagUrl(code) {
   return `https://flagcdn.com/w160/${code}.png`;
 }
@@ -39,7 +46,7 @@ function renderRosterPlayers(players) {
 
     const position = document.createElement("span");
     position.className = "player-position";
-    position.textContent = player.position;
+    position.textContent = positionLabels[player.position] || player.position;
 
     row.append(number, info, club, position);
     rosterList.appendChild(row);

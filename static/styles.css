@@ -502,7 +502,7 @@ h2 {
 
 .player-row {
   display: grid;
-  grid-template-columns: 42px minmax(0, 1fr) minmax(150px, 0.9fr) 48px;
+  grid-template-columns: 42px minmax(0, 1fr) minmax(150px, 0.9fr) minmax(94px, 0.58fr);
   align-items: center;
   gap: 10px;
   border: 1px solid rgba(210, 224, 238, 0.72);
@@ -550,7 +550,10 @@ h2 {
   min-height: 32px;
   background: rgba(90, 167, 255, 0.16);
   color: #174f87;
-  font-size: 12px;
+  font-size: 10px;
+  line-height: 1.15;
+  padding: 5px 7px;
+  text-align: center;
 }
 
 .roster-empty {
@@ -843,7 +846,7 @@ footer {
   }
 
   .player-row {
-    grid-template-columns: 32px minmax(0, 1fr) minmax(92px, 0.9fr) 36px;
+    grid-template-columns: 32px minmax(0, 1fr);
     gap: 8px;
     padding: 8px;
   }
@@ -857,13 +860,17 @@ footer {
   }
 
   .player-club {
-    padding-left: 8px;
+    grid-column: 2;
+    border-left: 0;
+    padding-left: 0;
     font-size: 11px;
   }
 
   .player-position {
+    grid-column: 2;
+    justify-self: start;
     min-height: 29px;
-    font-size: 11px;
+    font-size: 9px;
   }
 
   footer {
