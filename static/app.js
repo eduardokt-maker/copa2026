@@ -2,6 +2,7 @@ const grid = document.querySelector("#teamGrid");
 const filters = document.querySelector("#filters");
 const searchInput = document.querySelector("#searchInput");
 const teamCount = document.querySelector("#teamCount");
+const bottomLinks = document.querySelectorAll(".bottom-nav a");
 
 let teams = [];
 let activeConfederation = "Todas";
@@ -83,4 +84,10 @@ async function boot() {
 }
 
 searchInput.addEventListener("input", renderTeams);
+bottomLinks.forEach((link) => {
+  link.addEventListener("click", () => {
+    bottomLinks.forEach((item) => item.classList.remove("active"));
+    link.classList.add("active");
+  });
+});
 boot();
