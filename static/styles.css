@@ -61,35 +61,14 @@ a {
   min-width: 230px;
 }
 
-.mark {
-  width: 58px;
-  height: 72px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(243, 199, 95, 0.5);
-  border-radius: 6px 18px 6px 18px;
-  background:
-    linear-gradient(180deg, #ffffff 0%, #f5f5f2 54%, #111827 55%, #05070c 100%);
+.brand-emblem {
+  width: 54px;
+  height: 78px;
+  flex: 0 0 auto;
+  object-fit: contain;
+  border-radius: 8px;
+  background: #05070c;
   box-shadow: 0 18px 38px rgba(0, 0, 0, 0.28);
-}
-
-.mark span {
-  color: #07090f;
-  font-size: 30px;
-  font-weight: 950;
-  line-height: 0.9;
-  letter-spacing: 0;
-}
-
-.mark small {
-  display: block;
-  margin-top: 6px;
-  color: #ffffff;
-  font-size: 11px;
-  font-weight: 950;
-  letter-spacing: 0;
 }
 
 .brand-lockup strong {
@@ -209,69 +188,29 @@ h1 {
   position: relative;
   min-height: 390px;
   display: grid;
-  grid-template-columns: 0.78fr 1fr;
-  grid-template-rows: minmax(230px, 1fr) auto;
+  grid-template-rows: minmax(270px, 1fr) auto;
   gap: 12px;
   align-items: stretch;
 }
 
-.official-lockup,
-.ball-stage {
+.hero-logo-card {
+  position: relative;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.26);
-}
-
-.official-lockup {
-  min-height: 230px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  gap: 12px;
   background:
-    linear-gradient(180deg, #ffffff 0%, #ffffff 59%, #05070c 60%, #05070c 100%);
-}
-
-.lockup-year {
-  color: #05070c;
-  font-size: 106px;
-  font-weight: 950;
-  line-height: 0.76;
-  letter-spacing: 0;
-}
-
-.lockup-cup {
-  width: 42px;
-  height: 82px;
-  margin: -18px 0 -4px;
-  border-radius: 22px 22px 9px 9px;
-  background:
-    linear-gradient(90deg, transparent 0 18%, rgba(80, 53, 4, 0.3) 18% 27%, transparent 27% 73%, rgba(80, 53, 4, 0.28) 73% 82%, transparent 82%),
-    linear-gradient(160deg, #fff4a3 0%, #d9a93f 42%, #80550d 100%);
-  box-shadow: inset 0 -9px 0 rgba(14, 105, 76, 0.88), 0 8px 18px rgba(0, 0, 0, 0.3);
-}
-
-.official-lockup strong {
-  color: #ffffff;
-  font-size: 28px;
-  font-weight: 950;
-  line-height: 1;
-  letter-spacing: 0;
-}
-
-.ball-stage {
-  position: relative;
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-  background:
-    linear-gradient(140deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04)),
+    radial-gradient(circle at 22% 18%, rgba(243, 199, 95, 0.18), transparent 34%),
+    linear-gradient(150deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.04)),
     rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.26);
+  overflow: hidden;
 }
 
-.ball-stage::before {
+.hero-logo-card::before {
   content: "";
   position: absolute;
   inset: 16px;
@@ -279,49 +218,22 @@ h1 {
   border-radius: 8px;
 }
 
-.world-ball {
+.official-emblem {
   position: relative;
-  width: min(74%, 230px);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 44% 42%, rgba(255, 255, 255, 0.96) 0 14%, transparent 15%),
-    conic-gradient(from 22deg, #2e62ff 0 12%, #f33a3a 12% 24%, #90dc35 24% 36%, #7d5df2 36% 48%, #f4d44d 48% 60%, #16b6a4 60% 72%, #ffffff 72% 100%);
-  border: 10px solid #f8fafc;
-  box-shadow:
-    inset -18px -22px 34px rgba(13, 24, 40, 0.2),
-    0 24px 48px rgba(0, 0, 0, 0.34);
+  z-index: 1;
+  width: min(56%, 188px);
+  max-height: 250px;
+  object-fit: contain;
+  filter: drop-shadow(0 22px 32px rgba(0, 0, 0, 0.34));
 }
 
-.world-ball::before,
-.world-ball::after {
-  content: "";
-  position: absolute;
-  inset: 18%;
-  border: 2px solid rgba(10, 24, 42, 0.18);
-  border-radius: 50%;
-}
-
-.world-ball::after {
-  inset: 34%;
-  border-color: rgba(10, 24, 42, 0.1);
-}
-
-.ball-logo {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  display: grid;
-  place-items: center;
-  width: 54px;
-  height: 42px;
-  transform: translate(-50%, -50%);
-  border-radius: 6px;
-  background: #ffffff;
-  color: #05070c;
-  font-size: 22px;
-  font-weight: 950;
-  line-height: 1;
+.hero-logo-card span {
+  position: relative;
+  z-index: 1;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
 }
 
 .scoreboard {
@@ -779,19 +691,9 @@ footer {
     min-width: 0;
   }
 
-  .mark {
-    width: 48px;
-    height: 58px;
-    border-radius: 6px 14px 6px 14px;
-  }
-
-  .mark span {
-    font-size: 23px;
-  }
-
-  .mark small {
-    margin-top: 5px;
-    font-size: 9px;
+  .brand-emblem {
+    width: 45px;
+    height: 64px;
   }
 
   .brand-lockup small {
@@ -825,38 +727,13 @@ footer {
 
   .hero-showcase {
     min-height: 0;
-    grid-template-columns: minmax(0, 0.86fr) minmax(0, 1fr);
-    grid-template-rows: 174px auto;
+    grid-template-rows: 212px auto;
     gap: 8px;
   }
 
-  .official-lockup {
-    min-height: 174px;
-  }
-
-  .lockup-year {
-    font-size: 76px;
-  }
-
-  .lockup-cup {
-    width: 32px;
-    height: 62px;
-    margin: -12px 0 -3px;
-  }
-
-  .official-lockup strong {
-    font-size: 21px;
-  }
-
-  .world-ball {
-    width: min(78%, 150px);
-    border-width: 8px;
-  }
-
-  .ball-logo {
-    width: 42px;
-    height: 32px;
-    font-size: 17px;
+  .official-emblem {
+    width: min(42%, 116px);
+    max-height: 164px;
   }
 
   h1 {
