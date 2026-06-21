@@ -186,26 +186,6 @@ h1 {
   border-radius: 2px;
 }
 
-.hero-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 22px;
-}
-
-.primary-action {
-  min-height: 48px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(243, 199, 95, 0.88);
-  border-radius: 8px;
-  background: rgba(243, 199, 95, 0.18);
-  color: #fff3c7;
-  padding: 11px 14px;
-  font-weight: 900;
-}
-
 .hero-showcase {
   position: relative;
   min-height: 390px;
@@ -946,14 +926,6 @@ footer {
 
   .host-row span {
     flex: 0 0 auto;
-  }
-
-  .hero-actions {
-    margin-top: 16px;
-  }
-
-  .primary-action {
-    width: 100%;
   }
 
   .scoreboard {
