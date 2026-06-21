@@ -5,6 +5,17 @@ const teamCount = document.querySelector("#teamCount");
 const bottomLinks = document.querySelectorAll(".bottom-nav a");
 
 let teams = [];
+let activeConfederation = "all";
+
+const confederationOrder = ["AFC", "CAF", "CONCACAF", "CONMEBOL", "OFC", "UEFA"];
+const confederationLabels = {
+  AFC: "Asia",
+  CAF: "Africa",
+  CONCACAF: "N/C America",
+  CONMEBOL: "S America",
+  OFC: "Oceania",
+  UEFA: "Europa",
+};
 
 function flagUrl(code) {
   return `https://flagcdn.com/w160/${code}.png`;
@@ -19,25 +30,55 @@ function normalize(value) {
 
 function renderFilters() {
   filters.innerHTML = "";
-  filters.classList.add("single-filter");
+  filters.classList.remove("single-filter");
 
-  const button = document.createElement("button");
-  button.type = "button";
-  button.textContent = "Todas";
-  button.className = "active";
-  button.setAttribute("aria-current", "true");
-  filters.appendChild(button);
+  const options = [
+    { id: "all", label: "Todas", count: teams.length },
+    ...confederationOrder
+      .filter((confederation) => teams.some((team) => team.confederation === confederation))
+      .map((confederation) => ({
+        id: confederation,
+        label: confederationLabels[confederation] || confederation,
+        count: teams.filter((team) => team.confederation === confederation).length,
+      })),
+  ];
+
+  options.forEach((option) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.dataset.confederation = option.id;
+    button.innerHTML = `<span>${option.label}</span><strong>${option.count}</strong>`;
+    button.className = option.id === activeConfederation ? "active" : "";
+    button.setAttribute("aria-pressed", String(option.id === activeConfederation));
+    button.addEventListener("click", () => {
+      activeConfederation = option.id;
+      renderFilters();
+      renderTeams();
+    });
+    filters.appendChild(button);
+  });
 }
 
 function renderTeams() {
   const query = normalize(searchInput.value.trim());
   const visible = teams.filter((team) => {
     const searchable = normalize(`${team.name} ${team.country} ${team.region} ${team.confederation}`);
-    return searchable.includes(query);
+    const matchesSearch = searchable.includes(query);
+    const matchesConfederation =
+      activeConfederation === "all" || team.confederation === activeConfederation;
+    return matchesSearch && matchesConfederation;
   });
 
   teamCount.textContent = String(visible.length);
   grid.innerHTML = "";
+
+  if (!visible.length) {
+    const empty = document.createElement("div");
+    empty.className = "empty-state";
+    empty.textContent = "Nenhuma selecao encontrada com estes filtros.";
+    grid.appendChild(empty);
+    return;
+  }
 
   visible.forEach((team) => {
     const titleLabel = team.titles === 1 ? "titulo" : "titulos";

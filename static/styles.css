@@ -111,6 +111,23 @@ a {
   min-height: 38px;
 }
 
+.filters button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filters button strong {
+  min-width: 24px;
+  min-height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--gold);
+  font-size: 12px;
+}
+
 .nav-pills button.active,
 .filters button.active {
   border-color: rgba(243, 199, 95, 0.85);
@@ -277,6 +294,15 @@ h2 {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
   gap: 12px;
+}
+
+.empty-state {
+  grid-column: 1 / -1;
+  border: 1px dashed rgba(255, 255, 255, 0.28);
+  border-radius: 8px;
+  color: var(--muted);
+  padding: 22px;
+  text-align: center;
 }
 
 .team-card {
@@ -757,7 +783,7 @@ footer {
     position: static;
     z-index: 5;
     flex-wrap: nowrap;
-    overflow: visible;
+    overflow-x: auto;
     margin-left: 0;
     margin-right: 0;
     padding: 0;
