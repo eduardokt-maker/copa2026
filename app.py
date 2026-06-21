@@ -128,6 +128,34 @@ for team in TEAMS:
 TEAM_BY_CODE = {team["code"]: team for team in TEAMS}
 ROSTER_CACHE: dict[str, list[dict[str, str]]] = {}
 
+GROUP_DEFINITIONS = [
+    {"id": "A", "teams": ["mx", "za", "kr", "cz"]},
+    {"id": "B", "teams": ["ca", "qa", "ch", "ba"]},
+    {"id": "C", "teams": ["br", "ma", "ht", "gb-sct"]},
+    {"id": "D", "teams": ["us", "py", "au", "tr"]},
+    {"id": "E", "teams": ["de", "ci", "ec", "cw"]},
+    {"id": "F", "teams": ["nl", "se", "tn", "jp"]},
+    {"id": "G", "teams": ["be", "eg", "ir", "nz"]},
+    {"id": "H", "teams": ["es", "uy", "sa", "cv"]},
+    {"id": "I", "teams": ["fr", "sn", "iq", "no"]},
+    {"id": "J", "teams": ["ar", "dz", "at", "jo"]},
+    {"id": "K", "teams": ["pt", "cd", "uz", "co"]},
+    {"id": "L", "teams": ["gb-eng", "hr", "gh", "pa"]},
+]
+
+
+def build_groups() -> list[dict]:
+    groups = []
+    for group in GROUP_DEFINITIONS:
+        groups.append(
+            {
+                "id": group["id"],
+                "name": f"Grupo {group['id']}",
+                "teams": [TEAM_BY_CODE[code] for code in group["teams"]],
+            }
+        )
+    return groups
+
 CLUB_NAME_OVERRIDES = {
     "AC Milan": "Associazione Calcio Milan",
     "AEK Athens": "Athlitiki Enosis Konstantinoupoleos Athens",
@@ -337,6 +365,10 @@ class CopaHandler(SimpleHTTPRequestHandler):
         path = parsed_url.path
         if path == "/api/teams":
             self.send_json({"teams": TEAMS, "count": len(TEAMS), "version": APP_VERSION})
+            return
+        if path == "/api/groups":
+            groups = build_groups()
+            self.send_json({"groups": groups, "count": len(groups), "version": APP_VERSION})
             return
         if path == "/api/roster":
             query = parse_qs(parsed_url.query)

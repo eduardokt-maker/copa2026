@@ -91,6 +91,7 @@ a {
 }
 
 .nav-pills button,
+.nav-pills a,
 .filters button {
   border: 1px solid var(--line);
   border-radius: 7px;
@@ -119,6 +120,7 @@ a {
 }
 
 .nav-pills button.active,
+.nav-pills a.active,
 .filters button.active {
   border-color: rgba(243, 199, 95, 0.85);
   background: rgba(243, 199, 95, 0.16);
@@ -182,6 +184,26 @@ h1 {
   width: 24px;
   height: 16px;
   border-radius: 2px;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.primary-action {
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(243, 199, 95, 0.88);
+  border-radius: 8px;
+  background: rgba(243, 199, 95, 0.18);
+  color: #fff3c7;
+  padding: 11px 14px;
+  font-weight: 900;
 }
 
 .hero-showcase {
@@ -662,6 +684,172 @@ footer {
   display: none;
 }
 
+.groups-page {
+  background:
+    radial-gradient(circle at 12% 0%, rgba(239, 77, 92, 0.14), transparent 30%),
+    radial-gradient(circle at 92% 10%, rgba(40, 193, 125, 0.16), transparent 26%),
+    linear-gradient(145deg, #04101c 0%, #071a2e 58%, #0b1220 100%);
+}
+
+.groups-hero {
+  padding: 20px clamp(18px, 4vw, 48px) 24px;
+  border-bottom: 1px solid var(--line);
+}
+
+.groups-intro {
+  max-width: 900px;
+  padding-top: 18px;
+}
+
+.groups-intro h1 {
+  font-size: clamp(38px, 6vw, 74px);
+}
+
+.groups-main {
+  padding-top: 20px;
+}
+
+.groups-guide {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.groups-guide div {
+  min-height: 82px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 12px;
+}
+
+.groups-guide strong,
+.groups-guide span {
+  display: block;
+}
+
+.groups-guide strong {
+  color: var(--gold);
+  font-size: 28px;
+  line-height: 1;
+}
+
+.groups-guide span {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.groups-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.group-card {
+  border: 1px solid rgba(210, 224, 238, 0.76);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #102033;
+  overflow: hidden;
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.18);
+}
+
+.group-card-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid rgba(16, 32, 51, 0.08);
+  background:
+    linear-gradient(120deg, rgba(15, 49, 88, 0.98), rgba(23, 79, 135, 0.92)),
+    #0f3158;
+  color: #fff;
+  padding: 12px;
+}
+
+.group-card-head > span {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: rgba(243, 199, 95, 0.2);
+  color: var(--gold);
+  font-size: 24px;
+  font-weight: 950;
+}
+
+.group-card h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.group-card p {
+  margin: 2px 0 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 12px;
+}
+
+.group-team-list {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.group-team-list li {
+  display: grid;
+  grid-template-columns: 36px 44px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  min-height: 62px;
+  border-bottom: 1px solid rgba(16, 32, 51, 0.08);
+  padding: 10px 12px;
+}
+
+.group-team-list li:last-child {
+  border-bottom: 0;
+}
+
+.draw-position {
+  display: grid;
+  place-items: center;
+  min-height: 32px;
+  border-radius: 7px;
+  background: rgba(16, 32, 51, 0.07);
+  color: #415066;
+  font-size: 12px;
+  font-weight: 950;
+}
+
+.group-team-list img {
+  width: 44px;
+  height: 30px;
+  border-radius: 4px;
+  object-fit: cover;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.14);
+}
+
+.group-team-list strong,
+.group-team-list small {
+  display: block;
+}
+
+.group-team-list strong {
+  font-size: 15px;
+  line-height: 1.18;
+}
+
+.group-team-list small {
+  margin-top: 3px;
+  color: #657386;
+  font-size: 11px;
+  font-weight: 800;
+}
+
 @media (max-width: 820px) {
   body {
     padding-bottom: 86px;
@@ -720,6 +908,10 @@ footer {
     flex: 0 0 auto;
   }
 
+  .nav-pills a {
+    flex: 0 0 auto;
+  }
+
   .hero-grid {
     grid-template-columns: 1fr;
     gap: 16px;
@@ -754,6 +946,14 @@ footer {
 
   .host-row span {
     flex: 0 0 auto;
+  }
+
+  .hero-actions {
+    margin-top: 16px;
+  }
+
+  .primary-action {
+    width: 100%;
   }
 
   .scoreboard {
@@ -1003,5 +1203,73 @@ footer {
   .bottom-nav span {
     font-size: 14px;
     line-height: 1;
+  }
+
+  .groups-hero {
+    padding: 14px 14px 18px;
+  }
+
+  .groups-intro {
+    padding-top: 10px;
+  }
+
+  .groups-intro h1 {
+    font-size: clamp(34px, 12vw, 48px);
+    line-height: 1;
+  }
+
+  .groups-main {
+    padding-top: 14px;
+  }
+
+  .groups-guide {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 7px;
+    margin-bottom: 12px;
+  }
+
+  .groups-guide div {
+    min-height: 70px;
+    padding: 9px;
+  }
+
+  .groups-guide strong {
+    font-size: 22px;
+  }
+
+  .groups-guide span {
+    font-size: 10px;
+    line-height: 1.1;
+  }
+
+  .groups-grid {
+    grid-template-columns: 1fr;
+    gap: 9px;
+  }
+
+  .group-card-head {
+    padding: 10px;
+  }
+
+  .group-card-head > span {
+    width: 40px;
+    height: 40px;
+    font-size: 21px;
+  }
+
+  .group-card h2 {
+    font-size: 18px;
+  }
+
+  .group-team-list li {
+    grid-template-columns: 34px 42px minmax(0, 1fr);
+    min-height: 58px;
+    gap: 8px;
+    padding: 9px 10px;
+  }
+
+  .group-team-list img {
+    width: 42px;
+    height: 28px;
   }
 }
