@@ -1,8 +1,10 @@
 services:
   - type: web
-    name: copa2026
-    env: python
+    name: eduardokt-copa2026
+    runtime: python
     plan: free
     buildCommand: pip install -r requirements.txt
-    startCommand: python app.py
-    autoDeploy: true
+    startCommand: python -u app.py
+    healthCheckPath: /api/status
+    renderSubdomainPolicy: enabled
+    autoDeployTrigger: commit

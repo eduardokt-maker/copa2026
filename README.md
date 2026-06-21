@@ -34,8 +34,15 @@ O projeto ja inclui `render.yaml` e esta preparado para Web Service no Render.
 Configuracao esperada:
 
 - Build command: `pip install -r requirements.txt`
-- Start command: `python app.py`
+- Start command: `python -u app.py`
 - Runtime: Python
+- Health check path: `/api/status`
+
+URL esperada depois de criar/sincronizar o Blueprint no Render:
+
+```text
+https://eduardokt-copa2026.onrender.com
+```
 
 ## Futuras funcionalidades
 
