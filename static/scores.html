@@ -3,51 +3,54 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Placares | copa2026</title>
-    <link rel="stylesheet" href="/styles.css?v=20260622-placares-cache" />
+    <title>Placares | Copa 2026</title>
+    <link rel="stylesheet" href="/styles.css?v=20260622-scoreboard-pro" />
   </head>
-  <body class="scores-page">
-    <header class="groups-hero">
-      <nav class="topbar" aria-label="Navegacao principal">
-        <a class="brand-lockup" href="/">
-          <img
-            class="brand-emblem"
-            src="https://upload.wikimedia.org/wikipedia/en/thumb/1/17/2026_FIFA_World_Cup_emblem.svg/250px-2026_FIFA_World_Cup_emblem.svg.png"
-            alt="Logotipo oficial da Copa do Mundo FIFA 2026"
-          />
-          <div>
-            <strong>copa2026</strong>
-            <small>Placares por grupo</small>
-          </div>
-        </a>
-        <a class="back-button" href="/">Voltar</a>
-      </nav>
-
-      <section class="groups-intro">
-        <p class="eyebrow">Jogos finalizados</p>
-        <h1>Placares da fase de grupos.</h1>
-        <p class="lead">
-          Resultados ja encerrados, organizados por grupo, com data, cidade e estadio de cada partida.
-        </p>
-      </section>
+  <body class="scores-pro-page">
+    <header class="score-app-header">
+      <a class="score-brand" href="/">
+        <span class="score-brand-mark">26</span>
+        <span>
+          <strong>Copa 2026</strong>
+          <small>World Cup Scores</small>
+        </span>
+      </a>
+      <a class="score-back" href="/">Inicio</a>
     </header>
 
-    <main class="groups-main">
-      <section class="scores-summary" aria-label="Resumo dos placares">
+    <main class="score-app">
+      <section class="score-board-head" aria-label="Resumo dos placares">
         <div>
-          <strong id="scoreCount">0</strong>
-          <span>jogos finalizados</span>
+          <p class="eyebrow">Sistema independente de placares</p>
+          <h1>Placares da Copa 2026</h1>
         </div>
-        <div>
-          <strong>12</strong>
-          <span>grupos monitorados</span>
+        <div class="score-stats">
+          <span><strong id="matchCount">0</strong> jogos</span>
+          <span><strong id="groupCount">0</strong> grupos</span>
+          <span><strong id="selectedLabel">Todos</strong></span>
         </div>
       </section>
 
-      <nav class="score-group-nav" id="scoreGroupNav" aria-label="Atalhos dos grupos"></nav>
-      <section class="scores-grid" id="scoresGrid" aria-live="polite"></section>
+      <section class="score-toolbar" aria-label="Filtros de placares">
+        <div class="score-filter-tabs" id="scoreFilters">
+          <button class="active" type="button" data-filter="all">Todos</button>
+          <button type="button" data-filter="today">Hoje</button>
+          <button type="button" data-filter="live">Ao vivo</button>
+          <button type="button" data-filter="finished">Encerrados</button>
+          <button type="button" data-filter="next">Proximos</button>
+        </div>
+        <label class="score-search">
+          <span>Buscar</span>
+          <input id="scoreSearch" type="search" placeholder="Selecao, grupo, cidade ou estadio" />
+        </label>
+      </section>
+
+      <section class="score-layout">
+        <section class="score-card-grid" id="scoresGrid" aria-live="polite"></section>
+        <aside class="match-detail-panel" id="matchDetail" aria-live="polite"></aside>
+      </section>
     </main>
 
-    <script src="/scores.js?v=20260622-placares-cache"></script>
+    <script src="/scores.js?v=20260622-scoreboard-pro"></script>
   </body>
 </html>
