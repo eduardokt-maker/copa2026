@@ -1,4 +1,5 @@
 const scoresGrid = document.querySelector("#scoresGrid");
+const scoreGroupNav = document.querySelector("#scoreGroupNav");
 const scoreCount = document.querySelector("#scoreCount");
 
 function flagUrl(code) {
@@ -12,6 +13,7 @@ function formatDate(value) {
 
 function renderScoreMessage(message) {
   scoresGrid.innerHTML = "";
+  scoreGroupNav.innerHTML = "";
   const empty = document.createElement("div");
   empty.className = "empty-state";
   empty.textContent = message;
@@ -30,6 +32,7 @@ function teamMarkup(team, align = "left") {
 function renderScores(scores) {
   scoreCount.textContent = String(scores.length);
   scoresGrid.innerHTML = "";
+  scoreGroupNav.innerHTML = "";
 
   const groups = scores.reduce((map, score) => {
     if (!map.has(score.group)) {
@@ -40,14 +43,22 @@ function renderScores(scores) {
   }, new Map());
 
   groups.forEach((groupScores, groupId) => {
+    const link = document.createElement("a");
+    link.href = `#grupo-${groupId}`;
+    link.innerHTML = `<span>${groupId}</span><strong>${groupScores.length}</strong>`;
+    scoreGroupNav.appendChild(link);
+  });
+
+  groups.forEach((groupScores, groupId) => {
     const section = document.createElement("article");
     section.className = "score-group-card";
+    section.id = `grupo-${groupId}`;
     section.innerHTML = `
       <div class="score-group-head">
         <span>${groupId}</span>
         <div>
           <h2>Grupo ${groupId}</h2>
-          <p>${groupScores.length} jogos finalizados</p>
+          <p>${groupScores.length} de 6 jogos finalizados</p>
         </div>
       </div>
       <div class="score-match-list">
