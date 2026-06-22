@@ -51,7 +51,7 @@ async function bootGroups() {
   renderMessage("Carregando grupos...");
 
   try {
-    const response = await fetch("/api/groups");
+    const response = await fetch("/api/groups?v=20260622-placares-cache");
     const payload = await response.json();
     if (!payload.groups?.length) {
       renderMessage("Grupos indisponiveis no momento.");

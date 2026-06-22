@@ -72,7 +72,7 @@ async function bootTeamPage() {
   renderRosterMessage("Carregando elenco...");
 
   try {
-    const response = await fetch(`/api/roster?code=${encodeURIComponent(code)}`);
+    const response = await fetch(`/api/roster?code=${encodeURIComponent(code)}&v=20260622-placares-cache`);
     const payload = await response.json();
     if (!payload.ok || !payload.team) {
       renderRosterMessage("Selecao nao encontrada.");

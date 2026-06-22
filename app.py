@@ -481,6 +481,12 @@ class CopaHandler(SimpleHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
+    def end_headers(self) -> None:
+        self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
+        self.send_header("Pragma", "no-cache")
+        self.send_header("Expires", "0")
+        super().end_headers()
+
 
 def run(host: str | None = None, port: int | None = None) -> None:
     host = host or os.getenv("HOST", "127.0.0.1")

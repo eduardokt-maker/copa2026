@@ -130,7 +130,7 @@ function openTeamPage(team) {
 }
 
 async function boot() {
-  const response = await fetch("/api/teams");
+  const response = await fetch("/api/teams?v=20260622-placares-cache");
   const payload = await response.json();
   teams = payload.teams;
   teamCount.textContent = String(payload.count);

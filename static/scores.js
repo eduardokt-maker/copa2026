@@ -90,7 +90,7 @@ async function bootScores() {
   renderScoreMessage("Carregando placares...");
 
   try {
-    const response = await fetch("/api/scores");
+    const response = await fetch("/api/scores?v=20260622-placares-cache");
     const payload = await response.json();
     if (!payload.scores?.length) {
       renderScoreMessage("Nenhum jogo finalizado cadastrado ainda.");
