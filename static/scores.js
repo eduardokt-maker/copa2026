@@ -11,6 +11,8 @@ const state = {
   filter: "all",
   query: "",
   selectedId: "",
+  officialTodayIso: "",
+  officialDateReady: false,
 };
 
 const filterLabels = {
@@ -28,6 +30,33 @@ function flagUrl(code) {
 function formatDate(value) {
   const [year, month, day] = value.split("-");
   return `${day}/${month}/${year}`;
+}
+
+function isoFromCloudDate(dateHeader) {
+  if (!dateHeader) return "";
+  const cloudDate = new Date(dateHeader);
+  if (Number.isNaN(cloudDate.getTime())) return "";
+
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Fortaleza",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(cloudDate);
+
+  const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+  return `${values.year}-${values.month}-${values.day}`;
+}
+
+async function loadOfficialToday() {
+  try {
+    const response = await fetch("/api/status?v=20260622-cloud-date", { cache: "no-store" });
+    state.officialTodayIso = isoFromCloudDate(response.headers.get("Date"));
+  } catch (error) {
+    state.officialTodayIso = "";
+  } finally {
+    state.officialDateReady = true;
+  }
 }
 
 function normalizeText(value) {
@@ -84,7 +113,7 @@ function enrichMatch(match, index) {
 }
 
 function filterMatches() {
-  const todayIso = new Date().toISOString().slice(0, 10);
+  const todayIso = state.officialTodayIso;
   const query = normalizeText(state.query);
   return state.matches.filter((match) => {
     const status = statusFor(match);
@@ -176,7 +205,13 @@ function render() {
   selectedLabel.textContent = filterLabels[state.filter];
 
   if (!visible.length) {
-    scoresGrid.innerHTML = `<div class="empty-state">Nenhuma partida encontrada para este filtro.</div>`;
+    const message =
+      state.filter === "today"
+        ? state.officialTodayIso
+          ? `Nenhuma partida encontrada para hoje (${formatDate(state.officialTodayIso)}).`
+          : "Nao foi possivel confirmar a data oficial na nuvem agora."
+        : "Nenhuma partida encontrada para este filtro.";
+    scoresGrid.innerHTML = `<div class="empty-state">${message}</div>`;
     renderDetail(null);
     return;
   }
@@ -194,7 +229,8 @@ async function bootScores() {
   renderDetail(null);
 
   try {
-    const response = await fetch("/api/scores?v=20260622-scoreboard-pro");
+    await loadOfficialToday();
+    const response = await fetch("/api/scores?v=20260622-cloud-date");
     const payload = await response.json();
     state.matches = (payload.scores || []).map(enrichMatch);
     render();
