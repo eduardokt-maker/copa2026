@@ -915,7 +915,7 @@ footer {
   overflow: hidden;
   border: 1px solid rgba(210, 224, 238, 0.82);
   border-radius: 8px;
-  background: rgba(245, 249, 255, 0.97);
+  background: #edf4f7;
   color: #102033;
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.2);
   scroll-margin-top: 14px;
@@ -965,9 +965,9 @@ footer {
 .score-match {
   display: grid;
   gap: 10px;
-  border: 1px solid rgba(16, 32, 51, 0.08);
+  border: 1px solid rgba(16, 32, 51, 0.07);
   border-radius: 8px;
-  background: #ffffff;
+  background: #f7fafb;
   padding: 11px;
 }
 
