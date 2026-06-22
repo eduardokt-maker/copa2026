@@ -143,6 +143,49 @@ GROUP_DEFINITIONS = [
     {"id": "L", "teams": ["gb-eng", "hr", "gh", "pa"]},
 ]
 
+SCORE_RESULTS = [
+    {"group": "A", "date": "2026-06-11", "home": "mx", "home_score": 2, "away_score": 0, "away": "za", "stadium": "Estadio Azteca", "city": "Mexico City"},
+    {"group": "A", "date": "2026-06-11", "home": "kr", "home_score": 2, "away_score": 1, "away": "cz", "stadium": "Estadio Akron", "city": "Zapopan"},
+    {"group": "A", "date": "2026-06-18", "home": "cz", "home_score": 1, "away_score": 1, "away": "za", "stadium": "Mercedes-Benz Stadium", "city": "Atlanta"},
+    {"group": "A", "date": "2026-06-18", "home": "mx", "home_score": 1, "away_score": 0, "away": "kr", "stadium": "Estadio Akron", "city": "Zapopan"},
+    {"group": "B", "date": "2026-06-12", "home": "ca", "home_score": 1, "away_score": 1, "away": "ba", "stadium": "BMO Field", "city": "Toronto"},
+    {"group": "B", "date": "2026-06-13", "home": "qa", "home_score": 1, "away_score": 1, "away": "ch", "stadium": "Levi's Stadium", "city": "Santa Clara"},
+    {"group": "B", "date": "2026-06-18", "home": "ch", "home_score": 4, "away_score": 1, "away": "ba", "stadium": "SoFi Stadium", "city": "Inglewood"},
+    {"group": "B", "date": "2026-06-18", "home": "ca", "home_score": 6, "away_score": 0, "away": "qa", "stadium": "BC Place", "city": "Vancouver"},
+    {"group": "C", "date": "2026-06-13", "home": "br", "home_score": 1, "away_score": 1, "away": "ma", "stadium": "MetLife Stadium", "city": "East Rutherford"},
+    {"group": "C", "date": "2026-06-13", "home": "ht", "home_score": 0, "away_score": 1, "away": "gb-sct", "stadium": "Gillette Stadium", "city": "Foxborough"},
+    {"group": "C", "date": "2026-06-19", "home": "gb-sct", "home_score": 0, "away_score": 1, "away": "ma", "stadium": "Gillette Stadium", "city": "Foxborough"},
+    {"group": "C", "date": "2026-06-19", "home": "br", "home_score": 3, "away_score": 0, "away": "ht", "stadium": "Lincoln Financial Field", "city": "Philadelphia"},
+    {"group": "D", "date": "2026-06-12", "home": "us", "home_score": 4, "away_score": 1, "away": "py", "stadium": "SoFi Stadium", "city": "Inglewood"},
+    {"group": "D", "date": "2026-06-13", "home": "au", "home_score": 2, "away_score": 0, "away": "tr", "stadium": "BC Place", "city": "Vancouver"},
+    {"group": "D", "date": "2026-06-19", "home": "us", "home_score": 2, "away_score": 0, "away": "au", "stadium": "Lumen Field", "city": "Seattle"},
+    {"group": "D", "date": "2026-06-19", "home": "tr", "home_score": 0, "away_score": 1, "away": "py", "stadium": "Levi's Stadium", "city": "Santa Clara"},
+    {"group": "E", "date": "2026-06-14", "home": "de", "home_score": 7, "away_score": 1, "away": "cw", "stadium": "NRG Stadium", "city": "Houston"},
+    {"group": "E", "date": "2026-06-14", "home": "ci", "home_score": 1, "away_score": 0, "away": "ec", "stadium": "Lincoln Financial Field", "city": "Philadelphia"},
+    {"group": "E", "date": "2026-06-20", "home": "de", "home_score": 2, "away_score": 1, "away": "ci", "stadium": "BMO Field", "city": "Toronto"},
+    {"group": "E", "date": "2026-06-20", "home": "ec", "home_score": 0, "away_score": 0, "away": "cw", "stadium": "Arrowhead Stadium", "city": "Kansas City"},
+    {"group": "F", "date": "2026-06-14", "home": "nl", "home_score": 2, "away_score": 2, "away": "jp", "stadium": "AT&T Stadium", "city": "Arlington"},
+    {"group": "F", "date": "2026-06-14", "home": "se", "home_score": 5, "away_score": 1, "away": "tn", "stadium": "Estadio BBVA", "city": "Guadalupe"},
+    {"group": "F", "date": "2026-06-20", "home": "nl", "home_score": 5, "away_score": 1, "away": "se", "stadium": "NRG Stadium", "city": "Houston"},
+    {"group": "F", "date": "2026-06-20", "home": "tn", "home_score": 0, "away_score": 4, "away": "jp", "stadium": "Estadio BBVA", "city": "Guadalupe"},
+    {"group": "G", "date": "2026-06-15", "home": "be", "home_score": 1, "away_score": 1, "away": "eg", "stadium": "Lumen Field", "city": "Seattle"},
+    {"group": "G", "date": "2026-06-15", "home": "ir", "home_score": 2, "away_score": 2, "away": "nz", "stadium": "SoFi Stadium", "city": "Inglewood"},
+    {"group": "G", "date": "2026-06-21", "home": "be", "home_score": 0, "away_score": 0, "away": "ir", "stadium": "SoFi Stadium", "city": "Inglewood"},
+    {"group": "G", "date": "2026-06-21", "home": "nz", "home_score": 1, "away_score": 3, "away": "eg", "stadium": "BC Place", "city": "Vancouver"},
+    {"group": "H", "date": "2026-06-15", "home": "es", "home_score": 0, "away_score": 0, "away": "cv", "stadium": "Mercedes-Benz Stadium", "city": "Atlanta"},
+    {"group": "H", "date": "2026-06-15", "home": "sa", "home_score": 1, "away_score": 1, "away": "uy", "stadium": "Hard Rock Stadium", "city": "Miami Gardens"},
+    {"group": "H", "date": "2026-06-21", "home": "es", "home_score": 4, "away_score": 0, "away": "sa", "stadium": "Mercedes-Benz Stadium", "city": "Atlanta"},
+    {"group": "H", "date": "2026-06-21", "home": "uy", "home_score": 2, "away_score": 2, "away": "cv", "stadium": "Hard Rock Stadium", "city": "Miami Gardens"},
+    {"group": "I", "date": "2026-06-16", "home": "fr", "home_score": 3, "away_score": 1, "away": "sn", "stadium": "MetLife Stadium", "city": "East Rutherford"},
+    {"group": "I", "date": "2026-06-16", "home": "iq", "home_score": 1, "away_score": 4, "away": "no", "stadium": "Gillette Stadium", "city": "Foxborough"},
+    {"group": "J", "date": "2026-06-16", "home": "ar", "home_score": 3, "away_score": 0, "away": "dz", "stadium": "Arrowhead Stadium", "city": "Kansas City"},
+    {"group": "J", "date": "2026-06-16", "home": "at", "home_score": 3, "away_score": 1, "away": "jo", "stadium": "Levi's Stadium", "city": "Santa Clara"},
+    {"group": "K", "date": "2026-06-17", "home": "pt", "home_score": 1, "away_score": 1, "away": "cd", "stadium": "NRG Stadium", "city": "Houston"},
+    {"group": "K", "date": "2026-06-17", "home": "uz", "home_score": 1, "away_score": 3, "away": "co", "stadium": "Estadio Azteca", "city": "Mexico City"},
+    {"group": "L", "date": "2026-06-17", "home": "gb-eng", "home_score": 4, "away_score": 2, "away": "hr", "stadium": "AT&T Stadium", "city": "Arlington"},
+    {"group": "L", "date": "2026-06-17", "home": "gh", "home_score": 1, "away_score": 0, "away": "pa", "stadium": "BMO Field", "city": "Toronto"},
+]
+
 
 def build_groups() -> list[dict]:
     groups = []
@@ -155,6 +198,22 @@ def build_groups() -> list[dict]:
             }
         )
     return groups
+
+
+def build_scores() -> list[dict]:
+    scores = []
+    for result in SCORE_RESULTS:
+        home = TEAM_BY_CODE[result["home"]]
+        away = TEAM_BY_CODE[result["away"]]
+        scores.append(
+            {
+                **result,
+                "group_name": f"Grupo {result['group']}",
+                "home_team": home,
+                "away_team": away,
+            }
+        )
+    return scores
 
 CLUB_NAME_OVERRIDES = {
     "AC Milan": "Associazione Calcio Milan",
@@ -369,6 +428,10 @@ class CopaHandler(SimpleHTTPRequestHandler):
         if path == "/api/groups":
             groups = build_groups()
             self.send_json({"groups": groups, "count": len(groups), "version": APP_VERSION})
+            return
+        if path == "/api/scores":
+            scores = build_scores()
+            self.send_json({"scores": scores, "count": len(scores), "version": APP_VERSION})
             return
         if path == "/api/roster":
             query = parse_qs(parsed_url.query)

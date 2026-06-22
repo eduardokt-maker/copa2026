@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Placares | copa2026</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body class="scores-page">
+    <header class="groups-hero">
+      <nav class="topbar" aria-label="Navegacao principal">
+        <a class="brand-lockup" href="/">
+          <img
+            class="brand-emblem"
+            src="https://upload.wikimedia.org/wikipedia/en/thumb/1/17/2026_FIFA_World_Cup_emblem.svg/250px-2026_FIFA_World_Cup_emblem.svg.png"
+            alt="Logotipo oficial da Copa do Mundo FIFA 2026"
+          />
+          <div>
+            <strong>copa2026</strong>
+            <small>Placares por grupo</small>
+          </div>
+        </a>
+        <a class="back-button" href="/">Voltar</a>
+      </nav>
+
+      <section class="groups-intro">
+        <p class="eyebrow">Jogos finalizados</p>
+        <h1>Placares da fase de grupos.</h1>
+        <p class="lead">
+          Resultados ja encerrados, organizados por grupo, com data, cidade e estadio de cada partida.
+        </p>
+      </section>
+    </header>
+
+    <main class="groups-main">
+      <section class="scores-summary" aria-label="Resumo dos placares">
+        <div>
+          <strong id="scoreCount">0</strong>
+          <span>jogos finalizados</span>
+        </div>
+        <div>
+          <strong>12</strong>
+          <span>grupos monitorados</span>
+        </div>
+      </section>
+
+      <section class="scores-grid" id="scoresGrid" aria-live="polite"></section>
+    </main>
+
+    <script src="/scores.js"></script>
+  </body>
+</html>
