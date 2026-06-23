@@ -8,6 +8,7 @@ const selectedLabel = document.querySelector("#selectedLabel");
 const scoreTitle = document.querySelector("#scoreTitle");
 const groupStandings = document.querySelector("#groupStandings");
 const initialGroup = new URLSearchParams(window.location.search).get("group") || "";
+const isGroupMode = Boolean(initialGroup);
 
 const state = {
   matches: [],
@@ -160,10 +161,10 @@ function renderStandings(matches) {
   groupStandings.innerHTML = `
     <div class="standings-head">
       <div>
-        <span>Classificacao</span>
+        <span>${state.group ? "Classificacao do grupo" : "Classificacao geral"}</span>
         <strong>${groupLabel}</strong>
       </div>
-      <small>3 pts vitoria | 1 pt empate</small>
+      <small>Pontuacao por selecao</small>
     </div>
     <div class="standings-table" role="table" aria-label="Pontuacao das selecoes do ${groupLabel}">
       <div class="standings-row standings-row-head" role="row">
@@ -261,15 +262,22 @@ function renderDetail(match) {
 function render() {
   const visible = filterMatches();
   const groups = new Set(visible.map((match) => match.group));
+  document.body.classList.toggle("standings-only", isGroupMode);
   matchCount.textContent = String(visible.length);
   groupCount.textContent = String(groups.size);
-  selectedLabel.textContent = state.group ? `Grupo ${state.group}` : filterLabels[state.filter];
-  scoreTitle.textContent = state.group ? `Grupo ${state.group} | Placares e pontuacao` : "Placares da Copa 2026";
+  selectedLabel.textContent = state.group ? "Pontuacao" : filterLabels[state.filter];
+  scoreTitle.textContent = state.group ? `Grupo ${state.group} | Classificacao das selecoes` : "Placares da Copa 2026";
   renderStandings(visible);
 
   if (!visible.length) {
     scoresGrid.innerHTML = `<div class="empty-state">Nenhuma partida encontrada.</div>`;
     renderDetail(null);
+    return;
+  }
+
+  if (isGroupMode) {
+    scoresGrid.innerHTML = "";
+    matchDetail.innerHTML = "";
     return;
   }
 
@@ -287,7 +295,7 @@ async function bootScores() {
   renderDetail(null);
 
   try {
-    const response = await fetch("/api/scores?v=20260623-grupos-pontuacao");
+    const response = await fetch("/api/scores?v=20260623-classificacao-grupo");
     const payload = await response.json();
     state.matches = (payload.scores || []).map(enrichMatch);
     render();
