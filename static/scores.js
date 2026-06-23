@@ -5,10 +5,14 @@ const scoreSearch = document.querySelector("#scoreSearch");
 const matchCount = document.querySelector("#matchCount");
 const groupCount = document.querySelector("#groupCount");
 const selectedLabel = document.querySelector("#selectedLabel");
+const scoreTitle = document.querySelector("#scoreTitle");
+const groupStandings = document.querySelector("#groupStandings");
+const initialGroup = new URLSearchParams(window.location.search).get("group") || "";
 
 const state = {
   matches: [],
   filter: "all",
+  group: initialGroup.toUpperCase(),
   query: "",
   selectedId: "",
 };
@@ -81,9 +85,113 @@ function filterMatches() {
   const query = normalizeText(state.query);
   return state.matches.filter((match) => {
     const byFilter = state.filter === "all";
+    const byGroup = !state.group || match.group === state.group;
     const bySearch = !query || searchable(match).includes(query);
-    return byFilter && bySearch;
+    return byFilter && byGroup && bySearch;
   });
+}
+
+function emptyStanding(team) {
+  return {
+    team,
+    played: 0,
+    wins: 0,
+    draws: 0,
+    losses: 0,
+    goalsFor: 0,
+    goalsAgainst: 0,
+    goalDifference: 0,
+    points: 0,
+  };
+}
+
+function applyResult(table, team, goalsFor, goalsAgainst) {
+  const row = table.get(team.code) || emptyStanding(team);
+  row.played += 1;
+  row.goalsFor += goalsFor;
+  row.goalsAgainst += goalsAgainst;
+  row.goalDifference = row.goalsFor - row.goalsAgainst;
+
+  if (goalsFor > goalsAgainst) {
+    row.wins += 1;
+    row.points += 3;
+  } else if (goalsFor === goalsAgainst) {
+    row.draws += 1;
+    row.points += 1;
+  } else {
+    row.losses += 1;
+  }
+
+  table.set(team.code, row);
+}
+
+function buildStandings(matches) {
+  const table = new Map();
+
+  matches.forEach((match) => {
+    table.set(match.home_team.code, table.get(match.home_team.code) || emptyStanding(match.home_team));
+    table.set(match.away_team.code, table.get(match.away_team.code) || emptyStanding(match.away_team));
+    applyResult(table, match.home_team, Number(match.home_score), Number(match.away_score));
+    applyResult(table, match.away_team, Number(match.away_score), Number(match.home_score));
+  });
+
+  return [...table.values()].sort((a, b) => {
+    if (b.points !== a.points) return b.points - a.points;
+    if (b.goalDifference !== a.goalDifference) return b.goalDifference - a.goalDifference;
+    if (b.goalsFor !== a.goalsFor) return b.goalsFor - a.goalsFor;
+    return a.team.country.localeCompare(b.team.country);
+  });
+}
+
+function renderStandings(matches) {
+  const groupLabel = state.group ? `Grupo ${state.group}` : "Todos os grupos";
+  const standings = buildStandings(matches);
+
+  if (!standings.length) {
+    groupStandings.innerHTML = `
+      <div class="standings-empty">
+        <strong>Pontuacao indisponivel</strong>
+        <span>Nenhuma partida finalizada encontrada para este grupo.</span>
+      </div>
+    `;
+    return;
+  }
+
+  groupStandings.innerHTML = `
+    <div class="standings-head">
+      <div>
+        <span>Classificacao</span>
+        <strong>${groupLabel}</strong>
+      </div>
+      <small>3 pts vitoria | 1 pt empate</small>
+    </div>
+    <div class="standings-table" role="table" aria-label="Pontuacao das selecoes do ${groupLabel}">
+      <div class="standings-row standings-row-head" role="row">
+        <span>Sel.</span>
+        <span>J</span>
+        <span>V</span>
+        <span>E</span>
+        <span>D</span>
+        <span>SG</span>
+        <span>PTS</span>
+      </div>
+      ${standings.map((row, index) => `
+        <div class="standings-row" role="row">
+          <span class="standings-team">
+            <strong>${index + 1}</strong>
+            <img src="${flagUrl(row.team.code)}" alt="Bandeira: ${row.team.country}" loading="lazy" />
+            <span>${row.team.country}</span>
+          </span>
+          <span>${row.played}</span>
+          <span>${row.wins}</span>
+          <span>${row.draws}</span>
+          <span>${row.losses}</span>
+          <span>${row.goalDifference > 0 ? `+${row.goalDifference}` : row.goalDifference}</span>
+          <span><strong>${row.points}</strong></span>
+        </div>
+      `).join("")}
+    </div>
+  `;
 }
 
 function teamBlock(team, side) {
@@ -155,7 +263,9 @@ function render() {
   const groups = new Set(visible.map((match) => match.group));
   matchCount.textContent = String(visible.length);
   groupCount.textContent = String(groups.size);
-  selectedLabel.textContent = filterLabels[state.filter];
+  selectedLabel.textContent = state.group ? `Grupo ${state.group}` : filterLabels[state.filter];
+  scoreTitle.textContent = state.group ? `Grupo ${state.group} | Placares e pontuacao` : "Placares da Copa 2026";
+  renderStandings(visible);
 
   if (!visible.length) {
     scoresGrid.innerHTML = `<div class="empty-state">Nenhuma partida encontrada.</div>`;
@@ -173,10 +283,11 @@ function render() {
 
 async function bootScores() {
   scoresGrid.innerHTML = `<div class="empty-state">Carregando placares...</div>`;
+  groupStandings.innerHTML = `<div class="empty-state">Carregando pontuacao...</div>`;
   renderDetail(null);
 
   try {
-    const response = await fetch("/api/scores?v=20260623-sem-leitura");
+    const response = await fetch("/api/scores?v=20260623-grupos-pontuacao");
     const payload = await response.json();
     state.matches = (payload.scores || []).map(enrichMatch);
     render();
@@ -189,6 +300,8 @@ scoreFilters.addEventListener("click", (event) => {
   const button = event.target.closest("button[data-filter]");
   if (!button) return;
   state.filter = button.dataset.filter;
+  state.group = "";
+  window.history.replaceState({}, "", "/scores.html");
   scoreFilters.querySelectorAll("button").forEach((item) => item.classList.toggle("active", item === button));
   render();
 });

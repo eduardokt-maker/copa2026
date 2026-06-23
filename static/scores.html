@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Placares | Copa 2026</title>
-    <link rel="stylesheet" href="/styles.css?v=20260623-partidas-finalizadas" />
+    <link rel="stylesheet" href="/styles.css?v=20260623-grupos-pontuacao" />
   </head>
   <body class="scores-pro-page">
     <header class="score-app-header">
@@ -22,7 +22,7 @@
       <section class="score-board-head" aria-label="Resumo dos placares">
         <div>
           <p class="eyebrow">Central de placares da Copa 2026</p>
-          <h1>Placares da Copa 2026</h1>
+          <h1 id="scoreTitle">Placares da Copa 2026</h1>
         </div>
         <div class="score-stats">
           <span><strong id="matchCount">0</strong> partidas finalizadas</span>
@@ -42,11 +42,14 @@
       </section>
 
       <section class="score-layout">
-        <section class="score-card-grid" id="scoresGrid" aria-live="polite"></section>
+        <section class="score-main-column">
+          <section class="group-standings-panel" id="groupStandings" aria-live="polite"></section>
+          <section class="score-card-grid" id="scoresGrid" aria-live="polite"></section>
+        </section>
         <aside class="match-detail-panel" id="matchDetail" aria-live="polite"></aside>
       </section>
     </main>
 
-    <script src="/scores.js?v=20260623-partidas-finalizadas"></script>
+    <script src="/scores.js?v=20260623-grupos-pontuacao"></script>
   </body>
 </html>
