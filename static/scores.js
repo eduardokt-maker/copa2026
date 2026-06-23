@@ -64,7 +64,6 @@ function searchable(match) {
 
 function enrichMatch(match, index) {
   const status = statusFor(match);
-  const totalGoals = Number(match.home_score || 0) + Number(match.away_score || 0);
   const possessionBase = 48 + ((index * 7) % 13);
   return {
     ...match,
@@ -75,7 +74,6 @@ function enrichMatch(match, index) {
     shotsAway: 5 + ((index * 5) % 8),
     possessionHome: possessionBase,
     possessionAway: 100 - possessionBase,
-    intensity: totalGoals >= 4 ? "Alta intensidade" : totalGoals >= 2 ? "Jogo equilibrado" : "Partida estudada",
   };
 }
 
@@ -148,7 +146,6 @@ function renderDetail(match) {
     <div class="detail-stats" aria-label="Estatisticas da partida">
       <div><span>Finalizacoes</span><strong>${match.shotsHome} - ${match.shotsAway}</strong></div>
       <div><span>Posse</span><strong>${match.possessionHome}% - ${match.possessionAway}%</strong></div>
-      <div><span>Leitura</span><strong>${match.intensity}</strong></div>
     </div>
   `;
 }
@@ -179,7 +176,7 @@ async function bootScores() {
   renderDetail(null);
 
   try {
-    const response = await fetch("/api/scores?v=20260623-central-placares");
+    const response = await fetch("/api/scores?v=20260623-sem-leitura");
     const payload = await response.json();
     state.matches = (payload.scores || []).map(enrichMatch);
     render();
