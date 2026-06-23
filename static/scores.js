@@ -150,10 +150,6 @@ function renderDetail(match) {
       <div><span>Posse</span><strong>${match.possessionHome}% - ${match.possessionAway}%</strong></div>
       <div><span>Leitura</span><strong>${match.intensity}</strong></div>
     </div>
-    <div class="detail-note">
-      <strong>Modo placar</strong>
-      <span>Dados organizados para visualizacao profissional. Quando houver fonte ao vivo, o mesmo painel pode receber atualizacao automatica.</span>
-    </div>
   `;
 }
 
@@ -183,7 +179,7 @@ async function bootScores() {
   renderDetail(null);
 
   try {
-    const response = await fetch("/api/scores?v=20260623-todos-only");
+    const response = await fetch("/api/scores?v=20260623-central-placares");
     const payload = await response.json();
     state.matches = (payload.scores || []).map(enrichMatch);
     render();
