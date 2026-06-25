@@ -4,11 +4,22 @@ const scoreTitle = document.querySelector("#scoreTitle");
 const groupStandings = document.querySelector("#groupStandings");
 const initialGroup = new URLSearchParams(window.location.search).get("group") || "";
 const isGroupMode = Boolean(initialGroup);
+const APP_DATA_VERSION = "20260625-primeira-rodada-fixa";
+const ROUND_ONE_MATCHES_PER_GROUP = 2;
+const POLL_INTERVAL_MS = 60000;
+const snapshotKey = `copa2026:first-round:${stateKeyFromGroup(initialGroup)}`;
 
 const state = {
   matches: [],
   group: initialGroup.toUpperCase(),
+  frozen: false,
+  updatedAt: "",
+  pollTimer: null,
 };
+
+function stateKeyFromGroup(group) {
+  return group ? `group-${group.toUpperCase()}` : "general";
+}
 
 function flagUrl(code) {
   return `https://flagcdn.com/w80/${code}.png`;
@@ -74,6 +85,60 @@ function filterMatches() {
   return state.matches.filter((match) => {
     return !state.group || match.group === state.group;
   });
+}
+
+function hasFinalScore(match) {
+  return Number.isFinite(Number(match.home_score)) && Number.isFinite(Number(match.away_score));
+}
+
+function firstRoundMatches(matches) {
+  const byGroup = new Map();
+
+  matches.forEach((match) => {
+    const list = byGroup.get(match.group) || [];
+    list.push(match);
+    byGroup.set(match.group, list);
+  });
+
+  return [...byGroup.values()].flatMap((list) =>
+    list
+      .filter(hasFinalScore)
+      .sort((a, b) => `${a.date}-${a.home}-${a.away}`.localeCompare(`${b.date}-${b.home}-${b.away}`))
+      .slice(0, ROUND_ONE_MATCHES_PER_GROUP)
+  );
+}
+
+function firstRoundIsComplete(matches) {
+  const roundOne = firstRoundMatches(matches);
+
+  if (state.group) {
+    return roundOne.filter((match) => match.group === state.group).length >= ROUND_ONE_MATCHES_PER_GROUP;
+  }
+
+  const completedGroups = new Set(roundOne.map((match) => match.group));
+  return completedGroups.size >= 12 && roundOne.length >= 12 * ROUND_ONE_MATCHES_PER_GROUP;
+}
+
+function saveFrozenSnapshot(matches) {
+  const payload = {
+    version: APP_DATA_VERSION,
+    frozenAt: new Date().toISOString(),
+    group: state.group,
+    matches,
+  };
+  localStorage.setItem(snapshotKey, JSON.stringify(payload));
+}
+
+function loadFrozenSnapshot() {
+  try {
+    const raw = localStorage.getItem(snapshotKey);
+    if (!raw) return null;
+    const payload = JSON.parse(raw);
+    if (payload.version !== APP_DATA_VERSION || !Array.isArray(payload.matches)) return null;
+    return payload;
+  } catch (error) {
+    return null;
+  }
 }
 
 function emptyStanding(team) {
@@ -148,7 +213,7 @@ function renderStandings(matches) {
         <span>${state.group ? "Classificacao do grupo" : "Classificacao geral"}</span>
         <strong>${groupLabel}</strong>
       </div>
-      <small>Pontuacao por selecao</small>
+      <small>${state.frozen ? "Primeira rodada finalizada | dados fixos" : "Atualizando partidas finalizadas"}</small>
     </div>
     <div class="standings-table" role="table" aria-label="Pontuacao das selecoes do ${groupLabel}">
       <div class="standings-row standings-row-head" role="row">
@@ -291,11 +356,31 @@ async function bootScores() {
   scoresGrid.innerHTML = `<div class="empty-state">Carregando placares...</div>`;
   groupStandings.innerHTML = `<div class="empty-state">Carregando pontuacao...</div>`;
 
+  const frozenSnapshot = loadFrozenSnapshot();
+  if (frozenSnapshot) {
+    state.matches = frozenSnapshot.matches.map(enrichMatch);
+    state.frozen = true;
+    state.updatedAt = frozenSnapshot.frozenAt;
+    render();
+    return;
+  }
+
   try {
-    const response = await fetch("/api/scores?v=20260623-classificacao-geral");
+    const response = await fetch(`/api/scores?v=${APP_DATA_VERSION}&t=${Date.now()}`);
     const payload = await response.json();
     state.matches = (payload.scores || []).map(enrichMatch);
+    state.updatedAt = new Date().toISOString();
+
+    if (firstRoundIsComplete(state.matches)) {
+      state.frozen = true;
+      saveFrozenSnapshot(state.matches);
+    }
+
     render();
+
+    if (!state.frozen) {
+      state.pollTimer = window.setTimeout(bootScores, POLL_INTERVAL_MS);
+    }
   } catch (error) {
     scoresGrid.innerHTML = `<div class="empty-state">Nao foi possivel carregar os placares agora.</div>`;
   }
