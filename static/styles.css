@@ -695,10 +695,101 @@
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.86), 0 8px 18px rgba(147, 111, 27, 0.18);
 }
 
+.general-standings-page .score-app {
+  width: min(1080px, 100%);
+}
+
+.general-standings-page .score-board-head {
+  align-items: end;
+  margin-bottom: 14px;
+}
+
+.general-standings-page .score-layout {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.general-standings-page .score-main-column {
+  width: min(900px, 100%);
+  justify-self: center;
+}
+
+.general-standings-page .group-standings-panel {
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: inset 0 1px 0 #ffffff, 0 18px 40px rgba(24, 34, 49, 0.13);
+}
+
+.general-standings-page .standings-head {
+  padding: 18px 20px;
+}
+
+.general-standings-page .standings-head strong {
+  font-size: clamp(1.45rem, 4vw, 2.25rem);
+}
+
+.general-standings-page .standings-row {
+  grid-template-columns: minmax(190px, 1fr) repeat(5, minmax(44px, 0.22fr)) minmax(66px, 0.34fr);
+  min-height: 58px;
+  padding: 9px 16px;
+  font-size: 0.95rem;
+}
+
+.general-standings-page .standings-row-head {
+  min-height: 36px;
+  font-size: 0.7rem;
+}
+
+.general-standings-page .standings-row span:last-child strong {
+  min-width: 44px;
+  min-height: 34px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 11px;
+  color: #102033;
+  background: linear-gradient(180deg, #fff5c9, #f3c75f);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.86), 0 8px 18px rgba(147, 111, 27, 0.16);
+}
+
+.score-results-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 4px;
+  padding: 4px 2px;
+  color: #4f6074;
+}
+
+.score-results-head strong,
+.score-results-head span {
+  font-weight: 900;
+}
+
+.score-results-head span {
+  font-size: 0.82rem;
+}
+
 .score-card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(245px, 1fr));
   gap: 10px;
+}
+
+.general-standings-page .score-card-grid {
+  grid-template-columns: 1fr;
+}
+
+.score-result-row {
+  min-height: auto;
+  cursor: default;
+}
+
+.score-result-row:hover,
+.score-result-row:focus-visible {
+  transform: none;
+  border-color: rgba(126, 144, 162, 0.34);
+  filter: none;
+  box-shadow: inset 0 1px 0 #ffffff, 0 10px 22px rgba(24, 34, 49, 0.1);
 }
 
 .score-pro-card {
@@ -1004,6 +1095,50 @@
     min-width: 34px;
     min-height: 28px;
     border-radius: 9px;
+  }
+
+  .general-standings-page .score-board-head {
+    margin-bottom: 10px;
+  }
+
+  .general-standings-page .score-stats {
+    justify-content: flex-start;
+  }
+
+  .general-standings-page .score-app {
+    padding: 14px 10px 18px;
+  }
+
+  .general-standings-page .group-standings-panel {
+    border-radius: 16px;
+  }
+
+  .general-standings-page .standings-head {
+    padding: 14px 12px;
+  }
+
+  .general-standings-page .standings-row {
+    grid-template-columns: minmax(108px, 1fr) repeat(5, minmax(25px, 0.18fr)) minmax(42px, 0.28fr);
+    min-height: 48px;
+    padding: 7px 6px;
+    font-size: 0.72rem;
+  }
+
+  .general-standings-page .standings-row-head {
+    min-height: 30px;
+    font-size: 0.58rem;
+  }
+
+  .general-standings-page .standings-row span:last-child strong {
+    min-width: 34px;
+    min-height: 28px;
+    border-radius: 9px;
+  }
+
+  .score-results-head {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 2px;
   }
 
   .score-pro-card {

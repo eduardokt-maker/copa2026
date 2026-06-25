@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Placares | Copa 2026</title>
-    <link rel="stylesheet" href="/styles.css?v=20260623-classificacao-grupo" />
+    <link rel="stylesheet" href="/styles.css?v=20260623-classificacao-geral" />
   </head>
   <body class="scores-pro-page">
     <header class="score-app-header">
@@ -26,19 +26,7 @@
         </div>
         <div class="score-stats">
           <span><strong id="matchCount">0</strong> partidas finalizadas</span>
-          <span><strong id="groupCount">0</strong> grupos</span>
-          <span><strong id="selectedLabel">Todos</strong></span>
         </div>
-      </section>
-
-      <section class="score-toolbar" aria-label="Filtros de placares">
-        <div class="score-filter-tabs" id="scoreFilters">
-          <button class="active" type="button" data-filter="all">Todos</button>
-        </div>
-        <label class="score-search">
-          <span>Buscar</span>
-          <input id="scoreSearch" type="search" placeholder="Selecao, grupo, cidade ou estadio" />
-        </label>
       </section>
 
       <section class="score-layout">
@@ -46,10 +34,9 @@
           <section class="group-standings-panel" id="groupStandings" aria-live="polite"></section>
           <section class="score-card-grid" id="scoresGrid" aria-live="polite"></section>
         </section>
-        <aside class="match-detail-panel" id="matchDetail" aria-live="polite"></aside>
       </section>
     </main>
 
-    <script src="/scores.js?v=20260623-classificacao-grupo"></script>
+    <script src="/scores.js?v=20260623-classificacao-geral"></script>
   </body>
 </html>

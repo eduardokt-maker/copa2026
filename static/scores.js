@@ -1,10 +1,5 @@
 const scoresGrid = document.querySelector("#scoresGrid");
-const matchDetail = document.querySelector("#matchDetail");
-const scoreFilters = document.querySelector("#scoreFilters");
-const scoreSearch = document.querySelector("#scoreSearch");
 const matchCount = document.querySelector("#matchCount");
-const groupCount = document.querySelector("#groupCount");
-const selectedLabel = document.querySelector("#selectedLabel");
 const scoreTitle = document.querySelector("#scoreTitle");
 const groupStandings = document.querySelector("#groupStandings");
 const initialGroup = new URLSearchParams(window.location.search).get("group") || "";
@@ -12,14 +7,7 @@ const isGroupMode = Boolean(initialGroup);
 
 const state = {
   matches: [],
-  filter: "all",
   group: initialGroup.toUpperCase(),
-  query: "",
-  selectedId: "",
-};
-
-const filterLabels = {
-  all: "Todos",
 };
 
 function flagUrl(code) {
@@ -83,12 +71,8 @@ function enrichMatch(match, index) {
 }
 
 function filterMatches() {
-  const query = normalizeText(state.query);
   return state.matches.filter((match) => {
-    const byFilter = state.filter === "all";
-    const byGroup = !state.group || match.group === state.group;
-    const bySearch = !query || searchable(match).includes(query);
-    return byFilter && byGroup && bySearch;
+    return !state.group || match.group === state.group;
   });
 }
 
@@ -145,7 +129,7 @@ function buildStandings(matches) {
 }
 
 function renderStandings(matches) {
-  const groupLabel = state.group ? `Grupo ${state.group}` : "Todos os grupos";
+  const groupLabel = state.group ? `Grupo ${state.group}` : "Classificacao Geral";
   const standings = buildStandings(matches);
 
   if (!standings.length) {
@@ -195,6 +179,24 @@ function renderStandings(matches) {
   `;
 }
 
+function standingsRankMap(matches) {
+  const map = new Map();
+  buildStandings(matches).forEach((row, index) => {
+    map.set(row.team.code, index + 1);
+  });
+  return map;
+}
+
+function sortMatchesByStandings(matches) {
+  const ranks = standingsRankMap(matches);
+  return [...matches].sort((a, b) => {
+    const aRank = Math.min(ranks.get(a.home_team.code) || 999, ranks.get(a.away_team.code) || 999);
+    const bRank = Math.min(ranks.get(b.home_team.code) || 999, ranks.get(b.away_team.code) || 999);
+    if (aRank !== bRank) return aRank - bRank;
+    return a.date.localeCompare(b.date);
+  });
+}
+
 function teamBlock(team, side) {
   return `
     <div class="score-pro-team ${side === "away" ? "align-right" : ""}">
@@ -205,13 +207,11 @@ function teamBlock(team, side) {
 }
 
 function renderCard(match) {
-  const status = statusFor(match);
-  const selected = state.selectedId === match.id ? " is-selected" : "";
   return `
-    <button class="score-pro-card${selected}" type="button" data-match-id="${match.id}">
+    <article class="score-pro-card score-result-row">
       <span class="score-pro-meta">
         <span>Grupo ${match.group}</span>
-        <span class="score-status ${statusClass(status)}">${statusLabel(status)}</span>
+        <span>${formatDate(match.date)}</span>
       </span>
       <span class="score-pro-line">
         ${teamBlock(match.home_team, "home")}
@@ -222,7 +222,7 @@ function renderCard(match) {
         <span>${formatDate(match.date)}</span>
         <span>${match.city}</span>
       </span>
-    </button>
+    </article>
   `;
 }
 
@@ -261,41 +261,38 @@ function renderDetail(match) {
 
 function render() {
   const visible = filterMatches();
-  const groups = new Set(visible.map((match) => match.group));
   document.body.classList.toggle("standings-only", isGroupMode);
+  document.body.classList.toggle("general-standings-page", !isGroupMode);
   matchCount.textContent = String(visible.length);
-  groupCount.textContent = String(groups.size);
-  selectedLabel.textContent = state.group ? "Pontuacao" : filterLabels[state.filter];
-  scoreTitle.textContent = state.group ? `Grupo ${state.group} | Classificacao das selecoes` : "Placares da Copa 2026";
+  scoreTitle.textContent = state.group ? `Grupo ${state.group} | Classificacao das selecoes` : "Classificacao Geral da Copa 2026";
   renderStandings(visible);
 
   if (!visible.length) {
     scoresGrid.innerHTML = `<div class="empty-state">Nenhuma partida encontrada.</div>`;
-    renderDetail(null);
     return;
   }
 
   if (isGroupMode) {
     scoresGrid.innerHTML = "";
-    matchDetail.innerHTML = "";
     return;
   }
 
-  if (!visible.some((match) => match.id === state.selectedId)) {
-    state.selectedId = visible[0].id;
-  }
-
-  scoresGrid.innerHTML = visible.map(renderCard).join("");
-  renderDetail(visible.find((match) => match.id === state.selectedId));
+  const ordered = sortMatchesByStandings(visible);
+  scoresGrid.innerHTML = `
+    <div class="score-results-head">
+      <strong>Placares das partidas finalizadas</strong>
+      <span>Ordenadas pela classificacao geral</span>
+    </div>
+    ${ordered.map(renderCard).join("")}
+  `;
 }
 
 async function bootScores() {
   scoresGrid.innerHTML = `<div class="empty-state">Carregando placares...</div>`;
   groupStandings.innerHTML = `<div class="empty-state">Carregando pontuacao...</div>`;
-  renderDetail(null);
 
   try {
-    const response = await fetch("/api/scores?v=20260623-classificacao-grupo");
+    const response = await fetch("/api/scores?v=20260623-classificacao-geral");
     const payload = await response.json();
     state.matches = (payload.scores || []).map(enrichMatch);
     render();
@@ -303,27 +300,5 @@ async function bootScores() {
     scoresGrid.innerHTML = `<div class="empty-state">Nao foi possivel carregar os placares agora.</div>`;
   }
 }
-
-scoreFilters.addEventListener("click", (event) => {
-  const button = event.target.closest("button[data-filter]");
-  if (!button) return;
-  state.filter = button.dataset.filter;
-  state.group = "";
-  window.history.replaceState({}, "", "/scores.html");
-  scoreFilters.querySelectorAll("button").forEach((item) => item.classList.toggle("active", item === button));
-  render();
-});
-
-scoreSearch.addEventListener("input", (event) => {
-  state.query = event.target.value;
-  render();
-});
-
-scoresGrid.addEventListener("click", (event) => {
-  const card = event.target.closest("[data-match-id]");
-  if (!card) return;
-  state.selectedId = card.dataset.matchId;
-  render();
-});
 
 bootScores();
