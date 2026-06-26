@@ -228,10 +228,89 @@
 }
 
 .score-home-groups .world-champions-button {
+  width: min(286px, 68vw);
+  min-height: 58px;
+  position: relative;
+  justify-content: flex-start;
+  overflow: hidden;
   color: #fff9db;
-  background: linear-gradient(145deg, #125a72, #1f8f7a 52%, #f3c75f);
-  border-color: rgba(255, 255, 255, 0.55);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.44), 0 18px 38px rgba(0, 0, 0, 0.26);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.18), transparent 34%),
+    linear-gradient(145deg, #0d526b 0%, #15866f 50%, #f3c75f 116%);
+  border-color: rgba(255, 255, 255, 0.62);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 18px 38px rgba(0, 0, 0, 0.28);
+}
+
+.score-home-groups .world-champions-button::after {
+  content: "";
+  position: absolute;
+  inset: -40% -18% auto auto;
+  width: 86px;
+  height: 86px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.world-button-mark,
+.world-button-arrow {
+  position: relative;
+  z-index: 1;
+  flex: 0 0 auto;
+}
+
+.world-button-mark {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  color: #102033;
+  background: linear-gradient(180deg, #fff7d7, #f3c75f);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.82), 0 10px 20px rgba(28, 53, 48, 0.18);
+  font-size: 0.78rem;
+  font-weight: 950;
+}
+
+.world-button-copy {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+  text-align: left;
+}
+
+.world-button-copy strong,
+.world-button-copy small {
+  display: block;
+  line-height: 1.05;
+}
+
+.world-button-copy strong {
+  color: #ffffff;
+  font-size: 1rem;
+}
+
+.world-button-copy small {
+  color: rgba(255, 249, 219, 0.82);
+  font-size: 0.72rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.world-button-arrow {
+  width: 9px;
+  height: 9px;
+  margin-left: auto;
+  border-right: 2px solid rgba(255, 255, 255, 0.92);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.92);
+  transform: rotate(-45deg);
+}
+
+.score-home-groups .world-champions-button:hover,
+.score-home-groups .world-champions-button:focus-visible {
+  border-color: rgba(243, 199, 95, 0.86);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 22px 48px rgba(0, 0, 0, 0.34);
 }
 
 .score-home-groups h1 {
@@ -368,6 +447,26 @@
 
   .score-home-actions .score-home-button {
     width: 100%;
+  }
+
+  .score-home-groups .world-champions-button {
+    min-height: 56px;
+    padding: 9px 10px;
+  }
+
+  .world-button-mark {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    font-size: 0.72rem;
+  }
+
+  .world-button-copy strong {
+    font-size: 0.92rem;
+  }
+
+  .world-button-copy small {
+    font-size: 0.64rem;
   }
 
   .score-home-groups .score-home-button span:last-child {
