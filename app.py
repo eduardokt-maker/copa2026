@@ -211,6 +211,8 @@ SCORE_RESULTS = [
     {"group": "F", "date": "2026-06-14", "home": "se", "home_score": 5, "away_score": 1, "away": "tn", "stadium": "Estadio BBVA", "city": "Guadalupe"},
     {"group": "F", "date": "2026-06-20", "home": "nl", "home_score": 5, "away_score": 1, "away": "se", "stadium": "NRG Stadium", "city": "Houston"},
     {"group": "F", "date": "2026-06-20", "home": "tn", "home_score": 0, "away_score": 4, "away": "jp", "stadium": "Estadio BBVA", "city": "Guadalupe"},
+    {"group": "F", "date": "2026-06-25", "home": "jp", "home_score": 1, "away_score": 1, "away": "se", "stadium": "AT&T Stadium", "city": "Arlington"},
+    {"group": "F", "date": "2026-06-25", "home": "nl", "home_score": 3, "away_score": 1, "away": "tn", "stadium": "Arrowhead Stadium", "city": "Kansas City"},
     {"group": "G", "date": "2026-06-15", "home": "be", "home_score": 1, "away_score": 1, "away": "eg", "stadium": "Lumen Field", "city": "Seattle"},
     {"group": "G", "date": "2026-06-15", "home": "ir", "home_score": 2, "away_score": 2, "away": "nz", "stadium": "SoFi Stadium", "city": "Inglewood"},
     {"group": "G", "date": "2026-06-21", "home": "be", "home_score": 0, "away_score": 0, "away": "ir", "stadium": "SoFi Stadium", "city": "Inglewood"},
