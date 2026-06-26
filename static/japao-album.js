@@ -1,4 +1,5 @@
 const japanStickerGrid = document.querySelector("#japanStickerGrid");
+const japanAlbumShareButton = document.querySelector(".japan-album-share-button");
 
 const japanPlayers = [
   {
@@ -269,3 +270,32 @@ function renderJapanAlbum() {
 }
 
 renderJapanAlbum();
+
+const JAPAN_ALBUM_SHARE_URL = "https://copa2026-c776.onrender.com/japao-album.html";
+const JAPAN_ALBUM_SHARE_TITLE = "Album da Selecao Japonesa | World Cup 2026";
+const JAPAN_ALBUM_SHARE_TEXT =
+  "Figurinhas da selecao japonesa com fotos, nomes em japones, romaji e numeros de camisa. EKT System World Cup 2026.";
+
+function openJapanAlbumFallbackShare() {
+  const message = `${JAPAN_ALBUM_SHARE_URL}\n\n${JAPAN_ALBUM_SHARE_TEXT}`;
+  window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, "_blank", "noopener,noreferrer");
+}
+
+async function shareJapanAlbum() {
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: JAPAN_ALBUM_SHARE_TITLE,
+        text: JAPAN_ALBUM_SHARE_TEXT,
+        url: JAPAN_ALBUM_SHARE_URL,
+      });
+      return;
+    } catch (error) {
+      if (error?.name === "AbortError") return;
+    }
+  }
+
+  openJapanAlbumFallbackShare();
+}
+
+japanAlbumShareButton?.addEventListener("click", shareJapanAlbum);
