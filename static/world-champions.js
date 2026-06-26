@@ -6,7 +6,7 @@ const worldFinishedCount = document.querySelector("#worldFinishedCount");
 const worldUpdatedAt = document.querySelector("#worldUpdatedAt");
 
 const WORLD_POLL_INTERVAL_MS = 60000;
-const WORLD_DATA_VERSION = "20260625-stadium-city";
+const WORLD_DATA_VERSION = "20260626-qualified-teams";
 let worldPollTimer = null;
 
 function flagUrl(code) {
@@ -44,6 +44,69 @@ function groupLeaders(standings) {
   return Object.entries(standings?.groups || {}).reduce((leaders, [groupId, rows]) => {
     leaders[groupId] = rows?.[0] || null;
     return leaders;
+  }, {});
+}
+
+function teamRemainingMatches(teamCode, matches) {
+  return matches.filter((match) => {
+    return !isFinished(match) && (match.home_team.code === teamCode || match.away_team.code === teamCode);
+  }).length;
+}
+
+function hasClinchedTopTwo(row, rows, matches) {
+  if (row.position > 2) return false;
+  const finishedCount = matches.filter(isFinished).length;
+  if (finishedCount >= 6) return true;
+
+  const teamsThatCanCatch = rows.filter((other) => {
+    if (other.team.code === row.team.code) return false;
+    const maxPoints = other.points + teamRemainingMatches(other.team.code, matches) * 3;
+    return maxPoints >= row.points;
+  });
+
+  return teamsThatCanCatch.length <= 1;
+}
+
+function thirdPlaceKey(row) {
+  return [
+    -row.points,
+    -row.goalDifference,
+    -row.goalsFor,
+    row.team.country,
+  ];
+}
+
+function compareThirdPlace(a, b) {
+  const aKey = thirdPlaceKey(a);
+  const bKey = thirdPlaceKey(b);
+  for (let index = 0; index < aKey.length; index += 1) {
+    if (aKey[index] < bKey[index]) return -1;
+    if (aKey[index] > bKey[index]) return 1;
+  }
+  return 0;
+}
+
+function qualificationMap(standings, groupsById) {
+  const thirdRows = Object.entries(standings?.groups || {})
+    .map(([groupId, rows]) => ({ ...rows?.find((row) => row.position === 3), groupId }))
+    .filter((row) => row.team)
+    .sort(compareThirdPlace);
+  const bestThirdCodes = new Set(thirdRows.slice(0, 8).map((row) => row.team.code));
+
+  return Object.entries(standings?.groups || {}).reduce((map, [groupId, rows]) => {
+    const matches = groupsById[groupId] || [];
+    map[groupId] = rows
+      .map((row) => {
+        if (hasClinchedTopTwo(row, rows, matches)) {
+          return { row, label: row.position === 1 ? "Classificada - lider" : "Classificada - top 2", type: "qualified" };
+        }
+        if (row.position === 3 && bestThirdCodes.has(row.team.code)) {
+          return { row, label: "Em zona dos melhores 3º", type: "third-zone" };
+        }
+        return null;
+      })
+      .filter(Boolean);
+    return map;
   }, {});
 }
 
@@ -111,7 +174,35 @@ function renderMatch(match) {
   `;
 }
 
-function renderGroup(groupId, matches, leaders) {
+function renderQualifiedTeams(groupId, qualifiedByGroup) {
+  const teams = qualifiedByGroup[groupId] || [];
+  if (!teams.length) {
+    return `
+      <div class="world-qualified-panel is-empty">
+        <span>Mata-mata</span>
+        <strong>Aguardando definicao</strong>
+        <small>Critério: 2 primeiros + 8 melhores terceiros</small>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="world-qualified-panel">
+      <span>Mata-mata</span>
+      <div class="world-qualified-list">
+        ${teams.map(({ row, label, type }) => `
+          <div class="world-qualified-team ${type === "third-zone" ? "is-third-zone" : ""}">
+            <img src="${flagUrl(row.team.code)}" alt="Bandeira: ${row.team.country}" loading="lazy" />
+            <strong>${row.team.country}</strong>
+            <small>${label}</small>
+          </div>
+        `).join("")}
+      </div>
+    </div>
+  `;
+}
+
+function renderGroup(groupId, matches, leaders, qualifiedByGroup) {
   const leader = leaders[groupId];
   const ordered = [...matches].sort((a, b) => a.date.localeCompare(b.date));
   return `
@@ -123,6 +214,7 @@ function renderGroup(groupId, matches, leaders) {
           <p>${leader ? `Lider: ${leader.team.country} com ${leader.points} pts` : "Classificacao em aberto"}</p>
         </div>
       </div>
+      ${renderQualifiedTeams(groupId, qualifiedByGroup)}
       <div class="world-match-list">
         ${ordered.map(renderMatch).join("")}
       </div>
@@ -134,15 +226,18 @@ function renderWorld(payload) {
   const matches = payload.scores || [];
   const groupsById = groupMatches(matches);
   const leaders = groupLeaders(payload.standings);
+  const qualifiedByGroup = qualificationMap(payload.standings, groupsById);
   const groupIds = Object.keys(groupsById).sort();
 
   worldGroupCount.textContent = String(groupIds.length);
   worldMatchCount.textContent = String(matches.length);
   worldFinishedCount.textContent = String(matches.filter(isFinished).length);
-  worldUpdatedAt.textContent = "Atualizado automaticamente";
+  worldUpdatedAt.textContent = "Atualizado automaticamente | regra: top 2 + 8 melhores 3º";
 
   renderDiagram(groupsById, leaders);
-  worldGroupsList.innerHTML = groupIds.map((groupId) => renderGroup(groupId, groupsById[groupId], leaders)).join("");
+  worldGroupsList.innerHTML = groupIds
+    .map((groupId) => renderGroup(groupId, groupsById[groupId], leaders, qualifiedByGroup))
+    .join("");
 }
 
 function renderMessage(message) {

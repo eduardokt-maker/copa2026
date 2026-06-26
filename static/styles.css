@@ -3247,6 +3247,87 @@ footer {
   font-weight: 800;
 }
 
+.world-qualified-panel {
+  display: grid;
+  gap: 8px;
+  border-bottom: 1px solid rgba(16, 32, 51, 0.08);
+  background: linear-gradient(180deg, #fff7d8, #f5e7ab);
+  padding: 10px;
+}
+
+.world-qualified-panel > span {
+  color: #6f4e05;
+  font-size: 0.68rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.world-qualified-panel.is-empty {
+  background: #eef5f7;
+}
+
+.world-qualified-panel.is-empty strong {
+  color: #17344e;
+  font-size: 0.88rem;
+}
+
+.world-qualified-panel.is-empty small {
+  color: #5c6b7d;
+  font-size: 0.7rem;
+  font-weight: 850;
+}
+
+.world-qualified-list {
+  display: grid;
+  gap: 6px;
+}
+
+.world-qualified-team {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  align-items: center;
+  gap: 4px 8px;
+  border: 1px solid rgba(111, 78, 5, 0.16);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.58);
+  padding: 7px;
+}
+
+.world-qualified-team img {
+  grid-row: span 2;
+  width: 30px;
+  height: 20px;
+  border-radius: 4px;
+  object-fit: cover;
+  box-shadow: 0 0 0 1px rgba(16, 32, 51, 0.12);
+}
+
+.world-qualified-team strong {
+  min-width: 0;
+  overflow: hidden;
+  color: #102033;
+  font-size: 0.86rem;
+  line-height: 1.05;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.world-qualified-team small {
+  color: #0f745d;
+  font-size: 0.66rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.world-qualified-team.is-third-zone {
+  background: rgba(255, 255, 255, 0.42);
+}
+
+.world-qualified-team.is-third-zone small {
+  color: #7a580a;
+}
+
 .world-match-list {
   display: grid;
   gap: 7px;
@@ -3520,6 +3601,30 @@ footer {
     height: 38px;
     border-radius: 10px;
     font-size: 1.1rem;
+  }
+
+  .world-qualified-panel {
+    gap: 7px;
+    padding: 8px;
+  }
+
+  .world-qualified-team {
+    grid-template-columns: 28px minmax(0, 1fr);
+    border-radius: 9px;
+    padding: 6px;
+  }
+
+  .world-qualified-team img {
+    width: 28px;
+    height: 19px;
+  }
+
+  .world-qualified-team strong {
+    font-size: 0.78rem;
+  }
+
+  .world-qualified-team small {
+    font-size: 0.6rem;
   }
 
   .world-match-list {
