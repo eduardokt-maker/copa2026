@@ -134,6 +134,65 @@
   gap: 8px;
 }
 
+.home-share-button {
+  width: 42px;
+  height: 42px;
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  border-radius: 999px;
+  background: rgba(3, 10, 22, 0.52);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 12px 26px rgba(0, 0, 0, 0.22);
+  cursor: pointer;
+  transition: transform 150ms ease, border-color 150ms ease, background 150ms ease;
+}
+
+.home-share-button::before,
+.home-share-button::after,
+.home-share-button span {
+  content: "";
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: #f3c75f;
+  box-shadow: 0 0 0 3px rgba(243, 199, 95, 0.12);
+}
+
+.home-share-button::before {
+  left: 12px;
+  top: 17px;
+}
+
+.home-share-button::after {
+  right: 11px;
+  top: 10px;
+}
+
+.home-share-button span {
+  right: 11px;
+  bottom: 10px;
+}
+
+.home-share-button:hover,
+.home-share-button:focus-visible {
+  transform: translateY(-1px);
+  border-color: rgba(243, 199, 95, 0.68);
+  background: rgba(8, 30, 48, 0.72);
+  outline: none;
+}
+
+.home-share-button:hover::before,
+.home-share-button:hover::after,
+.home-share-button:hover span,
+.home-share-button:focus-visible::before,
+.home-share-button:focus-visible::after,
+.home-share-button:focus-visible span {
+  background: #fff4c7;
+}
+
 .score-home-groups .score-home-mark {
   width: 54px;
   height: 54px;
@@ -300,6 +359,11 @@
   .score-home-actions {
     width: min(236px, 70vw);
     gap: 6px;
+  }
+
+  .home-share-button {
+    width: 38px;
+    height: 38px;
   }
 
   .score-home-actions .score-home-button {
