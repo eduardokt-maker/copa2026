@@ -6,7 +6,7 @@ const worldFinishedCount = document.querySelector("#worldFinishedCount");
 const worldUpdatedAt = document.querySelector("#worldUpdatedAt");
 
 const WORLD_POLL_INTERVAL_MS = 60000;
-const WORLD_DATA_VERSION = "20260625-world-stadiums";
+const WORLD_DATA_VERSION = "20260625-stadium-city";
 let worldPollTimer = null;
 
 function flagUrl(code) {
@@ -97,10 +97,15 @@ function renderMatch(match) {
           <strong>${match.away_team.country}</strong>
         </span>
       </div>
-      <div class="world-stadium">
-        <span>Estadio</span>
-        <strong>${match.stadium || "Estadio a definir"}</strong>
-        <small>${match.city || "Cidade a definir"}</small>
+      <div class="world-venue">
+        <div>
+          <span>Estadio</span>
+          <strong>${match.stadium || "Estadio a definir"}</strong>
+        </div>
+        <div>
+          <span>Cidade / local</span>
+          <strong>${match.city || "Cidade a definir"}</strong>
+        </div>
       </div>
     </article>
   `;

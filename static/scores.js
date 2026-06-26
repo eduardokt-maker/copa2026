@@ -4,7 +4,7 @@ const scoreTitle = document.querySelector("#scoreTitle");
 const groupStandings = document.querySelector("#groupStandings");
 const initialGroup = new URLSearchParams(window.location.search).get("group") || "";
 const isGroupMode = Boolean(initialGroup);
-const APP_DATA_VERSION = "20260625-live-standings";
+const APP_DATA_VERSION = "20260625-stadium-city";
 const POLL_INTERVAL_MS = 60000;
 
 const state = {
@@ -249,8 +249,8 @@ function renderCard(match) {
         ${teamBlock(match.away_team, "away")}
       </span>
       <span class="score-pro-footer">
-        <span>${formatDate(match.date)}</span>
-        <span>${match.city}</span>
+        <span>Estadio: ${match.stadium || "A definir"}</span>
+        <span>Cidade: ${match.city || "A definir"}</span>
       </span>
     </article>
   `;

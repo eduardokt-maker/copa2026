@@ -13,7 +13,7 @@ from urllib.parse import parse_qs, urlparse
 
 
 APP_NAME = "copa2026"
-APP_VERSION = "2026.06.25-fifa-tiebreakers-v1"
+APP_VERSION = "2026.06.25-stadium-city-v1"
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
 SQUAD_SOURCE_URL = "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_squads"
@@ -354,7 +354,12 @@ def result_key(result: dict) -> tuple[str, str, str]:
 def merge_scores(local_scores: list[dict], external_scores: list[dict]) -> list[dict]:
     merged = {result_key(score): score for score in local_scores}
     for score in external_scores:
-        merged[result_key(score)] = enrich_score(score)
+        key = result_key(score)
+        local_score = merged.get(key, {})
+        enriched_score = enrich_score(score)
+        enriched_score["stadium"] = enriched_score.get("stadium") or local_score.get("stadium", "")
+        enriched_score["city"] = enriched_score.get("city") or local_score.get("city", "")
+        merged[key] = enriched_score
     return sorted(
         merged.values(),
         key=lambda score: (score["group"], score.get("date", ""), score["home"], score["away"]),

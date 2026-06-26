@@ -2952,6 +2952,15 @@ footer {
   font-weight: 900;
 }
 
+.score-pro-footer {
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 4px;
+  border-top: 1px solid rgba(126, 144, 162, 0.18);
+  padding-top: 8px;
+  line-height: 1.2;
+}
+
 .world-node {
   --radius: 248px;
   position: absolute;
@@ -3142,8 +3151,7 @@ footer {
 }
 
 .world-match-date span,
-.world-stadium span,
-.world-stadium small {
+.world-venue span {
   color: #697789;
 }
 
@@ -3196,19 +3204,26 @@ footer {
   background: linear-gradient(180deg, #fff4c7, #f3c75f);
 }
 
-.world-stadium {
+.world-venue {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  align-items: center;
-  gap: 3px 7px;
+  gap: 6px;
   border-top: 1px solid rgba(16, 32, 51, 0.08);
   padding-top: 8px;
 }
 
-.world-stadium span {
+.world-venue div {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1fr);
+  align-items: center;
+  gap: 7px;
+}
+
+.world-venue span {
   min-height: 24px;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   border-radius: 7px;
   background: rgba(14, 74, 105, 0.09);
   padding: 4px 7px;
@@ -3217,20 +3232,11 @@ footer {
   text-transform: uppercase;
 }
 
-.world-stadium strong {
+.world-venue strong {
   min-width: 0;
-  overflow: hidden;
   color: #16324a;
   font-size: 0.82rem;
-  line-height: 1.15;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.world-stadium small {
-  grid-column: 2;
-  font-size: 0.72rem;
-  font-weight: 850;
+  line-height: 1.2;
 }
 
 @media (max-width: 720px) {
@@ -3419,22 +3425,23 @@ footer {
     font-size: 0.82rem;
   }
 
-  .world-stadium {
-    gap: 3px 6px;
+  .world-venue {
+    gap: 5px;
     padding-top: 7px;
   }
 
-  .world-stadium span {
+  .world-venue div {
+    grid-template-columns: 72px minmax(0, 1fr);
+    gap: 6px;
+  }
+
+  .world-venue span {
     min-height: 22px;
     padding: 3px 6px;
-    font-size: 0.6rem;
+    font-size: 0.58rem;
   }
 
-  .world-stadium strong {
+  .world-venue strong {
     font-size: 0.74rem;
-  }
-
-  .world-stadium small {
-    font-size: 0.66rem;
   }
 }
