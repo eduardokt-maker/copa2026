@@ -1,11 +1,11 @@
 const shareButton = document.querySelector(".home-share-button");
 
-const SHARE_URL = "https://copa2026-c776.onrender.com/";
-const SHARE_TITLE = "Copa 2026 | EKT System";
-const SHARE_TEXT = "Acompanhe grupos, placares e classificacao geral da Copa 2026. Desenv. EKT System.";
+const SHARE_URL = "https://copa2026-c776.onrender.com/?card=world-cup-2026";
+const SHARE_TITLE = "World Cup 2026";
+const SHARE_TEXT = "World Cup 2026 | Grupos, placares e classificacao geral. Desenv. EKT System.";
 
 function openWhatsAppShare() {
-  const message = `${SHARE_TEXT} ${SHARE_URL}`;
+  const message = `${SHARE_URL}\n\n${SHARE_TEXT}`;
   window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, "_blank", "noopener,noreferrer");
 }
 
