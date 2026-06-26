@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920" role="img" aria-labelledby="title desc">
+  <title id="title">Calendario do mata-mata World Cup 2026</title>
+  <desc id="desc">Card vertical com Brasil x Japao, 16 avos de final e titulares do Japao.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07182e"/>
+      <stop offset="0.45" stop-color="#0e726d"/>
+      <stop offset="1" stop-color="#f3c75f"/>
+    </linearGradient>
+    <radialGradient id="field" cx="50%" cy="22%" r="75%">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.28"/>
+      <stop offset="0.36" stop-color="#5aa7ff" stop-opacity="0.14"/>
+      <stop offset="1" stop-color="#020817" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="26" stdDeviation="24" flood-color="#020817" flood-opacity="0.35"/>
+    </filter>
+    <style>
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+      @keyframes pulse {
+        50% { opacity: .44; transform: scale(1.06); }
+      }
+      .ring {
+        transform-origin: 540px 360px;
+        animation: spin 8s linear infinite;
+      }
+      .pulse {
+        transform-origin: 540px 360px;
+        animation: pulse 2.8s ease-in-out infinite;
+      }
+      .small { font: 800 30px Arial, sans-serif; letter-spacing: 0; }
+      .tiny { font: 800 25px Arial, sans-serif; letter-spacing: 0; }
+      .title { font: 900 86px Arial, sans-serif; letter-spacing: 0; }
+      .match { font: 900 62px Arial, sans-serif; letter-spacing: 0; }
+      .name { font: 800 31px Arial, sans-serif; letter-spacing: 0; }
+    </style>
+  </defs>
+  <rect width="1080" height="1920" fill="url(#bg)"/>
+  <rect width="1080" height="1920" fill="url(#field)"/>
+  <path d="M90 1540 C260 1400 365 1338 540 1338 C715 1338 820 1400 990 1540" fill="none" stroke="#fff" stroke-opacity="0.28" stroke-width="9"/>
+  <path d="M210 1542 C330 1466 428 1432 540 1432 C652 1432 750 1466 870 1542" fill="none" stroke="#fff" stroke-opacity="0.2" stroke-width="6"/>
+  <circle class="pulse" cx="540" cy="360" r="210" fill="none" stroke="#fff" stroke-opacity="0.24" stroke-width="12"/>
+  <g class="ring">
+    <circle cx="540" cy="360" r="172" fill="none" stroke="#f3c75f" stroke-width="14" stroke-dasharray="78 38"/>
+    <circle cx="540" cy="360" r="126" fill="none" stroke="#ffffff" stroke-opacity="0.75" stroke-width="7" stroke-dasharray="30 26"/>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="160" y="194" width="760" height="332" rx="44" fill="#041225" fill-opacity="0.72" stroke="#fff" stroke-opacity="0.18"/>
+    <text x="540" y="292" fill="#f3c75f" text-anchor="middle" class="small">WORLD CUP 2026</text>
+    <text x="540" y="382" fill="#fff" text-anchor="middle" class="title">MATA-MATA</text>
+    <text x="540" y="452" fill="#dbeafe" text-anchor="middle" class="small">16 AVOS DE FINAL</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="86" y="610" width="908" height="242" rx="36" fill="#ffffff" fill-opacity="0.92"/>
+    <text x="540" y="706" fill="#102033" text-anchor="middle" class="match">BRASIL x JAPAO</text>
+    <text x="540" y="770" fill="#0e726d" text-anchor="middle" class="small">Jogo 76 | calendario do mata-mata</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="86" y="930" width="908" height="632" rx="34" fill="#041225" fill-opacity="0.78" stroke="#fff" stroke-opacity="0.18"/>
+    <text x="540" y="1016" fill="#f3c75f" text-anchor="middle" class="tiny">TITULARES DO JAPAO NO JOGO ANTERIOR</text>
+    <text x="168" y="1094" fill="#fff" class="name">1. Zion Suzuki</text>
+    <text x="168" y="1152" fill="#fff" class="name">2. Yukinari Sugawara</text>
+    <text x="168" y="1210" fill="#fff" class="name">3. Kou Itakura</text>
+    <text x="168" y="1268" fill="#fff" class="name">4. Ayumu Seko</text>
+    <text x="168" y="1326" fill="#fff" class="name">5. Hiroki Ito</text>
+    <text x="168" y="1384" fill="#fff" class="name">6. Ao Tanaka</text>
+    <text x="604" y="1094" fill="#fff" class="name">7. Ritsu Doan</text>
+    <text x="604" y="1152" fill="#fff" class="name">8. Daizen Maeda</text>
+    <text x="604" y="1210" fill="#fff" class="name">9. Keito Nakamura</text>
+    <text x="604" y="1268" fill="#fff" class="name">10. Daichi Kamada</text>
+    <text x="604" y="1326" fill="#fff" class="name">11. Ayase Ueda</text>
+  </g>
+  <rect x="238" y="1640" width="604" height="94" rx="26" fill="#fff"/>
+  <text x="540" y="1701" fill="#102033" text-anchor="middle" class="small">ABRIR CALENDARIO</text>
+  <text x="540" y="1804" fill="#fff" text-anchor="middle" class="tiny">Desenv. EKT System</text>
+</svg>

@@ -3006,6 +3006,11 @@ footer {
   margin-bottom: 12px;
 }
 
+.knockout-share-button {
+  cursor: pointer;
+  font: inherit;
+}
+
 .knockout-hero h1 {
   max-width: 980px;
   margin: 0;
@@ -4050,4 +4055,169 @@ footer {
   padding: 8px 14px;
   font-weight: 900;
   text-decoration: none;
+}
+
+.knockout-story-page {
+  min-height: 100vh;
+  margin: 0;
+  display: grid;
+  place-items: center;
+  overflow-x: hidden;
+  color: #f8fafc;
+  background:
+    linear-gradient(150deg, rgba(3, 12, 25, 0.96), rgba(11, 98, 90, 0.86)),
+    url("https://images.unsplash.com/photo-1517927033932-b3d18e61fb3a?auto=format&fit=crop&w=1400&q=80") center/cover;
+}
+
+.knockout-story-card {
+  width: min(430px, calc(100vw - 24px));
+  min-height: min(760px, calc(100vh - 24px));
+  aspect-ratio: 9 / 16;
+  display: grid;
+  align-content: start;
+  justify-items: center;
+  gap: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 22px;
+  background:
+    linear-gradient(180deg, rgba(2, 8, 23, 0.72), rgba(8, 79, 82, 0.66)),
+    url("/mata-mata-story-card.svg?v=20260626-story") center/cover;
+  box-shadow: 0 24px 72px rgba(0, 0, 0, 0.46);
+  padding: clamp(18px, 5vw, 30px);
+  text-align: center;
+}
+
+.story-orbit {
+  position: relative;
+  width: 118px;
+  height: 132px;
+  display: grid;
+  place-items: center;
+  margin-top: 8px;
+}
+
+.story-orbit span {
+  position: absolute;
+  width: 116px;
+  height: 116px;
+  border: 3px dashed rgba(243, 199, 95, 0.86);
+  border-radius: 50%;
+  animation: storySpin 7s linear infinite;
+}
+
+.story-orbit img {
+  width: 78px;
+  height: 108px;
+  object-fit: contain;
+  filter: drop-shadow(0 14px 20px rgba(0, 0, 0, 0.28));
+  animation: storyFloat 2.8s ease-in-out infinite;
+}
+
+.story-kicker,
+.knockout-story-card h1,
+.story-match strong,
+.story-match span,
+.story-lineup h2,
+.story-lineup li,
+.knockout-story-card small {
+  margin: 0;
+  text-shadow: 0 3px 14px rgba(0, 0, 0, 0.36);
+}
+
+.story-kicker {
+  color: #f3c75f;
+  font-size: 0.78rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.knockout-story-card h1 {
+  max-width: 320px;
+  font-size: clamp(2rem, 9vw, 3.25rem);
+  line-height: 0.95;
+}
+
+.story-match {
+  width: 100%;
+  display: grid;
+  gap: 3px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.92);
+  padding: 10px;
+  color: #102033;
+}
+
+.story-match strong {
+  color: #102033;
+  font-size: 1.34rem;
+}
+
+.story-match span {
+  color: #0e726d;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.story-lineup {
+  width: 100%;
+  display: grid;
+  gap: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 16px;
+  background: rgba(2, 8, 23, 0.68);
+  padding: 12px;
+}
+
+.story-lineup h2 {
+  color: #f3c75f;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+}
+
+.story-lineup ol {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+
+.story-lineup li {
+  min-width: 0;
+  color: #f8fafc;
+  font-size: clamp(0.73rem, 2.6vw, 0.92rem);
+  font-weight: 850;
+  overflow-wrap: anywhere;
+}
+
+.knockout-story-card a {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  color: #102033;
+  background: linear-gradient(180deg, #ffffff, #dce8ef);
+  padding: 8px 14px;
+  font-weight: 950;
+  text-decoration: none;
+}
+
+.knockout-story-card small {
+  color: rgba(248, 250, 252, 0.78);
+  font-weight: 850;
+}
+
+@keyframes storySpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes storyFloat {
+  50% {
+    transform: translateY(-6px) scale(1.03);
+  }
 }
