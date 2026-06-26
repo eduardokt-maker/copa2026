@@ -228,10 +228,10 @@
 }
 
 .score-home-groups .world-champions-button {
-  width: min(286px, 68vw);
-  min-height: 58px;
+  width: min(264px, 68vw);
+  min-height: 52px;
   position: relative;
-  justify-content: flex-start;
+  justify-content: center;
   overflow: hidden;
   color: #fff9db;
   background:
@@ -251,51 +251,25 @@
   background: rgba(255, 255, 255, 0.18);
 }
 
-.world-button-mark,
 .world-button-arrow {
   position: relative;
   z-index: 1;
   flex: 0 0 auto;
 }
 
-.world-button-mark {
-  width: 38px;
-  height: 38px;
-  display: grid;
-  place-items: center;
-  border-radius: 11px;
-  color: #102033;
-  background: linear-gradient(180deg, #fff7d7, #f3c75f);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.82), 0 10px 20px rgba(28, 53, 48, 0.18);
-  font-size: 0.78rem;
-  font-weight: 950;
-}
-
 .world-button-copy {
   position: relative;
   z-index: 1;
   min-width: 0;
-  display: grid;
-  gap: 2px;
-  text-align: left;
-}
-
-.world-button-copy strong,
-.world-button-copy small {
   display: block;
-  line-height: 1.05;
+  text-align: center;
 }
 
 .world-button-copy strong {
+  display: block;
   color: #ffffff;
   font-size: 1rem;
-}
-
-.world-button-copy small {
-  color: rgba(255, 249, 219, 0.82);
-  font-size: 0.72rem;
-  font-weight: 850;
-  text-transform: uppercase;
+  line-height: 1.05;
 }
 
 .world-button-arrow {
@@ -450,23 +424,12 @@
   }
 
   .score-home-groups .world-champions-button {
-    min-height: 56px;
-    padding: 9px 10px;
-  }
-
-  .world-button-mark {
-    width: 34px;
-    height: 34px;
-    border-radius: 10px;
-    font-size: 0.72rem;
+    min-height: 50px;
+    padding: 9px 12px;
   }
 
   .world-button-copy strong {
     font-size: 0.92rem;
-  }
-
-  .world-button-copy small {
-    font-size: 0.64rem;
   }
 
   .score-home-groups .score-home-button span:last-child {
