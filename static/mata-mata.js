@@ -1,5 +1,5 @@
 const knockoutBoard = document.querySelector("#knockoutBoard");
-const KNOCKOUT_DATA_VERSION = "20260626-knockout-brasilia";
+const KNOCKOUT_DATA_VERSION = "20260626-knockout-16avos";
 
 const roundOf32 = [
   { id: 73, date: "28/06", time: "16:00 BRT", a: { type: "R", group: "A" }, b: { type: "R", group: "B" } },
@@ -138,7 +138,7 @@ function renderRoundOf32(standings) {
     <section class="knockout-round is-round32">
       <div class="knockout-round-head">
         <span>Primeira fase</span>
-        <strong>Round of 32</strong>
+        <strong>16 avos de final</strong>
         <small>28/06 a 03/07</small>
       </div>
       <div class="knockout-match-list">
