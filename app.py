@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import time
 import unicodedata
 import urllib.request
 from html.parser import HTMLParser
@@ -12,10 +13,12 @@ from urllib.parse import parse_qs, urlparse
 
 
 APP_NAME = "copa2026"
-APP_VERSION = "2026.06.20-club-country-badge-v1"
+APP_VERSION = "2026.06.25-auto-finished-scores-v1"
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
 SQUAD_SOURCE_URL = "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_squads"
+SCORES_SOURCE_URL = "https://www.sbnation.com/soccer/1117905/world-cup-standings-updated-full-list-of-teams"
+SCORES_CACHE_SECONDS = 60
 
 
 TEAMS = [
@@ -127,6 +130,7 @@ for team in TEAMS:
 
 TEAM_BY_CODE = {team["code"]: team for team in TEAMS}
 ROSTER_CACHE: dict[str, list[dict[str, str]]] = {}
+SCORES_CACHE: dict[str, object] = {"expires_at": 0.0, "scores": None, "source_ok": False, "error": ""}
 
 GROUP_DEFINITIONS = [
     {"id": "A", "teams": ["mx", "za", "kr", "cz"]},
@@ -148,14 +152,20 @@ SCORE_RESULTS = [
     {"group": "A", "date": "2026-06-11", "home": "kr", "home_score": 2, "away_score": 1, "away": "cz", "stadium": "Estadio Akron", "city": "Zapopan"},
     {"group": "A", "date": "2026-06-18", "home": "cz", "home_score": 1, "away_score": 1, "away": "za", "stadium": "Mercedes-Benz Stadium", "city": "Atlanta"},
     {"group": "A", "date": "2026-06-18", "home": "mx", "home_score": 1, "away_score": 0, "away": "kr", "stadium": "Estadio Akron", "city": "Zapopan"},
+    {"group": "A", "date": "2026-06-24", "home": "za", "home_score": 1, "away_score": 0, "away": "kr", "stadium": "Estadio BBVA", "city": "Guadalupe"},
+    {"group": "A", "date": "2026-06-24", "home": "mx", "home_score": 3, "away_score": 0, "away": "cz", "stadium": "Estadio Azteca", "city": "Mexico City"},
     {"group": "B", "date": "2026-06-12", "home": "ca", "home_score": 1, "away_score": 1, "away": "ba", "stadium": "BMO Field", "city": "Toronto"},
     {"group": "B", "date": "2026-06-13", "home": "qa", "home_score": 1, "away_score": 1, "away": "ch", "stadium": "Levi's Stadium", "city": "Santa Clara"},
     {"group": "B", "date": "2026-06-18", "home": "ch", "home_score": 4, "away_score": 1, "away": "ba", "stadium": "SoFi Stadium", "city": "Inglewood"},
     {"group": "B", "date": "2026-06-18", "home": "ca", "home_score": 6, "away_score": 0, "away": "qa", "stadium": "BC Place", "city": "Vancouver"},
+    {"group": "B", "date": "2026-06-24", "home": "ch", "home_score": 2, "away_score": 1, "away": "ca", "stadium": "BC Place", "city": "Vancouver"},
+    {"group": "B", "date": "2026-06-24", "home": "ba", "home_score": 3, "away_score": 1, "away": "qa", "stadium": "Lumen Field", "city": "Seattle"},
     {"group": "C", "date": "2026-06-13", "home": "br", "home_score": 1, "away_score": 1, "away": "ma", "stadium": "MetLife Stadium", "city": "East Rutherford"},
     {"group": "C", "date": "2026-06-13", "home": "ht", "home_score": 0, "away_score": 1, "away": "gb-sct", "stadium": "Gillette Stadium", "city": "Foxborough"},
     {"group": "C", "date": "2026-06-19", "home": "gb-sct", "home_score": 0, "away_score": 1, "away": "ma", "stadium": "Gillette Stadium", "city": "Foxborough"},
     {"group": "C", "date": "2026-06-19", "home": "br", "home_score": 3, "away_score": 0, "away": "ht", "stadium": "Lincoln Financial Field", "city": "Philadelphia"},
+    {"group": "C", "date": "2026-06-24", "home": "ma", "home_score": 4, "away_score": 2, "away": "ht", "stadium": "Mercedes-Benz Stadium", "city": "Atlanta"},
+    {"group": "C", "date": "2026-06-24", "home": "br", "home_score": 3, "away_score": 0, "away": "gb-sct", "stadium": "Hard Rock Stadium", "city": "Miami Gardens"},
     {"group": "D", "date": "2026-06-12", "home": "us", "home_score": 4, "away_score": 1, "away": "py", "stadium": "SoFi Stadium", "city": "Inglewood"},
     {"group": "D", "date": "2026-06-13", "home": "au", "home_score": 2, "away_score": 0, "away": "tr", "stadium": "BC Place", "city": "Vancouver"},
     {"group": "D", "date": "2026-06-19", "home": "us", "home_score": 2, "away_score": 0, "away": "au", "stadium": "Lumen Field", "city": "Seattle"},
@@ -164,6 +174,8 @@ SCORE_RESULTS = [
     {"group": "E", "date": "2026-06-14", "home": "ci", "home_score": 1, "away_score": 0, "away": "ec", "stadium": "Lincoln Financial Field", "city": "Philadelphia"},
     {"group": "E", "date": "2026-06-20", "home": "de", "home_score": 2, "away_score": 1, "away": "ci", "stadium": "BMO Field", "city": "Toronto"},
     {"group": "E", "date": "2026-06-20", "home": "ec", "home_score": 0, "away_score": 0, "away": "cw", "stadium": "Arrowhead Stadium", "city": "Kansas City"},
+    {"group": "E", "date": "2026-06-25", "home": "ci", "home_score": 2, "away_score": 0, "away": "cw", "stadium": "Lincoln Financial Field", "city": "Philadelphia"},
+    {"group": "E", "date": "2026-06-25", "home": "ec", "home_score": 2, "away_score": 1, "away": "de", "stadium": "MetLife Stadium", "city": "East Rutherford"},
     {"group": "F", "date": "2026-06-14", "home": "nl", "home_score": 2, "away_score": 2, "away": "jp", "stadium": "AT&T Stadium", "city": "Arlington"},
     {"group": "F", "date": "2026-06-14", "home": "se", "home_score": 5, "away_score": 1, "away": "tn", "stadium": "Estadio BBVA", "city": "Guadalupe"},
     {"group": "F", "date": "2026-06-20", "home": "nl", "home_score": 5, "away_score": 1, "away": "se", "stadium": "NRG Stadium", "city": "Houston"},
@@ -178,17 +190,25 @@ SCORE_RESULTS = [
     {"group": "H", "date": "2026-06-21", "home": "uy", "home_score": 2, "away_score": 2, "away": "cv", "stadium": "Hard Rock Stadium", "city": "Miami Gardens"},
     {"group": "I", "date": "2026-06-16", "home": "fr", "home_score": 3, "away_score": 1, "away": "sn", "stadium": "MetLife Stadium", "city": "East Rutherford"},
     {"group": "I", "date": "2026-06-16", "home": "iq", "home_score": 1, "away_score": 4, "away": "no", "stadium": "Gillette Stadium", "city": "Foxborough"},
+    {"group": "I", "date": "2026-06-22", "home": "fr", "home_score": 3, "away_score": 0, "away": "iq", "stadium": "Lincoln Financial Field", "city": "Philadelphia"},
+    {"group": "I", "date": "2026-06-22", "home": "no", "home_score": 3, "away_score": 2, "away": "sn", "stadium": "MetLife Stadium", "city": "East Rutherford"},
     {"group": "J", "date": "2026-06-16", "home": "ar", "home_score": 3, "away_score": 0, "away": "dz", "stadium": "Arrowhead Stadium", "city": "Kansas City"},
     {"group": "J", "date": "2026-06-16", "home": "at", "home_score": 3, "away_score": 1, "away": "jo", "stadium": "Levi's Stadium", "city": "Santa Clara"},
+    {"group": "J", "date": "2026-06-22", "home": "ar", "home_score": 2, "away_score": 0, "away": "at", "stadium": "AT&T Stadium", "city": "Arlington"},
+    {"group": "J", "date": "2026-06-22", "home": "dz", "home_score": 2, "away_score": 1, "away": "jo", "stadium": "Levi's Stadium", "city": "Santa Clara"},
     {"group": "K", "date": "2026-06-17", "home": "pt", "home_score": 1, "away_score": 1, "away": "cd", "stadium": "NRG Stadium", "city": "Houston"},
     {"group": "K", "date": "2026-06-17", "home": "uz", "home_score": 1, "away_score": 3, "away": "co", "stadium": "Estadio Azteca", "city": "Mexico City"},
+    {"group": "K", "date": "2026-06-23", "home": "pt", "home_score": 5, "away_score": 0, "away": "uz", "stadium": "NRG Stadium", "city": "Houston"},
+    {"group": "K", "date": "2026-06-23", "home": "co", "home_score": 1, "away_score": 0, "away": "cd", "stadium": "Estadio Akron", "city": "Zapopan"},
     {"group": "L", "date": "2026-06-17", "home": "gb-eng", "home_score": 4, "away_score": 2, "away": "hr", "stadium": "AT&T Stadium", "city": "Arlington"},
     {"group": "L", "date": "2026-06-17", "home": "gh", "home_score": 1, "away_score": 0, "away": "pa", "stadium": "BMO Field", "city": "Toronto"},
+    {"group": "L", "date": "2026-06-23", "home": "gb-eng", "home_score": 0, "away_score": 0, "away": "gh", "stadium": "Gillette Stadium", "city": "Foxborough"},
+    {"group": "L", "date": "2026-06-23", "home": "hr", "home_score": 1, "away_score": 0, "away": "pa", "stadium": "BMO Field", "city": "Toronto"},
 ]
 
 
-def build_groups(include_standings: bool = False) -> list[dict]:
-    standings_by_group = build_all_group_standings() if include_standings else {}
+def build_groups(include_standings: bool = False, scores: list[dict] | None = None) -> list[dict]:
+    standings_by_group = build_all_group_standings(scores) if include_standings else {}
     groups = []
     for group in GROUP_DEFINITIONS:
         group_id = group["id"]
@@ -203,20 +223,193 @@ def build_groups(include_standings: bool = False) -> list[dict]:
     return groups
 
 
+def enrich_score(result: dict) -> dict:
+    home = TEAM_BY_CODE[result["home"]]
+    away = TEAM_BY_CODE[result["away"]]
+    return {
+        **result,
+        "group_name": f"Grupo {result['group']}",
+        "home_team": home,
+        "away_team": away,
+    }
+
+
 def build_scores() -> list[dict]:
-    scores = []
-    for result in SCORE_RESULTS:
-        home = TEAM_BY_CODE[result["home"]]
-        away = TEAM_BY_CODE[result["away"]]
+    return [enrich_score(result) for result in SCORE_RESULTS]
+
+
+TEAM_NAME_ALIASES = {
+    "algeria": "dz",
+    "argentina": "ar",
+    "australia": "au",
+    "austria": "at",
+    "belgium": "be",
+    "bosnia and herzegovina": "ba",
+    "brazil": "br",
+    "canada": "ca",
+    "cabo verde": "cv",
+    "cape verde": "cv",
+    "colombia": "co",
+    "cote d ivoire": "ci",
+    "côte d ivoire": "ci",
+    "croatia": "hr",
+    "curacao": "cw",
+    "curaçao": "cw",
+    "czechia": "cz",
+    "czech republic": "cz",
+    "dr congo": "cd",
+    "ecuador": "ec",
+    "egypt": "eg",
+    "england": "gb-eng",
+    "france": "fr",
+    "germany": "de",
+    "ghana": "gh",
+    "haiti": "ht",
+    "iran": "ir",
+    "ir iran": "ir",
+    "iraq": "iq",
+    "ivory coast": "ci",
+    "japan": "jp",
+    "jordan": "jo",
+    "mexico": "mx",
+    "morocco": "ma",
+    "netherlands": "nl",
+    "new zealand": "nz",
+    "norway": "no",
+    "panama": "pa",
+    "paraguay": "py",
+    "portugal": "pt",
+    "qatar": "qa",
+    "saudi arabia": "sa",
+    "scotland": "gb-sct",
+    "senegal": "sn",
+    "south africa": "za",
+    "south korea": "kr",
+    "korea republic": "kr",
+    "spain": "es",
+    "sweden": "se",
+    "switzerland": "ch",
+    "tunisia": "tn",
+    "turkiye": "tr",
+    "türkiye": "tr",
+    "turkey": "tr",
+    "united states": "us",
+    "usa": "us",
+    "uruguay": "uy",
+    "uzbekistan": "uz",
+}
+
+
+class TextExtractor(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.parts: list[str] = []
+
+    def handle_data(self, data: str) -> None:
+        text = clean_text(data)
+        if text:
+            self.parts.append(text)
+
+
+def code_from_source_team_name(name: str) -> str | None:
+    return TEAM_NAME_ALIASES.get(normalize_key(name))
+
+
+def result_key(result: dict) -> tuple[str, str, str]:
+    teams = sorted([result["home"], result["away"]])
+    return (result["group"], teams[0], teams[1])
+
+
+def merge_scores(local_scores: list[dict], external_scores: list[dict]) -> list[dict]:
+    merged = {result_key(score): score for score in local_scores}
+    for score in external_scores:
+        merged[result_key(score)] = enrich_score(score)
+    return sorted(
+        merged.values(),
+        key=lambda score: (score["group"], score.get("date", ""), score["home"], score["away"]),
+    )
+
+
+def parse_external_scores_from_text(lines: list[str]) -> list[dict]:
+    scores: list[dict] = []
+    current_group = ""
+    current_date = ""
+
+    for line in lines:
+        group_match = re.fullmatch(r"Group ([A-L]) schedule", line, flags=re.IGNORECASE)
+        if group_match:
+            current_group = group_match.group(1).upper()
+            current_date = ""
+            continue
+
+        if not current_group:
+            continue
+
+        date_match = re.fullmatch(r"(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday), June (\d{1,2})", line)
+        if date_match:
+            current_date = f"2026-06-{int(date_match.group(2)):02d}"
+            continue
+
+        result_match = re.fullmatch(r"(.+?) (\d+), (.+?) (\d+)", line)
+        if not result_match or not current_date:
+            continue
+
+        home_code = code_from_source_team_name(result_match.group(1))
+        away_code = code_from_source_team_name(result_match.group(3))
+        if not home_code or not away_code:
+            continue
+
         scores.append(
             {
-                **result,
-                "group_name": f"Grupo {result['group']}",
-                "home_team": home,
-                "away_team": away,
+                "group": current_group,
+                "date": current_date,
+                "home": home_code,
+                "home_score": int(result_match.group(2)),
+                "away_score": int(result_match.group(4)),
+                "away": away_code,
+                "stadium": "",
+                "city": "",
+                "source": SCORES_SOURCE_URL,
             }
         )
+
     return scores
+
+
+def fetch_external_scores() -> tuple[list[dict], bool, str]:
+    now = time.time()
+    cached_scores = SCORES_CACHE.get("scores")
+    if cached_scores is not None and now < float(SCORES_CACHE["expires_at"]):
+        return cached_scores, bool(SCORES_CACHE["source_ok"]), str(SCORES_CACHE.get("error") or "")
+
+    try:
+        request = urllib.request.Request(
+            SCORES_SOURCE_URL,
+            headers={"User-Agent": f"{APP_NAME}/{APP_VERSION} score updater"},
+        )
+        with urllib.request.urlopen(request, timeout=8) as response:
+            html = response.read().decode("utf-8", errors="replace")
+        parser = TextExtractor()
+        parser.feed(html)
+        scores = parse_external_scores_from_text(parser.parts)
+        SCORES_CACHE.update({"expires_at": now + SCORES_CACHE_SECONDS, "scores": scores, "source_ok": True, "error": ""})
+        return scores, True, ""
+    except Exception as exc:
+        SCORES_CACHE.update({"expires_at": now + 60, "scores": [], "source_ok": False, "error": str(exc)})
+        return [], False, str(exc)
+
+
+def build_current_scores() -> tuple[list[dict], dict]:
+    local_scores = build_scores()
+    external_scores, source_ok, source_error = fetch_external_scores()
+    scores = merge_scores(local_scores, external_scores) if external_scores else local_scores
+    return scores, {
+        "url": SCORES_SOURCE_URL,
+        "ok": source_ok,
+        "error": source_error,
+        "external_count": len(external_scores),
+        "cache_seconds": SCORES_CACHE_SECONDS,
+    }
 
 
 def score_is_finished(score: dict) -> bool:
@@ -508,11 +701,19 @@ class CopaHandler(SimpleHTTPRequestHandler):
             self.send_json({"teams": TEAMS, "count": len(TEAMS), "version": APP_VERSION})
             return
         if path == "/api/groups":
-            groups = build_groups(include_standings=True)
-            self.send_json({"groups": groups, "count": len(groups), "version": APP_VERSION})
+            scores, score_source = build_current_scores()
+            groups = build_groups(include_standings=True, scores=scores)
+            self.send_json(
+                {
+                    "groups": groups,
+                    "count": len(groups),
+                    "score_source": score_source,
+                    "version": APP_VERSION,
+                }
+            )
             return
         if path == "/api/scores":
-            scores = build_scores()
+            scores, score_source = build_current_scores()
             finished_scores = [score for score in scores if score_is_finished(score)]
             self.send_json(
                 {
@@ -523,6 +724,7 @@ class CopaHandler(SimpleHTTPRequestHandler):
                         "groups": build_all_group_standings(scores),
                         "general": build_general_standings(scores),
                     },
+                    "score_source": score_source,
                     "version": APP_VERSION,
                 }
             )
