@@ -3373,7 +3373,6 @@ footer {
 
 .japan-sticker-actions {
   display: grid;
-  grid-template-columns: 1fr 1fr;
   gap: 6px;
 }
 

@@ -237,6 +237,13 @@ const japanPlayers = [
   },
 ];
 
+const positionLabels = {
+  GK: "Goleiro",
+  DF: "Defensor",
+  MF: "Meio-campo",
+  FW: "Atacante",
+};
+
 function renderJapanAlbum() {
   japanStickerGrid.innerHTML = japanPlayers
     .map(
@@ -247,13 +254,12 @@ function renderJapanAlbum() {
             <span>${String(player.number).padStart(2, "0")}</span>
           </div>
           <div class="japan-sticker-info">
-            <span class="japan-sticker-position">${player.position}</span>
+            <span class="japan-sticker-position">${positionLabels[player.position] || player.position}</span>
             <h2>${player.nameJa}</h2>
             <strong>${player.romaji}</strong>
             <p>${player.leituraPt}</p>
           </div>
           <div class="japan-sticker-actions">
-            <a href="${player.photo}" download>Baixar foto</a>
             <a href="${player.source}" target="_blank" rel="noreferrer">Fonte JP</a>
           </div>
         </article>
