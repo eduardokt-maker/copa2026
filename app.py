@@ -13,12 +13,31 @@ from urllib.parse import parse_qs, urlparse
 
 
 APP_NAME = "copa2026"
-APP_VERSION = "2026.06.25-auto-finished-scores-v1"
+APP_VERSION = "2026.06.25-fifa-tiebreakers-v1"
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
 SQUAD_SOURCE_URL = "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_squads"
 SCORES_SOURCE_URL = "https://www.sbnation.com/soccer/1117905/world-cup-standings-updated-full-list-of-teams"
 SCORES_CACHE_SECONDS = 60
+TIEBREAKER_RULES = {
+    "group": [
+        "points",
+        "head_to_head_points",
+        "head_to_head_goal_difference",
+        "head_to_head_goals_for",
+        "overall_goal_difference",
+        "overall_goals_for",
+        "team_conduct_score",
+        "fifa_ranking",
+    ],
+    "general": [
+        "points",
+        "overall_goal_difference",
+        "overall_goals_for",
+        "team_conduct_score",
+        "fifa_ranking",
+    ],
+}
 
 
 TEAMS = [
@@ -126,6 +145,18 @@ WORLD_CUP_HISTORY = {
 
 for team in TEAMS:
     team.update(WORLD_CUP_HISTORY[team["code"]])
+
+
+TEAM_CONDUCT_SCORES = {
+    # FIFA uses team conduct as a late tiebreaker. Keep zero until card data is available.
+    team["code"]: 0 for team in TEAMS
+}
+
+
+FIFA_RANKINGS = {
+    # Lower is better. Populate/update from FIFA rankings when available.
+    team["code"]: 999 for team in TEAMS
+}
 
 
 TEAM_BY_CODE = {team["code"]: team for team in TEAMS}
@@ -431,6 +462,8 @@ def empty_standing(team: dict) -> dict:
         "goalDifference": 0,
         "points": 0,
         "position": 0,
+        "teamConductScore": TEAM_CONDUCT_SCORES.get(team["code"], 0),
+        "fifaRanking": FIFA_RANKINGS.get(team["code"], 999),
     }
 
 
@@ -450,19 +483,86 @@ def apply_score_to_standing(row: dict, goals_for: int, goals_against: int) -> No
         row["losses"] += 1
 
 
-def sort_standings(rows: list[dict]) -> list[dict]:
-    ordered = sorted(
-        rows,
-        key=lambda row: (
-            -row["points"],
-            -row["goalDifference"],
-            -row["goalsFor"],
-            row["team"]["country"],
-        ),
+def apply_score_to_head_to_head(table: dict[str, dict], team_code: str, goals_for: int, goals_against: int) -> None:
+    row = table[team_code]
+    row["points"] += 3 if goals_for > goals_against else 1 if goals_for == goals_against else 0
+    row["goalsFor"] += goals_for
+    row["goalsAgainst"] += goals_against
+    row["goalDifference"] = row["goalsFor"] - row["goalsAgainst"]
+
+
+def head_to_head_table(team_codes: set[str], scores: list[dict]) -> dict[str, dict]:
+    table = {
+        code: {
+            "points": 0,
+            "goalsFor": 0,
+            "goalsAgainst": 0,
+            "goalDifference": 0,
+        }
+        for code in team_codes
+    }
+
+    for score in scores:
+        if not score_is_finished(score) or score["home"] not in team_codes or score["away"] not in team_codes:
+            continue
+        apply_score_to_head_to_head(table, score["home"], score["home_score"], score["away_score"])
+        apply_score_to_head_to_head(table, score["away"], score["away_score"], score["home_score"])
+
+    return table
+
+
+def group_tiebreak_key(row: dict, h2h: dict[str, dict]) -> tuple:
+    code = row["team"]["code"]
+    head_to_head = h2h.get(code, {})
+    return (
+        -head_to_head.get("points", 0),
+        -head_to_head.get("goalDifference", 0),
+        -head_to_head.get("goalsFor", 0),
+        -row["goalDifference"],
+        -row["goalsFor"],
+        -row["teamConductScore"],
+        row["fifaRanking"],
+        row["team"]["country"],
     )
+
+
+def rank_tied_group_rows(rows: list[dict], scores: list[dict]) -> list[dict]:
+    if len(rows) <= 1:
+        return rows
+    team_codes = {row["team"]["code"] for row in rows}
+    return sorted(rows, key=lambda row: group_tiebreak_key(row, head_to_head_table(team_codes, scores)))
+
+
+def sort_group_standings(rows: list[dict], scores: list[dict]) -> list[dict]:
+    ordered: list[dict] = []
+    point_groups: dict[int, list[dict]] = {}
+    for row in rows:
+        point_groups.setdefault(row["points"], []).append(row)
+
+    for points in sorted(point_groups, reverse=True):
+        ordered.extend(rank_tied_group_rows(point_groups[points], scores))
+
     for index, row in enumerate(ordered, start=1):
         row["position"] = index
     return ordered
+
+
+def sort_general_standings(rows: list[dict]) -> list[dict]:
+    ordered = sorted(rows, key=general_standings_key)
+    for index, row in enumerate(ordered, start=1):
+        row["position"] = index
+    return ordered
+
+
+def general_standings_key(row: dict) -> tuple:
+    return (
+        -row["points"],
+        -row["goalDifference"],
+        -row["goalsFor"],
+        -row["teamConductScore"],
+        row["fifaRanking"],
+        row["team"]["country"],
+    )
 
 
 def build_group_standings(group: dict, scores: list[dict] | None = None) -> list[dict]:
@@ -477,7 +577,8 @@ def build_group_standings(group: dict, scores: list[dict] | None = None) -> list
         apply_score_to_standing(home_row, score["home_score"], score["away_score"])
         apply_score_to_standing(away_row, score["away_score"], score["home_score"])
 
-    return sort_standings(list(table.values()))
+    group_scores = [score for score in scores if score["group"] == group["id"]]
+    return sort_group_standings(list(table.values()), group_scores)
 
 
 def build_all_group_standings(scores: list[dict] | None = None) -> dict[str, list[dict]]:
@@ -488,7 +589,7 @@ def build_all_group_standings(scores: list[dict] | None = None) -> dict[str, lis
 def build_general_standings(scores: list[dict] | None = None) -> list[dict]:
     standings_by_group = build_all_group_standings(scores)
     rows = [row for standings in standings_by_group.values() for row in standings]
-    return sort_standings(rows)
+    return sort_general_standings(rows)
 
 CLUB_NAME_OVERRIDES = {
     "AC Milan": "Associazione Calcio Milan",
@@ -708,6 +809,7 @@ class CopaHandler(SimpleHTTPRequestHandler):
                     "groups": groups,
                     "count": len(groups),
                     "score_source": score_source,
+                    "tiebreakers": TIEBREAKER_RULES,
                     "version": APP_VERSION,
                 }
             )
@@ -725,6 +827,7 @@ class CopaHandler(SimpleHTTPRequestHandler):
                         "general": build_general_standings(scores),
                     },
                     "score_source": score_source,
+                    "tiebreakers": TIEBREAKER_RULES,
                     "version": APP_VERSION,
                 }
             )
