@@ -287,6 +287,12 @@
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 22px 48px rgba(0, 0, 0, 0.34);
 }
 
+.score-home-groups .knockout-home-button {
+  color: #102033;
+  background: linear-gradient(180deg, #fff7d7, #f3c75f);
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
 .score-home-groups h1 {
   margin: 6px 0 8px;
   max-width: 900px;
@@ -2960,6 +2966,13 @@ footer {
   font-weight: 800;
 }
 
+.world-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
 .world-back {
   min-height: 40px;
   display: inline-flex;
@@ -2970,6 +2983,206 @@ footer {
   color: #102033;
   font-weight: 900;
   background: linear-gradient(180deg, #ffffff, #dce8ef);
+}
+
+.knockout-page {
+  min-height: 100vh;
+  margin: 0;
+  color: #f8fafc;
+  background:
+    linear-gradient(135deg, rgba(4, 15, 31, 0.94), rgba(13, 76, 88, 0.84)),
+    url("https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=1800&q=80") center/cover fixed;
+}
+
+.knockout-shell {
+  width: min(1500px, 100%);
+  margin: 0 auto;
+  padding: clamp(14px, 3vw, 30px);
+}
+
+.knockout-hero {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.knockout-hero h1 {
+  max-width: 980px;
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 4.4rem);
+  line-height: 1;
+}
+
+.knockout-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.knockout-stats span,
+.knockout-note {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.knockout-stats span {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 11px;
+  color: rgba(248, 250, 252, 0.78);
+  font-weight: 850;
+}
+
+.knockout-stats strong {
+  color: #f3c75f;
+  font-size: 1.2rem;
+}
+
+.knockout-note {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 14px;
+  padding: 12px;
+  color: rgba(248, 250, 252, 0.78);
+}
+
+.knockout-note strong {
+  color: #f3c75f;
+}
+
+.knockout-board {
+  display: grid;
+  grid-template-columns: minmax(360px, 1.5fr) repeat(4, minmax(250px, 1fr));
+  gap: 12px;
+  align-items: start;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  scrollbar-width: thin;
+}
+
+.knockout-round {
+  min-width: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.knockout-round-head {
+  display: grid;
+  gap: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 14px;
+  background: rgba(2, 9, 20, 0.62);
+  padding: 12px;
+}
+
+.knockout-round-head span,
+.knockout-round-head small {
+  color: rgba(248, 250, 252, 0.68);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.knockout-round-head strong {
+  color: #ffffff;
+  font-size: 1.1rem;
+}
+
+.knockout-match-list {
+  display: grid;
+  gap: 8px;
+}
+
+.knockout-match {
+  display: grid;
+  gap: 7px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #102033;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.2);
+  padding: 10px;
+}
+
+.knockout-match.is-future {
+  background: rgba(238, 245, 247, 0.9);
+}
+
+.knockout-match-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border-bottom: 1px solid rgba(16, 32, 51, 0.08);
+  padding-bottom: 7px;
+}
+
+.knockout-match-meta strong {
+  color: #0e4a69;
+  font-size: 0.86rem;
+}
+
+.knockout-match-meta span {
+  color: #66758a;
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.knockout-team {
+  min-height: 44px;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(16, 32, 51, 0.08);
+  border-radius: 10px;
+  background: #f8fbfc;
+  padding: 7px;
+}
+
+.knockout-team.is-known {
+  background: linear-gradient(180deg, #ffffff, #fff3c4);
+}
+
+.knockout-team img,
+.knockout-placeholder {
+  width: 34px;
+  height: 23px;
+  border-radius: 4px;
+}
+
+.knockout-team img {
+  object-fit: cover;
+  box-shadow: 0 0 0 1px rgba(16, 32, 51, 0.12);
+}
+
+.knockout-placeholder {
+  display: block;
+  background: rgba(16, 32, 51, 0.1);
+}
+
+.knockout-team strong,
+.knockout-team small {
+  min-width: 0;
+  overflow: hidden;
+  display: block;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.knockout-team strong {
+  font-size: 0.82rem;
+  line-height: 1.1;
+}
+
+.knockout-team small {
+  margin-top: 2px;
+  color: #66758a;
+  font-size: 0.66rem;
+  font-weight: 850;
 }
 
 .world-shell {
@@ -3470,6 +3683,10 @@ footer {
     font-size: 0.82rem;
   }
 
+  .world-nav {
+    gap: 6px;
+  }
+
   .world-shell {
     padding: 12px;
   }
@@ -3674,6 +3891,104 @@ footer {
 
   .world-venue strong {
     font-size: 0.74rem;
+  }
+}
+
+@media (max-width: 760px) {
+  .knockout-page {
+    background-attachment: scroll;
+  }
+
+  .knockout-shell {
+    padding: 12px;
+  }
+
+  .knockout-hero {
+    gap: 8px;
+  }
+
+  .knockout-hero h1 {
+    font-size: 2rem;
+    line-height: 1.03;
+  }
+
+  .knockout-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .knockout-stats span {
+    min-height: 58px;
+    display: grid;
+    align-content: center;
+    gap: 2px;
+    border-radius: 10px;
+    padding: 7px;
+    font-size: 0.68rem;
+    line-height: 1.1;
+  }
+
+  .knockout-stats strong {
+    font-size: 1.1rem;
+    line-height: 1;
+  }
+
+  .knockout-note {
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 0.82rem;
+  }
+
+  .knockout-board {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    overflow: visible;
+  }
+
+  .knockout-round-head {
+    position: sticky;
+    top: 58px;
+    z-index: 5;
+    border-radius: 12px;
+    padding: 10px;
+  }
+
+  .knockout-round-head strong {
+    font-size: 1rem;
+  }
+
+  .knockout-match {
+    border-radius: 12px;
+    padding: 9px;
+  }
+
+  .knockout-match-meta {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .knockout-team {
+    min-height: 42px;
+    grid-template-columns: 30px minmax(0, 1fr);
+    gap: 7px;
+    padding: 7px;
+  }
+
+  .knockout-team img,
+  .knockout-placeholder {
+    width: 30px;
+    height: 20px;
+  }
+
+  .knockout-team strong {
+    font-size: 0.78rem;
+  }
+
+  .knockout-team small {
+    font-size: 0.62rem;
+    white-space: normal;
   }
 }
 
