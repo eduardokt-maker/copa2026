@@ -1,6 +1,6 @@
 const shareButton = document.querySelector(".home-share-button");
 
-const SHARE_URL = "https://copa2026-c776.onrender.com/?card=world-cup-2026";
+const SHARE_URL = "https://copa2026-c776.onrender.com/share.html";
 const SHARE_TITLE = "World Cup 2026";
 const SHARE_TEXT = "World Cup 2026 | Grupos, placares e classificacao geral. Desenv. EKT System.";
 
