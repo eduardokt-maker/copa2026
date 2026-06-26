@@ -97,7 +97,7 @@ async function bootGroups() {
   }
 
   try {
-    const response = await fetch(`/api/groups?v=20260625-live-standings&t=${Date.now()}`, {
+    const response = await fetch(`/api/groups?v=20260626-auto-refresh&fresh=1&t=${Date.now()}`, {
       cache: "no-store",
     });
     const payload = await response.json();

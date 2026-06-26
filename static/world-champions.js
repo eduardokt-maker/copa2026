@@ -251,7 +251,7 @@ async function bootWorldChampions() {
   }
 
   try {
-    const response = await fetch(`/api/scores?v=${WORLD_DATA_VERSION}&t=${Date.now()}`, {
+    const response = await fetch(`/api/scores?v=${WORLD_DATA_VERSION}&fresh=1&t=${Date.now()}`, {
       cache: "no-store",
     });
     const payload = await response.json();

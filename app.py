@@ -13,7 +13,7 @@ from urllib.parse import parse_qs, urlparse
 
 
 APP_NAME = "copa2026"
-APP_VERSION = "2026.06.25-stadium-city-v1"
+APP_VERSION = "2026.06.26-auto-refresh-v1"
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
 SQUAD_SOURCE_URL = "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_squads"
@@ -414,10 +414,10 @@ def parse_external_scores_from_text(lines: list[str]) -> list[dict]:
     return scores
 
 
-def fetch_external_scores() -> tuple[list[dict], bool, str]:
+def fetch_external_scores(force_refresh: bool = False) -> tuple[list[dict], bool, str]:
     now = time.time()
     cached_scores = SCORES_CACHE.get("scores")
-    if cached_scores is not None and now < float(SCORES_CACHE["expires_at"]):
+    if not force_refresh and cached_scores is not None and now < float(SCORES_CACHE["expires_at"]):
         return cached_scores, bool(SCORES_CACHE["source_ok"]), str(SCORES_CACHE.get("error") or "")
 
     try:
@@ -437,9 +437,9 @@ def fetch_external_scores() -> tuple[list[dict], bool, str]:
         return [], False, str(exc)
 
 
-def build_current_scores() -> tuple[list[dict], dict]:
+def build_current_scores(force_refresh: bool = False) -> tuple[list[dict], dict]:
     local_scores = build_scores()
-    external_scores, source_ok, source_error = fetch_external_scores()
+    external_scores, source_ok, source_error = fetch_external_scores(force_refresh=force_refresh)
     scores = merge_scores(local_scores, external_scores) if external_scores else local_scores
     return scores, {
         "url": SCORES_SOURCE_URL,
@@ -447,6 +447,7 @@ def build_current_scores() -> tuple[list[dict], dict]:
         "error": source_error,
         "external_count": len(external_scores),
         "cache_seconds": SCORES_CACHE_SECONDS,
+        "force_refresh": force_refresh,
     }
 
 
@@ -782,9 +783,9 @@ def parse_player_row(cells: list[str]) -> dict[str, str] | None:
     }
 
 
-def fetch_roster(team: dict) -> list[dict[str, str]]:
+def fetch_roster(team: dict, force_refresh: bool = False) -> list[dict[str, str]]:
     code = team["code"]
-    if code in ROSTER_CACHE:
+    if not force_refresh and code in ROSTER_CACHE:
         return ROSTER_CACHE[code]
     request = urllib.request.Request(
         SQUAD_SOURCE_URL,
@@ -802,6 +803,11 @@ class CopaHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=str(STATIC_DIR), **kwargs)
 
+    @staticmethod
+    def should_force_refresh(parsed_url) -> bool:
+        query = parse_qs(parsed_url.query)
+        return query.get("fresh", ["0"])[0] == "1" or "t" in query
+
     def do_GET(self) -> None:
         parsed_url = urlparse(self.path)
         path = parsed_url.path
@@ -809,7 +815,7 @@ class CopaHandler(SimpleHTTPRequestHandler):
             self.send_json({"teams": TEAMS, "count": len(TEAMS), "version": APP_VERSION})
             return
         if path == "/api/groups":
-            scores, score_source = build_current_scores()
+            scores, score_source = build_current_scores(force_refresh=self.should_force_refresh(parsed_url))
             groups = build_groups(include_standings=True, scores=scores)
             self.send_json(
                 {
@@ -822,7 +828,7 @@ class CopaHandler(SimpleHTTPRequestHandler):
             )
             return
         if path == "/api/scores":
-            scores, score_source = build_current_scores()
+            scores, score_source = build_current_scores(force_refresh=self.should_force_refresh(parsed_url))
             finished_scores = [score for score in scores if score_is_finished(score)]
             self.send_json(
                 {
@@ -847,7 +853,7 @@ class CopaHandler(SimpleHTTPRequestHandler):
                 self.send_json({"ok": False, "error": "Selecao nao encontrada."}, status=404)
                 return
             try:
-                players = fetch_roster(team)
+                players = fetch_roster(team, force_refresh=self.should_force_refresh(parsed_url))
                 self.send_json(
                     {
                         "ok": True,

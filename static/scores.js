@@ -4,7 +4,7 @@ const scoreTitle = document.querySelector("#scoreTitle");
 const groupStandings = document.querySelector("#groupStandings");
 const initialGroup = new URLSearchParams(window.location.search).get("group") || "";
 const isGroupMode = Boolean(initialGroup);
-const APP_DATA_VERSION = "20260625-stadium-city";
+const APP_DATA_VERSION = "20260626-auto-refresh";
 const POLL_INTERVAL_MS = 60000;
 
 const state = {
@@ -323,7 +323,7 @@ async function bootScores() {
   clearFrozenSnapshots();
 
   try {
-    const response = await fetch(`/api/scores?v=${APP_DATA_VERSION}&t=${Date.now()}`, {
+    const response = await fetch(`/api/scores?v=${APP_DATA_VERSION}&fresh=1&t=${Date.now()}`, {
       cache: "no-store",
     });
     const payload = await response.json();

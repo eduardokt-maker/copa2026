@@ -1,5 +1,5 @@
 const knockoutBoard = document.querySelector("#knockoutBoard");
-const KNOCKOUT_DATA_VERSION = "20260626-knockout-16avos";
+const KNOCKOUT_DATA_VERSION = "20260626-auto-refresh";
 
 const roundOf32 = [
   { id: 73, date: "28/06", time: "16:00 BRT", a: { type: "R", group: "A" }, b: { type: "R", group: "B" } },
@@ -195,7 +195,7 @@ function renderBracket(payload) {
 async function bootKnockout() {
   knockoutBoard.innerHTML = `<div class="empty-state">Carregando calendario do mata-mata...</div>`;
   try {
-    const response = await fetch(`/api/scores?v=${KNOCKOUT_DATA_VERSION}&t=${Date.now()}`, {
+    const response = await fetch(`/api/scores?v=${KNOCKOUT_DATA_VERSION}&fresh=1&t=${Date.now()}`, {
       cache: "no-store",
     });
     const payload = await response.json();
