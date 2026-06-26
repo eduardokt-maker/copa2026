@@ -153,6 +153,11 @@ function renderRoundOf32(standings) {
               </div>
               ${renderTeamSlot(a)}
               ${renderTeamSlot(b)}
+              ${
+                match.id === 76
+                  ? `<a class="knockout-album-link" href="/japao-album.html" aria-label="Abrir album de figurinha da selecao japonesa">Album de figurinha</a>`
+                  : ""
+              }
             </article>
           `;
         }).join("")}
