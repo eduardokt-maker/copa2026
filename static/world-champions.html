@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>World Champions | Copa 2026</title>
+    <link rel="stylesheet" href="/styles.css?v=20260625-world-champions" />
+  </head>
+  <body class="world-champions-page">
+    <header class="world-header">
+      <a class="world-brand" href="/" aria-label="Voltar para a tela inicial">
+        <img
+          src="https://upload.wikimedia.org/wikipedia/en/thumb/1/17/2026_FIFA_World_Cup_emblem.svg/250px-2026_FIFA_World_Cup_emblem.svg.png"
+          alt="Logotipo oficial da Copa do Mundo FIFA 2026"
+        />
+        <span>
+          <strong>World Champions</strong>
+          <small>Copa 2026</small>
+        </span>
+      </a>
+      <a class="world-back" href="/">Inicio</a>
+    </header>
+
+    <main class="world-shell">
+      <section class="world-hero" aria-label="Resumo World Champions">
+        <p class="eyebrow">Diagrama vivo da Copa 2026</p>
+        <h1>Todos os grupos, datas e placares em uma visao.</h1>
+        <div class="world-stats" aria-label="Resumo dos jogos">
+          <span><strong id="worldGroupCount">0</strong> grupos</span>
+          <span><strong id="worldMatchCount">0</strong> jogos</span>
+          <span><strong id="worldFinishedCount">0</strong> encerrados</span>
+        </div>
+      </section>
+
+      <section class="world-diagram-wrap" aria-label="Diagrama dos grupos da Copa 2026">
+        <div class="world-diagram" id="worldDiagram">
+          <div class="world-center">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/en/thumb/1/17/2026_FIFA_World_Cup_emblem.svg/250px-2026_FIFA_World_Cup_emblem.svg.png"
+              alt="Simbolo da Copa 2026"
+            />
+            <strong>2026</strong>
+            <span>World Cup</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="world-results" aria-label="Resultados por grupo">
+        <div class="world-section-head">
+          <strong>Placares, datas e selecoes</strong>
+          <span id="worldUpdatedAt">Atualizando...</span>
+        </div>
+        <div class="world-groups-list" id="worldGroupsList" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <script src="/world-champions.js?v=20260625-world-champions"></script>
+  </body>
+</html>
