@@ -187,14 +187,17 @@ SCORE_RESULTS = [
 ]
 
 
-def build_groups() -> list[dict]:
+def build_groups(include_standings: bool = False) -> list[dict]:
+    standings_by_group = build_all_group_standings() if include_standings else {}
     groups = []
     for group in GROUP_DEFINITIONS:
+        group_id = group["id"]
         groups.append(
             {
-                "id": group["id"],
-                "name": f"Grupo {group['id']}",
+                "id": group_id,
+                "name": f"Grupo {group_id}",
                 "teams": [TEAM_BY_CODE[code] for code in group["teams"]],
+                "standings": standings_by_group.get(group_id, []),
             }
         )
     return groups
@@ -214,6 +217,85 @@ def build_scores() -> list[dict]:
             }
         )
     return scores
+
+
+def score_is_finished(score: dict) -> bool:
+    status = score.get("status", "finished")
+    has_home_score = isinstance(score.get("home_score"), int)
+    has_away_score = isinstance(score.get("away_score"), int)
+    return status == "finished" and has_home_score and has_away_score
+
+
+def empty_standing(team: dict) -> dict:
+    return {
+        "team": team,
+        "played": 0,
+        "wins": 0,
+        "draws": 0,
+        "losses": 0,
+        "goalsFor": 0,
+        "goalsAgainst": 0,
+        "goalDifference": 0,
+        "points": 0,
+        "position": 0,
+    }
+
+
+def apply_score_to_standing(row: dict, goals_for: int, goals_against: int) -> None:
+    row["played"] += 1
+    row["goalsFor"] += goals_for
+    row["goalsAgainst"] += goals_against
+    row["goalDifference"] = row["goalsFor"] - row["goalsAgainst"]
+
+    if goals_for > goals_against:
+        row["wins"] += 1
+        row["points"] += 3
+    elif goals_for == goals_against:
+        row["draws"] += 1
+        row["points"] += 1
+    else:
+        row["losses"] += 1
+
+
+def sort_standings(rows: list[dict]) -> list[dict]:
+    ordered = sorted(
+        rows,
+        key=lambda row: (
+            -row["points"],
+            -row["goalDifference"],
+            -row["goalsFor"],
+            row["team"]["country"],
+        ),
+    )
+    for index, row in enumerate(ordered, start=1):
+        row["position"] = index
+    return ordered
+
+
+def build_group_standings(group: dict, scores: list[dict] | None = None) -> list[dict]:
+    scores = scores if scores is not None else build_scores()
+    table = {code: empty_standing(TEAM_BY_CODE[code]) for code in group["teams"]}
+
+    for score in scores:
+        if score["group"] != group["id"] or not score_is_finished(score):
+            continue
+        home_row = table[score["home"]]
+        away_row = table[score["away"]]
+        apply_score_to_standing(home_row, score["home_score"], score["away_score"])
+        apply_score_to_standing(away_row, score["away_score"], score["home_score"])
+
+    return sort_standings(list(table.values()))
+
+
+def build_all_group_standings(scores: list[dict] | None = None) -> dict[str, list[dict]]:
+    scores = scores if scores is not None else build_scores()
+    return {group["id"]: build_group_standings(group, scores) for group in GROUP_DEFINITIONS}
+
+
+def build_general_standings(scores: list[dict] | None = None) -> list[dict]:
+    standings_by_group = build_all_group_standings(scores)
+    rows = [row for standings in standings_by_group.values() for row in standings]
+    return sort_standings(rows)
 
 CLUB_NAME_OVERRIDES = {
     "AC Milan": "Associazione Calcio Milan",
@@ -426,12 +508,24 @@ class CopaHandler(SimpleHTTPRequestHandler):
             self.send_json({"teams": TEAMS, "count": len(TEAMS), "version": APP_VERSION})
             return
         if path == "/api/groups":
-            groups = build_groups()
+            groups = build_groups(include_standings=True)
             self.send_json({"groups": groups, "count": len(groups), "version": APP_VERSION})
             return
         if path == "/api/scores":
             scores = build_scores()
-            self.send_json({"scores": scores, "count": len(scores), "version": APP_VERSION})
+            finished_scores = [score for score in scores if score_is_finished(score)]
+            self.send_json(
+                {
+                    "scores": scores,
+                    "count": len(scores),
+                    "finished_count": len(finished_scores),
+                    "standings": {
+                        "groups": build_all_group_standings(scores),
+                        "general": build_general_standings(scores),
+                    },
+                    "version": APP_VERSION,
+                }
+            )
             return
         if path == "/api/roster":
             query = parse_qs(parsed_url.query)

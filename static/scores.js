@@ -4,22 +4,16 @@ const scoreTitle = document.querySelector("#scoreTitle");
 const groupStandings = document.querySelector("#groupStandings");
 const initialGroup = new URLSearchParams(window.location.search).get("group") || "";
 const isGroupMode = Boolean(initialGroup);
-const APP_DATA_VERSION = "20260625-primeira-rodada-fixa";
-const ROUND_ONE_MATCHES_PER_GROUP = 2;
+const APP_DATA_VERSION = "20260625-live-standings";
 const POLL_INTERVAL_MS = 60000;
-const snapshotKey = `copa2026:first-round:${stateKeyFromGroup(initialGroup)}`;
 
 const state = {
   matches: [],
+  standings: null,
   group: initialGroup.toUpperCase(),
-  frozen: false,
   updatedAt: "",
   pollTimer: null,
 };
-
-function stateKeyFromGroup(group) {
-  return group ? `group-${group.toUpperCase()}` : "general";
-}
 
 function flagUrl(code) {
   return `https://flagcdn.com/w80/${code}.png`;
@@ -91,53 +85,21 @@ function hasFinalScore(match) {
   return Number.isFinite(Number(match.home_score)) && Number.isFinite(Number(match.away_score));
 }
 
-function firstRoundMatches(matches) {
-  const byGroup = new Map();
-
-  matches.forEach((match) => {
-    const list = byGroup.get(match.group) || [];
-    list.push(match);
-    byGroup.set(match.group, list);
-  });
-
-  return [...byGroup.values()].flatMap((list) =>
-    list
-      .filter(hasFinalScore)
-      .sort((a, b) => `${a.date}-${a.home}-${a.away}`.localeCompare(`${b.date}-${b.home}-${b.away}`))
-      .slice(0, ROUND_ONE_MATCHES_PER_GROUP)
-  );
+function isFinishedMatch(match) {
+  return statusFor(match) === "finished" && hasFinalScore(match);
 }
 
-function firstRoundIsComplete(matches) {
-  const roundOne = firstRoundMatches(matches);
-
-  if (state.group) {
-    return roundOne.filter((match) => match.group === state.group).length >= ROUND_ONE_MATCHES_PER_GROUP;
-  }
-
-  const completedGroups = new Set(roundOne.map((match) => match.group));
-  return completedGroups.size >= 12 && roundOne.length >= 12 * ROUND_ONE_MATCHES_PER_GROUP;
+function finishedMatches(matches) {
+  return matches.filter(isFinishedMatch);
 }
 
-function saveFrozenSnapshot(matches) {
-  const payload = {
-    version: APP_DATA_VERSION,
-    frozenAt: new Date().toISOString(),
-    group: state.group,
-    matches,
-  };
-  localStorage.setItem(snapshotKey, JSON.stringify(payload));
-}
-
-function loadFrozenSnapshot() {
+function clearFrozenSnapshots() {
   try {
-    const raw = localStorage.getItem(snapshotKey);
-    if (!raw) return null;
-    const payload = JSON.parse(raw);
-    if (payload.version !== APP_DATA_VERSION || !Array.isArray(payload.matches)) return null;
-    return payload;
+    Object.keys(localStorage)
+      .filter((key) => key.startsWith("copa2026:first-round:"))
+      .forEach((key) => localStorage.removeItem(key));
   } catch (error) {
-    return null;
+    // Storage can be blocked in private or restricted browser contexts.
   }
 }
 
@@ -195,7 +157,9 @@ function buildStandings(matches) {
 
 function renderStandings(matches) {
   const groupLabel = state.group ? `Grupo ${state.group}` : "Classificacao Geral";
-  const standings = buildStandings(matches);
+  const standings =
+    (state.group ? state.standings?.groups?.[state.group] : state.standings?.general) ||
+    buildStandings(matches);
 
   if (!standings.length) {
     groupStandings.innerHTML = `
@@ -213,7 +177,7 @@ function renderStandings(matches) {
         <span>${state.group ? "Classificacao do grupo" : "Classificacao geral"}</span>
         <strong>${groupLabel}</strong>
       </div>
-      <small>${state.frozen ? "Primeira rodada finalizada | dados fixos" : "Atualizando partidas finalizadas"}</small>
+      <small>Atualizado com jogos encerrados</small>
     </div>
     <div class="standings-table" role="table" aria-label="Pontuacao das selecoes do ${groupLabel}">
       <div class="standings-row standings-row-head" role="row">
@@ -246,7 +210,8 @@ function renderStandings(matches) {
 
 function standingsRankMap(matches) {
   const map = new Map();
-  buildStandings(matches).forEach((row, index) => {
+  const standings = state.standings?.general || buildStandings(matches);
+  standings.forEach((row, index) => {
     map.set(row.team.code, index + 1);
   });
   return map;
@@ -325,7 +290,7 @@ function renderDetail(match) {
 }
 
 function render() {
-  const visible = filterMatches();
+  const visible = finishedMatches(filterMatches());
   document.body.classList.toggle("standings-only", isGroupMode);
   document.body.classList.toggle("general-standings-page", !isGroupMode);
   matchCount.textContent = String(visible.length);
@@ -355,32 +320,20 @@ function render() {
 async function bootScores() {
   scoresGrid.innerHTML = `<div class="empty-state">Carregando placares...</div>`;
   groupStandings.innerHTML = `<div class="empty-state">Carregando pontuacao...</div>`;
-
-  const frozenSnapshot = loadFrozenSnapshot();
-  if (frozenSnapshot) {
-    state.matches = frozenSnapshot.matches.map(enrichMatch);
-    state.frozen = true;
-    state.updatedAt = frozenSnapshot.frozenAt;
-    render();
-    return;
-  }
+  clearFrozenSnapshots();
 
   try {
-    const response = await fetch(`/api/scores?v=${APP_DATA_VERSION}&t=${Date.now()}`);
+    const response = await fetch(`/api/scores?v=${APP_DATA_VERSION}&t=${Date.now()}`, {
+      cache: "no-store",
+    });
     const payload = await response.json();
     state.matches = (payload.scores || []).map(enrichMatch);
+    state.standings = payload.standings || null;
     state.updatedAt = new Date().toISOString();
 
-    if (firstRoundIsComplete(state.matches)) {
-      state.frozen = true;
-      saveFrozenSnapshot(state.matches);
-    }
-
     render();
-
-    if (!state.frozen) {
-      state.pollTimer = window.setTimeout(bootScores, POLL_INTERVAL_MS);
-    }
+    window.clearTimeout(state.pollTimer);
+    state.pollTimer = window.setTimeout(bootScores, POLL_INTERVAL_MS);
   } catch (error) {
     scoresGrid.innerHTML = `<div class="empty-state">Nao foi possivel carregar os placares agora.</div>`;
   }

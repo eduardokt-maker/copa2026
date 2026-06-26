@@ -1944,6 +1944,39 @@ footer {
   list-style: none;
 }
 
+.group-card-standings {
+  border-top: 1px solid rgba(16, 32, 51, 0.08);
+  background: #f8fbff;
+}
+
+.group-card-standings .standings-row {
+  grid-template-columns: minmax(112px, 1fr) repeat(5, minmax(28px, 0.2fr)) minmax(38px, 0.26fr);
+  min-height: 36px;
+  padding: 5px 8px;
+  font-size: 0.72rem;
+}
+
+.group-card-standings .standings-row-head {
+  min-height: 30px;
+  font-size: 0.58rem;
+}
+
+.group-card-standings .standings-team {
+  gap: 5px;
+}
+
+.group-card-standings .standings-team > strong {
+  width: 20px;
+  height: 20px;
+  border-radius: 7px;
+  font-size: 0.68rem;
+}
+
+.group-card-standings .standings-team img {
+  width: 24px;
+  height: 17px;
+}
+
 .group-team-list li {
   display: grid;
   grid-template-columns: 36px 44px minmax(0, 1fr);
