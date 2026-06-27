@@ -6,7 +6,7 @@ const calendarTotalCount = document.querySelector("#calendarTotalCount");
 const calendarUpdatedAt = document.querySelector("#calendarUpdatedAt");
 const calendarFilterButtons = document.querySelectorAll("[data-calendar-filter]");
 
-const CALENDAR_VERSION = "20260627-calendario-horarios";
+const CALENDAR_VERSION = "20260627-calendario-dia-estadio";
 const CALENDAR_POLL_INTERVAL_MS = 60000;
 
 let calendarState = {
@@ -104,6 +104,8 @@ const groupFixtureTimesBrt = {
   },
 };
 
+const weekdaysPt = ["domingo", "segunda-feira", "terca-feira", "quarta-feira", "quinta-feira", "sexta-feira", "sabado"];
+
 function flagUrl(code) {
   return `https://flagcdn.com/w80/${code}.png`;
 }
@@ -112,6 +114,37 @@ function formatDate(value) {
   const [year, month, day] = String(value || "").split("-");
   if (!year || !month || !day) return String(value || "Data a definir");
   return `${day}/${month}/${year}`;
+}
+
+function weekdayNameFromIso(value) {
+  const [year, month, day] = String(value || "").split("-").map(Number);
+  if (!year || !month || !day) return "";
+  const date = new Date(Date.UTC(year, month - 1, day, 12, 0, 0));
+  return weekdaysPt[date.getUTCDay()] || "";
+}
+
+function formatDateWithWeekday(value) {
+  const dateText = String(value || "");
+  if (/^\d{4}-\d{2}-\d{2}$/.test(dateText)) {
+    const weekday = weekdayNameFromIso(dateText);
+    return `${weekday} | ${formatDate(dateText)}`;
+  }
+
+  const dayMonthMatches = [...dateText.matchAll(/(\d{2})\/(\d{2})/g)];
+  if (dayMonthMatches.length === 1) {
+    const [, day, month] = dayMonthMatches[0];
+    const isoDate = `2026-${month}-${day}`;
+    return `${weekdayNameFromIso(isoDate)} | ${day}/${month}/2026`;
+  }
+  if (dayMonthMatches.length >= 2) {
+    const [, startDay, startMonth] = dayMonthMatches[0];
+    const [, endDay, endMonth] = dayMonthMatches[dayMonthMatches.length - 1];
+    const startIsoDate = `2026-${startMonth}-${startDay}`;
+    const endIsoDate = `2026-${endMonth}-${endDay}`;
+    return `${weekdayNameFromIso(startIsoDate)} a ${weekdayNameFromIso(endIsoDate)} | ${dateText}/2026`;
+  }
+
+  return dateText || "Data a definir";
 }
 
 function timeLabel(match) {
@@ -222,7 +255,7 @@ function renderCalendarCard(match) {
       <div class="calendar-match-meta">
         <span>${match.phase || `Grupo ${match.group}`}</span>
         <strong>${match.id ? `Jogo ${match.id}` : `Grupo ${match.group}`}</strong>
-        <small>${formatDate(match.date)} | ${timeLabel(match)}</small>
+        <small>${formatDateWithWeekday(match.date)} | ${timeLabel(match)}</small>
       </div>
       <div class="calendar-match-line">
         ${renderTeam(match.home_team || { country: match.homeLabel }, "")}
@@ -234,7 +267,6 @@ function renderCalendarCard(match) {
         <span>Horario: ${timeLabel(match)}</span>
         <span>${timeSourceLabel(match)}</span>
         <span>Estadio: ${match.stadium || "A definir"}</span>
-        <span>Cidade/local: ${match.city || "A definir"}</span>
       </div>
     </article>
   `;
@@ -253,7 +285,6 @@ function buildKnockoutMatches() {
       homeLabel: a.label,
       awayLabel: b.label,
       stadium: "A definir",
-      city: "A definir",
     };
   });
   const future = futureRounds.flatMap((round) =>
@@ -266,7 +297,6 @@ function buildKnockoutMatches() {
       homeLabel: match.a,
       awayLabel: match.b,
       stadium: "A definir",
-      city: "A definir",
     })),
   );
   return [...firstRound, ...future];
@@ -304,7 +334,6 @@ function buildGroupFutureMatches() {
             home_team: home,
             away_team: away,
             stadium: "A definir",
-            city: "A definir",
           });
         }
       }
