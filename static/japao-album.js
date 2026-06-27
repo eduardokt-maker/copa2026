@@ -326,16 +326,97 @@ const playerFeatures = {
     summary:
       "Resumo: lateral veterano, intenso e lider, valioso pela experiencia, versatilidade e competitividade.",
   },
+  6: {
+    tag: "Camisa 06 | Atacante",
+    title: "Machino Shuto",
+    intro:
+      "A principal caracteristica de Machino Shuto e a presenca como centroavante, usando porte fisico e finalizacao para atacar a area.",
+    bullets: [
+      "Atacante de referencia, com boa estatura para disputar bolas pelo alto.",
+      "Movimento dentro da area para aparecer em zonas de finalizacao.",
+      "Capacidade de segurar a bola e dar apoio para a chegada dos meias.",
+      "Finalizacao objetiva quando recebe em condicao de chute.",
+      "Experiencia recente em ligas europeias, enfrentando defesas mais fisicas.",
+      "Opcao util para jogos em que o Japao precisa de presenca no comando do ataque.",
+    ],
+    summary:
+      "Resumo: centroavante fisico e de area, importante para finalizar jogadas e servir como ponto de apoio ofensivo.",
+  },
+  7: {
+    tag: "Camisa 07 | Meio-campo",
+    title: "Tanaka Ao",
+    intro:
+      "A principal caracteristica de Tanaka Ao e o equilibrio no meio-campo, conectando defesa e ataque com disciplina e chegada surpresa.",
+    bullets: [
+      "Meio-campista central com boa leitura de espacos.",
+      "Ajuda na recomposicao defensiva e na pressao apos perda da bola.",
+      "Tem chegada de segunda linha para finalizar de fora ou dentro da area.",
+      "Boa circulacao de passes para manter o ritmo da equipe.",
+      "Intensidade para cobrir setores e sustentar o bloco japones.",
+      "Jogador confiavel para partidas de alta exigencia tatica.",
+    ],
+    summary:
+      "Resumo: volante/meia equilibrado, intenso e inteligente, forte para organizar o meio e aparecer como elemento surpresa.",
+  },
+  8: {
+    tag: "Camisa 08 | Destaque tecnico",
+    title: "Kubo Takefusa",
+    intro:
+      "A principal caracteristica de Kubo Takefusa e a criatividade tecnica, com drible curto, passe decisivo e capacidade de desequilibrar pelo lado direito.",
+    bullets: [
+      "Ponta/meia de muita qualidade tecnica e controle de bola.",
+      "Drible curto para escapar da marcacao em espacos pequenos.",
+      "Passe final e criacao de chances para os atacantes.",
+      "Pode partir da direita e entrar por dentro para armar ou finalizar.",
+      "Experiencia em alto nivel na Espanha, atuando na Real Sociedad.",
+      "Um dos jogadores mais talentosos e criativos da geracao japonesa.",
+    ],
+    summary:
+      "Resumo: jogador estrela do album, criativo, tecnico e decisivo, capaz de mudar o ritmo do jogo com uma jogada individual.",
+  },
+  9: {
+    tag: "Camisa 09 | Atacante",
+    title: "Goto Keisuke",
+    intro:
+      "A principal caracteristica de Goto Keisuke e o potencial como atacante alto, com presenca de area, profundidade e bom jogo aereo.",
+    bullets: [
+      "Centroavante jovem, alto e com forte presenca fisica.",
+      "Bom recurso em bolas aereas e disputas dentro da area.",
+      "Busca profundidade para atacar o espaco entre os zagueiros.",
+      "Movimento de atacante moderno, saindo da area para participar da jogada.",
+      "Finalizacao em crescimento, com passagem produtiva no futebol belga.",
+      "Perfil de grande potencial para evoluir no futebol europeu.",
+    ],
+    summary:
+      "Resumo: atacante promissor, alto e agressivo, forte no jogo aereo e com boa leitura para se posicionar na area.",
+  },
+  10: {
+    tag: "Camisa 10 | Meia-atacante",
+    title: "Doan Ritsu",
+    intro:
+      "A principal caracteristica de Doan Ritsu e o corte da direita para o meio, usando o pe esquerdo para finalizar ou criar jogadas.",
+    bullets: [
+      "Ponta canhoto moderno, perigoso quando parte da direita para dentro.",
+      "Chute forte e preciso de media distancia.",
+      "Boa conducao em velocidade e drible frontal.",
+      "Pode atuar como ala, ponta ou meia-atacante centralizado.",
+      "Combina bem em jogadas curtas e tabelas pelo chao.",
+      "Experiencia e poder de decisao em jogos importantes pelo Japao.",
+    ],
+    summary:
+      "Resumo: meia-atacante canhoto, criativo e decisivo, forte no chute, no drible curto e na jogada por dentro.",
+  },
 };
 
 function renderJapanAlbum() {
   japanStickerGrid.innerHTML = japanPlayers
     .map(
       (player) => `
-        <article class="japan-sticker-card">
+        <article class="japan-sticker-card ${player.number === 8 ? "japan-sticker-card-star" : ""}">
           <div class="japan-sticker-photo">
             <img src="${player.photo}" alt="Foto de rosto: ${player.romaji}" loading="lazy" />
             <span>${String(player.number).padStart(2, "0")}</span>
+            ${player.number === 8 ? '<strong class="japan-sticker-star" aria-label="Jogador destaque">★</strong>' : ""}
           </div>
           <div class="japan-sticker-info">
             <span class="japan-sticker-position">${positionLabels[player.position] || player.position}</span>
