@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Calendario Geral | Copa 2026</title>
+    <meta
+      name="description"
+      content="Calendario geral da Copa 2026 com jogos encerrados, placares, datas, estadios, cidades e fases futuras."
+    />
+    <link rel="canonical" href="https://copa2026-c776.onrender.com/calendario-geral.html" />
+    <link rel="stylesheet" href="/styles.css?v=20260627-calendario-geral" />
+  </head>
+  <body class="calendar-page">
+    <header class="world-header">
+      <a class="world-brand" href="/" aria-label="Voltar para a tela inicial">
+        <img
+          src="https://upload.wikimedia.org/wikipedia/en/thumb/1/17/2026_FIFA_World_Cup_emblem.svg/250px-2026_FIFA_World_Cup_emblem.svg.png"
+          alt="Logotipo oficial da Copa do Mundo FIFA 2026"
+        />
+        <span>
+          <strong>Calendario Geral</strong>
+          <small>Copa 2026</small>
+        </span>
+      </a>
+      <nav class="world-nav" aria-label="Navegacao do calendario">
+        <a class="world-back" href="/">Inicio</a>
+        <a class="world-back" href="/scores.html">Classificacao</a>
+        <a class="world-back" href="/mata-mata.html">Mata-mata</a>
+      </nav>
+    </header>
+
+    <main class="calendar-shell">
+      <section class="calendar-hero">
+        <p class="eyebrow">Jogos encerrados, proximos jogos e fases futuras</p>
+        <h1>Calendario Geral da Copa 2026</h1>
+        <p>
+          Central unica para acompanhar placares ja encerrados, datas, estadio,
+          cidade/local e o caminho preparado ate a final.
+        </p>
+      </section>
+
+      <section class="calendar-summary" aria-label="Resumo do calendario">
+        <div>
+          <span>Encerrados</span>
+          <strong id="calendarFinishedCount">0</strong>
+        </div>
+        <div>
+          <span>A acontecer</span>
+          <strong id="calendarFutureCount">0</strong>
+        </div>
+        <div>
+          <span>Total listado</span>
+          <strong id="calendarTotalCount">0</strong>
+        </div>
+      </section>
+
+      <section class="calendar-control-band" aria-label="Filtros do calendario">
+        <div>
+          <strong>Atualizacao automatica</strong>
+          <span id="calendarUpdatedAt">Carregando dados...</span>
+        </div>
+        <div class="calendar-tabs" role="tablist" aria-label="Filtrar calendario">
+          <button class="is-active" type="button" data-calendar-filter="all">Todos</button>
+          <button type="button" data-calendar-filter="finished">Encerrados</button>
+          <button type="button" data-calendar-filter="future">A acontecer</button>
+        </div>
+      </section>
+
+      <section class="calendar-section">
+        <div class="calendar-section-head">
+          <span>Fase de grupos</span>
+          <strong>Jogos com placar e local</strong>
+        </div>
+        <div class="calendar-list" id="calendarGroupList" aria-live="polite"></div>
+      </section>
+
+      <section class="calendar-section">
+        <div class="calendar-section-head">
+          <span>Mata-mata</span>
+          <strong>Fases preparadas ate a final</strong>
+        </div>
+        <div class="calendar-list" id="calendarKnockoutList" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <script src="/calendario-geral.js?v=20260627-calendario-geral"></script>
+  </body>
+</html>
