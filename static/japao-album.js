@@ -1,6 +1,6 @@
 const japanStickerGrid = document.querySelector("#japanStickerGrid");
 const japanAlbumShareButton = document.querySelector(".japan-album-share-button");
-const goalkeeperPanel = document.querySelector("#goalkeeperPanel");
+const playerFeaturePanel = document.querySelector("#playerFeaturePanel");
 
 const japanPlayers = [
   {
@@ -246,6 +246,40 @@ const positionLabels = {
   FW: "Atacante",
 };
 
+const playerFeatures = {
+  1: {
+    tag: "Camisa 01 | Goleiro",
+    title: "Suzuki Zaion",
+    intro: "A principal caracteristica de Suzuki Zaion e a forca fisica combinada com bons reflexos.",
+    bullets: [
+      "Reflexos rapidos em finalizacoes de curta distancia.",
+      "Forca fisica para disputar bolas aereas.",
+      "Boa impulsao e grande alcance no gol.",
+      "Chute longo para iniciar contra-ataques.",
+      "Seguranca em cruzamentos, usando bem o corpo.",
+      "Presenca imponente dentro da area.",
+    ],
+    summary:
+      "Resumo: goleiro fisico, agil, forte em bolas aereas e com potencial para atuar em alto nivel internacional.",
+  },
+  2: {
+    tag: "Camisa 02 | Lateral-direito",
+    title: "Sugawara Yukinari",
+    intro:
+      "A principal caracteristica de Sugawara Yukinari e ser um lateral-direito moderno, rapido e muito participativo pela faixa direita.",
+    bullets: [
+      "Velocidade para atacar o corredor direito e voltar para recompor.",
+      "Boa forca nos duelos defensivos e disputa corpo a corpo.",
+      "Versatilidade para atuar como lateral, ala ou jogador mais adiantado pelo lado.",
+      "Apoio ofensivo constante, criando linhas de passe e amplitude.",
+      "Cruzamentos e passes para assistencia como arma importante.",
+      "Leitura defensiva para interceptar jogadas e recuperar a bola.",
+    ],
+    summary:
+      "Resumo: lateral rapido, combativo e versatil, forte no apoio ofensivo e util para dar profundidade ao lado direito do Japao.",
+  },
+};
+
 function renderJapanAlbum() {
   japanStickerGrid.innerHTML = japanPlayers
     .map(
@@ -263,8 +297,8 @@ function renderJapanAlbum() {
           </div>
           <div class="japan-sticker-actions">
             ${
-              player.number === 1
-                ? '<button class="japan-sticker-feature-button" type="button" data-goalkeeper-open>Caracteristica</button>'
+              playerFeatures[player.number]
+                ? `<button class="japan-sticker-feature-button" type="button" data-player-feature-open="${player.number}">Caracteristica</button>`
                 : ""
             }
             <a href="${player.source}" target="_blank" rel="noreferrer">Fonte JP</a>
@@ -277,28 +311,47 @@ function renderJapanAlbum() {
 
 renderJapanAlbum();
 
-const goalkeeperFeatureButton = document.querySelector("[data-goalkeeper-open]");
-const goalkeeperCloseButtons = document.querySelectorAll("[data-goalkeeper-close]");
+const playerFeatureButtons = document.querySelectorAll("[data-player-feature-open]");
+const playerFeatureCloseButtons = document.querySelectorAll("[data-player-feature-close]");
+let lastPlayerFeatureButton = null;
 
-function openGoalkeeperPanel() {
-  if (!goalkeeperPanel) return;
-  goalkeeperPanel.hidden = false;
-  document.body.classList.add("japan-goalkeeper-panel-open");
-  goalkeeperPanel.querySelector(".japan-goalkeeper-close")?.focus();
+function openPlayerFeaturePanel(playerNumber, triggerButton) {
+  if (!playerFeaturePanel) return;
+  const player = japanPlayers.find((item) => item.number === playerNumber);
+  const feature = playerFeatures[playerNumber];
+  if (!player || !feature) return;
+
+  playerFeaturePanel.querySelector("#playerFeatureTag").textContent = feature.tag;
+  playerFeaturePanel.querySelector("#playerFeaturePanelTitle").textContent = feature.title;
+  playerFeaturePanel.querySelector("#playerFeatureIntro").textContent = feature.intro;
+  playerFeaturePanel.querySelector("#playerFeatureList").innerHTML = feature.bullets
+    .map((bullet) => `<li>${bullet}</li>`)
+    .join("");
+  playerFeaturePanel.querySelector("#playerFeatureSummary").textContent = feature.summary;
+  playerFeaturePanel.querySelector("#playerFeatureSource").href = player.source;
+
+  lastPlayerFeatureButton = triggerButton;
+  playerFeaturePanel.hidden = false;
+  document.body.classList.add("japan-player-feature-panel-open");
+  playerFeaturePanel.querySelector(".japan-player-feature-close")?.focus();
 }
 
-function closeGoalkeeperPanel() {
-  if (!goalkeeperPanel) return;
-  goalkeeperPanel.hidden = true;
-  document.body.classList.remove("japan-goalkeeper-panel-open");
-  goalkeeperFeatureButton?.focus();
+function closePlayerFeaturePanel() {
+  if (!playerFeaturePanel) return;
+  playerFeaturePanel.hidden = true;
+  document.body.classList.remove("japan-player-feature-panel-open");
+  lastPlayerFeatureButton?.focus();
 }
 
-goalkeeperFeatureButton?.addEventListener("click", openGoalkeeperPanel);
-goalkeeperCloseButtons.forEach((button) => button.addEventListener("click", closeGoalkeeperPanel));
+playerFeatureButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    openPlayerFeaturePanel(Number(button.dataset.playerFeatureOpen), button);
+  });
+});
+playerFeatureCloseButtons.forEach((button) => button.addEventListener("click", closePlayerFeaturePanel));
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && !goalkeeperPanel?.hidden) {
-    closeGoalkeeperPanel();
+  if (event.key === "Escape" && !playerFeaturePanel?.hidden) {
+    closePlayerFeaturePanel();
   }
 });
 

@@ -3424,11 +3424,11 @@ footer {
   font: inherit;
 }
 
-.japan-goalkeeper-panel[hidden] {
+.japan-player-feature-panel[hidden] {
   display: none;
 }
 
-.japan-goalkeeper-panel {
+.japan-player-feature-panel {
   position: fixed;
   inset: 0;
   z-index: 80;
@@ -3438,14 +3438,14 @@ footer {
   padding: 16px;
 }
 
-.japan-goalkeeper-panel-backdrop {
+.japan-player-feature-panel-backdrop {
   position: absolute;
   inset: 0;
   background: rgba(2, 8, 23, 0.48);
   backdrop-filter: blur(3px);
 }
 
-.japan-goalkeeper-panel-card {
+.japan-player-feature-panel-card {
   position: relative;
   width: min(430px, 100%);
   max-height: min(76vh, 620px);
@@ -3462,7 +3462,7 @@ footer {
   box-shadow: 0 26px 64px rgba(0, 0, 0, 0.38);
 }
 
-.japan-goalkeeper-close {
+.japan-player-feature-close {
   justify-self: end;
   min-height: 34px;
   border: 0;
@@ -3476,7 +3476,7 @@ footer {
   font-weight: 950;
 }
 
-.japan-goalkeeper-tag {
+.japan-player-feature-tag {
   width: fit-content;
   border-radius: 999px;
   background: #bc002d;
@@ -3486,38 +3486,49 @@ footer {
   font-weight: 950;
 }
 
-.japan-goalkeeper-panel-card h2,
-.japan-goalkeeper-panel-card p,
-.japan-goalkeeper-panel-card ul {
+.japan-player-feature-panel-card h2,
+.japan-player-feature-panel-card p,
+.japan-player-feature-panel-card ul {
   margin: 0;
 }
 
-.japan-goalkeeper-panel-card h2 {
+.japan-player-feature-panel-card h2 {
   font-size: clamp(1.7rem, 7vw, 2.5rem);
   line-height: 0.96;
 }
 
-.japan-goalkeeper-panel-card p,
-.japan-goalkeeper-panel-card li {
+.japan-player-feature-panel-card p,
+.japan-player-feature-panel-card li {
   color: #425166;
   font-size: 0.94rem;
   font-weight: 760;
   line-height: 1.42;
 }
 
-.japan-goalkeeper-panel-card ul {
+.japan-player-feature-panel-card ul {
   display: grid;
   gap: 6px;
   padding-left: 18px;
 }
 
-.japan-goalkeeper-panel-card strong {
+.japan-player-feature-panel-card strong {
   border-radius: 12px;
   background: rgba(188, 0, 45, 0.08);
   color: #102033;
   padding: 10px;
   font-size: 0.92rem;
   line-height: 1.38;
+}
+
+.japan-player-feature-source {
+  width: fit-content;
+  border-radius: 10px;
+  background: #102033;
+  color: #ffffff;
+  padding: 7px 10px;
+  font-size: 0.78rem;
+  font-weight: 950;
+  text-decoration: none;
 }
 
 @media (max-width: 640px) {
@@ -3530,11 +3541,11 @@ footer {
     width: min(100%, 260px);
   }
 
-  .japan-goalkeeper-panel {
+  .japan-player-feature-panel {
     padding: 12px;
   }
 
-  .japan-goalkeeper-panel-card {
+  .japan-player-feature-panel-card {
     max-height: 72vh;
     border-radius: 16px;
   }
