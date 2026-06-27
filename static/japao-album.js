@@ -278,6 +278,54 @@ const playerFeatures = {
     summary:
       "Resumo: lateral rapido, combativo e versatil, forte no apoio ofensivo e util para dar profundidade ao lado direito do Japao.",
   },
+  3: {
+    tag: "Camisa 03 | Zagueiro",
+    title: "Taniguchi Shogo",
+    intro:
+      "A principal caracteristica de Taniguchi Shogo e a seguranca defensiva aliada a experiencia para organizar a linha de zaga.",
+    bullets: [
+      "Zagueiro experiente, acostumado a comandar o setor defensivo.",
+      "Boa leitura de posicionamento para cobrir espacos e fechar linhas de passe.",
+      "Serenidade para defender dentro da area sem se precipitar.",
+      "Regularidade em jogos grandes e experiencia internacional pela selecao japonesa.",
+      "Capacidade de iniciar jogadas simples a partir da defesa.",
+      "Presenca forte em bolas aereas defensivas.",
+    ],
+    summary:
+      "Resumo: defensor maduro, seguro e posicional, importante para dar equilibrio e lideranca a zaga japonesa.",
+  },
+  4: {
+    tag: "Camisa 04 | Zagueiro",
+    title: "Itakura Ko",
+    intro:
+      "A principal caracteristica de Itakura Ko e a versatilidade defensiva, com boa saida de bola e antecipacao nas jogadas.",
+    bullets: [
+      "Pode atuar como zagueiro central e tambem como volante defensivo.",
+      "Boa qualidade tecnica para construir jogadas desde a defesa.",
+      "Antecipacao defensiva para cortar passes antes da finalizacao adversaria.",
+      "Altura e alcance para competir em bolas aereas.",
+      "Passe longo como recurso para acelerar transicoes ofensivas.",
+      "Experiencia em ligas europeias de alta intensidade.",
+    ],
+    summary:
+      "Resumo: zagueiro moderno, tecnico e versatil, forte na leitura defensiva e na construcao desde tras.",
+  },
+  5: {
+    tag: "Camisa 05 | Lateral",
+    title: "Nagatomo Yuto",
+    intro:
+      "A principal caracteristica de Nagatomo Yuto e a intensidade competitiva, combinada com enorme experiencia internacional.",
+    bullets: [
+      "Lateral de muita energia, entrega e disciplina tatica.",
+      "Experiencia acumulada em grandes clubes e varias Copas do Mundo.",
+      "Pode atuar pelos dois lados da defesa, com boa adaptacao.",
+      "Capacidade de apoiar o ataque e recompor rapidamente.",
+      "Boa resistencia fisica para repetir corridas durante o jogo.",
+      "Lideranca e leitura emocional de partidas decisivas.",
+    ],
+    summary:
+      "Resumo: lateral veterano, intenso e lider, valioso pela experiencia, versatilidade e competitividade.",
+  },
 };
 
 function renderJapanAlbum() {
