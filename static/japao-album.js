@@ -1,5 +1,6 @@
 const japanStickerGrid = document.querySelector("#japanStickerGrid");
 const japanAlbumShareButton = document.querySelector(".japan-album-share-button");
+const goalkeeperPanel = document.querySelector("#goalkeeperPanel");
 
 const japanPlayers = [
   {
@@ -261,6 +262,11 @@ function renderJapanAlbum() {
             <p>${player.leituraPt}</p>
           </div>
           <div class="japan-sticker-actions">
+            ${
+              player.number === 1
+                ? '<button class="japan-sticker-feature-button" type="button" data-goalkeeper-open>Caracteristica</button>'
+                : ""
+            }
             <a href="${player.source}" target="_blank" rel="noreferrer">Fonte JP</a>
           </div>
         </article>
@@ -270,6 +276,31 @@ function renderJapanAlbum() {
 }
 
 renderJapanAlbum();
+
+const goalkeeperFeatureButton = document.querySelector("[data-goalkeeper-open]");
+const goalkeeperCloseButtons = document.querySelectorAll("[data-goalkeeper-close]");
+
+function openGoalkeeperPanel() {
+  if (!goalkeeperPanel) return;
+  goalkeeperPanel.hidden = false;
+  document.body.classList.add("japan-goalkeeper-panel-open");
+  goalkeeperPanel.querySelector(".japan-goalkeeper-close")?.focus();
+}
+
+function closeGoalkeeperPanel() {
+  if (!goalkeeperPanel) return;
+  goalkeeperPanel.hidden = true;
+  document.body.classList.remove("japan-goalkeeper-panel-open");
+  goalkeeperFeatureButton?.focus();
+}
+
+goalkeeperFeatureButton?.addEventListener("click", openGoalkeeperPanel);
+goalkeeperCloseButtons.forEach((button) => button.addEventListener("click", closeGoalkeeperPanel));
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && !goalkeeperPanel?.hidden) {
+    closeGoalkeeperPanel();
+  }
+});
 
 const JAPAN_ALBUM_SHARE_URL = "https://copa2026-c776.onrender.com/japao-album.html";
 const JAPAN_ALBUM_SHARE_TITLE = "Album da Selecao Japonesa | World Cup 2026";

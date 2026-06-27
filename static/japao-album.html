@@ -30,7 +30,7 @@
     />
     <meta name="twitter:image" content="https://copa2026-c776.onrender.com/assets/japan-album/ekt-system-world-cup-2026.png?v=20260626-bridge-eagle" />
     <link rel="canonical" href="https://copa2026-c776.onrender.com/japao-album.html" />
-    <link rel="stylesheet" href="/styles.css?v=20260626-album-share" />
+    <link rel="stylesheet" href="/styles.css?v=20260627-goleiro-panel" />
   </head>
   <body class="japan-album-page">
     <header class="world-header">
@@ -86,6 +86,43 @@
       <section class="japan-sticker-grid" id="japanStickerGrid" aria-live="polite"></section>
     </main>
 
-    <script src="/japao-album.js?v=20260626-album-share"></script>
+    <div class="japan-goalkeeper-panel" id="goalkeeperPanel" hidden>
+      <div class="japan-goalkeeper-panel-backdrop" data-goalkeeper-close></div>
+      <aside
+        class="japan-goalkeeper-panel-card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="goalkeeperPanelTitle"
+      >
+        <button
+          class="japan-goalkeeper-close"
+          type="button"
+          data-goalkeeper-close
+          aria-label="Fechar painel e voltar ao album"
+        >
+          Fechar
+        </button>
+        <span class="japan-goalkeeper-tag">Camisa 01 | Goleiro</span>
+        <h2 id="goalkeeperPanelTitle">Suzuki Zaion</h2>
+        <p>
+          A principal caracteristica de Suzuki Zaion e a forca fisica combinada
+          com bons reflexos.
+        </p>
+        <ul>
+          <li>Reflexos rapidos em finalizacoes de curta distancia.</li>
+          <li>Forca fisica para disputar bolas aereas.</li>
+          <li>Boa impulsao e grande alcance no gol.</li>
+          <li>Chute longo para iniciar contra-ataques.</li>
+          <li>Seguranca em cruzamentos, usando bem o corpo.</li>
+          <li>Presenca imponente dentro da area.</li>
+        </ul>
+        <strong>
+          Resumo: goleiro fisico, agil, forte em bolas aereas e com potencial
+          para atuar em alto nivel internacional.
+        </strong>
+      </aside>
+    </div>
+
+    <script src="/japao-album.js?v=20260627-goleiro-panel"></script>
   </body>
 </html>
