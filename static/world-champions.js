@@ -6,7 +6,7 @@ const worldFinishedCount = document.querySelector("#worldFinishedCount");
 const worldUpdatedAt = document.querySelector("#worldUpdatedAt");
 
 const WORLD_POLL_INTERVAL_MS = 60000;
-const WORLD_DATA_VERSION = "20260626-qualified-teams";
+const WORLD_DATA_VERSION = "20260627-local-encerrado-obrigatorio";
 let worldPollTimer = null;
 
 function flagUrl(code) {
@@ -25,6 +25,11 @@ function hasFinalScore(match) {
 
 function isFinished(match) {
   return (match.status || "finished") === "finished" && hasFinalScore(match);
+}
+
+function venueText(match, field) {
+  if (match[field]) return match[field];
+  return isFinished(match) ? "Local oficial em atualizacao" : "A definir";
 }
 
 function scoreText(match) {
@@ -163,11 +168,11 @@ function renderMatch(match) {
       <div class="world-venue">
         <div>
           <span>Estadio</span>
-          <strong>${match.stadium || "Estadio a definir"}</strong>
+          <strong>${venueText(match, "stadium")}</strong>
         </div>
         <div>
           <span>Cidade / local</span>
-          <strong>${match.city || "Cidade a definir"}</strong>
+          <strong>${venueText(match, "city")}</strong>
         </div>
       </div>
     </article>

@@ -411,16 +411,60 @@ def result_key(result: dict) -> tuple[str, str, str]:
     return (result["group"], teams[0], teams[1])
 
 
+SCHEDULED_MATCH_LOCATIONS = {
+    ("D", "au", "py"): ("San Francisco Bay Area Stadium", "San Francisco Bay Area"),
+    ("D", "tr", "us"): ("Los Angeles Stadium", "Los Angeles"),
+    ("E", "ci", "cw"): ("Philadelphia Stadium", "Philadelphia"),
+    ("E", "de", "ec"): ("New York New Jersey Stadium", "New York New Jersey"),
+    ("F", "jp", "se"): ("Dallas Stadium", "Dallas"),
+    ("F", "nl", "tn"): ("Kansas City Stadium", "Kansas City"),
+    ("G", "eg", "ir"): ("Seattle Stadium", "Seattle"),
+    ("G", "be", "nz"): ("BC Place Vancouver", "Vancouver"),
+    ("H", "cv", "sa"): ("Houston Stadium", "Houston"),
+    ("H", "es", "uy"): ("Estadio Guadalajara", "Guadalajara"),
+    ("I", "fr", "no"): ("Boston Stadium", "Boston"),
+    ("I", "iq", "sn"): ("Toronto Stadium", "Toronto"),
+    ("J", "at", "dz"): ("Kansas City Stadium", "Kansas City"),
+    ("J", "ar", "jo"): ("Dallas Stadium", "Dallas"),
+    ("K", "co", "pt"): ("Miami Stadium", "Miami"),
+    ("K", "cd", "uz"): ("Atlanta Stadium", "Atlanta"),
+    ("L", "gb-eng", "pa"): ("New York New Jersey Stadium", "New York New Jersey"),
+    ("L", "gh", "hr"): ("Philadelphia Stadium", "Philadelphia"),
+}
+
+
+UNKNOWN_FINISHED_STADIUM = "Local oficial em atualizacao"
+UNKNOWN_FINISHED_CITY = "Fonte oficial em verificacao"
+
+
+def scheduled_match_location(result: dict) -> tuple[str, str] | None:
+    return SCHEDULED_MATCH_LOCATIONS.get(result_key(result))
+
+
+def complete_score_location(score: dict, local_score: dict | None = None) -> dict:
+    local_score = local_score or {}
+    stadium = score.get("stadium") or local_score.get("stadium", "")
+    city = score.get("city") or local_score.get("city", "")
+    if not stadium:
+        scheduled_location = scheduled_match_location(score)
+        if scheduled_location:
+            stadium, city = scheduled_location
+    if not stadium:
+        stadium, city = UNKNOWN_FINISHED_STADIUM, UNKNOWN_FINISHED_CITY
+
+    stadium = official_stadium_name(stadium)
+    score["stadium"] = stadium
+    score["city"] = official_host_location(stadium, city)
+    return score
+
+
 def merge_scores(local_scores: list[dict], external_scores: list[dict]) -> list[dict]:
     merged = {result_key(score): score for score in local_scores}
     for score in external_scores:
         key = result_key(score)
         local_score = merged.get(key, {})
         enriched_score = enrich_score(score)
-        enriched_score["stadium"] = enriched_score.get("stadium") or local_score.get("stadium", "")
-        enriched_score["stadium"] = official_stadium_name(enriched_score.get("stadium", ""))
-        enriched_score["city"] = enriched_score.get("city") or local_score.get("city", "")
-        enriched_score["city"] = official_host_location(enriched_score.get("stadium", ""), enriched_score.get("city", ""))
+        enriched_score = complete_score_location(enriched_score, local_score)
         merged[key] = enriched_score
     return sorted(
         merged.values(),

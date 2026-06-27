@@ -6,7 +6,7 @@ const calendarTotalCount = document.querySelector("#calendarTotalCount");
 const calendarUpdatedAt = document.querySelector("#calendarUpdatedAt");
 const calendarFilterButtons = document.querySelectorAll("[data-calendar-filter]");
 
-const CALENDAR_VERSION = "20260627-locais-oficiais-horario-encerrado";
+const CALENDAR_VERSION = "20260627-local-encerrado-obrigatorio";
 const CALENDAR_POLL_INTERVAL_MS = 60000;
 
 let calendarState = {
@@ -206,6 +206,11 @@ function isFinished(match) {
   return (match.status || "finished") === "finished" && hasFinalScore(match);
 }
 
+function stadiumLabel(match) {
+  if (match.stadium) return match.stadium;
+  return isFinished(match) ? "Local oficial em atualizacao" : "Estadio a definir";
+}
+
 function thirdPlaceKey(row) {
   return [-row.points, -row.goalDifference, -row.goalsFor, row.team.country];
 }
@@ -286,7 +291,7 @@ function renderCalendarCard(match) {
         <span class="calendar-status">${finished ? "Encerrado" : "A acontecer"}</span>
         <span>${finished && !match.time ? "Partida encerrada" : `Horario: ${timeInfo}`}</span>
         <span>${timeSourceLabel(match)}</span>
-        <span>Estadio: ${match.stadium || "A definir"}</span>
+        <span>Estadio: ${stadiumLabel(match)}</span>
       </div>
     </article>
   `;

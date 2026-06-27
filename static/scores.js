@@ -4,7 +4,7 @@ const scoreTitle = document.querySelector("#scoreTitle");
 const groupStandings = document.querySelector("#groupStandings");
 const initialGroup = new URLSearchParams(window.location.search).get("group") || "";
 const isGroupMode = Boolean(initialGroup);
-const APP_DATA_VERSION = "20260626-auto-refresh";
+const APP_DATA_VERSION = "20260627-local-encerrado-obrigatorio";
 const POLL_INTERVAL_MS = 60000;
 
 const state = {
@@ -46,6 +46,11 @@ function statusClass(status) {
   if (status === "live") return "is-live";
   if (status === "next") return "is-next";
   return "is-finished";
+}
+
+function venueText(match, field) {
+  if (match[field]) return match[field];
+  return statusFor(match) === "finished" ? "Local oficial em atualizacao" : "A definir";
 }
 
 function searchable(match) {
@@ -249,8 +254,8 @@ function renderCard(match) {
         ${teamBlock(match.away_team, "away")}
       </span>
       <span class="score-pro-footer">
-        <span>Estadio: ${match.stadium || "A definir"}</span>
-        <span>Cidade: ${match.city || "A definir"}</span>
+        <span>Estadio: ${venueText(match, "stadium")}</span>
+        <span>Cidade: ${venueText(match, "city")}</span>
       </span>
     </article>
   `;
@@ -268,6 +273,8 @@ function renderDetail(match) {
   }
 
   const status = statusFor(match);
+  match.stadium = venueText(match, "stadium");
+  match.city = venueText(match, "city");
   matchDetail.innerHTML = `
     <div class="detail-top">
       <span class="score-status ${statusClass(status)}">${statusLabel(status)}</span>
