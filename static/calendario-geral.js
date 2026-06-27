@@ -6,7 +6,7 @@ const calendarTotalCount = document.querySelector("#calendarTotalCount");
 const calendarUpdatedAt = document.querySelector("#calendarUpdatedAt");
 const calendarFilterButtons = document.querySelectorAll("[data-calendar-filter]");
 
-const CALENDAR_VERSION = "20260627-calendario-desc";
+const CALENDAR_VERSION = "20260627-calendario-horarios";
 const CALENDAR_POLL_INTERVAL_MS = 60000;
 
 let calendarState = {
@@ -77,6 +77,33 @@ const groupMatchday3Dates = {
   L: "2026-06-27",
 };
 
+const groupFixtureTimesBrt = {
+  "pa-gb-eng": {
+    time: "17:00 BRT",
+    source: "Agenda publicada para 27/06: 4pm ET convertido para Brasilia.",
+  },
+  "hr-gh": {
+    time: "17:00 BRT",
+    source: "Agenda publicada para 27/06: 4pm ET convertido para Brasilia.",
+  },
+  "co-pt": {
+    time: "19:30 BRT",
+    source: "Agenda publicada para 27/06: 6:30pm ET convertido para Brasilia.",
+  },
+  "cd-uz": {
+    time: "19:30 BRT",
+    source: "Agenda publicada para 27/06: 6:30pm ET convertido para Brasilia.",
+  },
+  "dz-at": {
+    time: "22:00 BRT",
+    source: "Agenda publicada para 27/06: 9pm ET convertido para Brasilia.",
+  },
+  "jo-ar": {
+    time: "22:00 BRT",
+    source: "Agenda publicada para 27/06: 9pm ET convertido para Brasilia.",
+  },
+};
+
 function flagUrl(code) {
   return `https://flagcdn.com/w80/${code}.png`;
 }
@@ -85,6 +112,16 @@ function formatDate(value) {
   const [year, month, day] = String(value || "").split("-");
   if (!year || !month || !day) return String(value || "Data a definir");
   return `${day}/${month}/${year}`;
+}
+
+function timeLabel(match) {
+  return match.time || "Aguardando horario oficial";
+}
+
+function timeSourceLabel(match) {
+  if (match.timeSource) return match.timeSource;
+  if (match.time) return "Horario de Brasilia";
+  return "Horario sera atualizado quando confirmado em fonte oficial";
 }
 
 function dateSortKey(match) {
@@ -185,7 +222,7 @@ function renderCalendarCard(match) {
       <div class="calendar-match-meta">
         <span>${match.phase || `Grupo ${match.group}`}</span>
         <strong>${match.id ? `Jogo ${match.id}` : `Grupo ${match.group}`}</strong>
-        <small>${formatDate(match.date)}${match.time ? ` | ${match.time}` : ""}</small>
+        <small>${formatDate(match.date)} | ${timeLabel(match)}</small>
       </div>
       <div class="calendar-match-line">
         ${renderTeam(match.home_team || { country: match.homeLabel }, "")}
@@ -194,6 +231,8 @@ function renderCalendarCard(match) {
       </div>
       <div class="calendar-match-footer">
         <span class="calendar-status">${finished ? "Encerrado" : "A acontecer"}</span>
+        <span>Horario: ${timeLabel(match)}</span>
+        <span>${timeSourceLabel(match)}</span>
         <span>Estadio: ${match.stadium || "A definir"}</span>
         <span>Cidade/local: ${match.city || "A definir"}</span>
       </div>
@@ -254,10 +293,13 @@ function buildGroupFutureMatches() {
         const home = teams[homeIndex];
         const away = teams[awayIndex];
         if (!data.playedPairs.has(matchPairKey(home.code, away.code))) {
+          const fixtureTime = groupFixtureTimesBrt[matchPairKey(home.code, away.code)] || {};
           pending.push({
             group,
             phase: `Grupo ${group}`,
             date: groupMatchday3Dates[group] || "Data a definir",
+            time: fixtureTime.time || "",
+            timeSource: fixtureTime.source || "",
             status: "next",
             home_team: home,
             away_team: away,
@@ -298,7 +340,8 @@ function renderSummary() {
 function renderCalendar(payload) {
   calendarState.scores = payload.scores || [];
   calendarState.standings = payload.standings || null;
-  calendarUpdatedAt.textContent = "Atualizado automaticamente com jogos encerrados e classificacao recalculada";
+  calendarUpdatedAt.textContent =
+    "Atualizado automaticamente com jogos encerrados, classificacao recalculada e horarios futuros em Brasilia quando confirmados";
   renderSummary();
   renderGroupCalendar();
   renderKnockoutCalendar();
