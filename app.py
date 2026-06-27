@@ -256,11 +256,69 @@ def build_groups(include_standings: bool = False, scores: list[dict] | None = No
     return groups
 
 
+OFFICIAL_STADIUM_NAMES = {
+    "AT&T Stadium": "Dallas Stadium",
+    "Arrowhead Stadium": "Kansas City Stadium",
+    "BC Place": "BC Place Vancouver",
+    "BMO Field": "Toronto Stadium",
+    "Estadio Akron": "Estadio Guadalajara",
+    "Estadio Azteca": "Mexico City Stadium",
+    "Estadio BBVA": "Monterrey Stadium",
+    "Gillette Stadium": "Boston Stadium",
+    "Hard Rock Stadium": "Miami Stadium",
+    "Levi's Stadium": "San Francisco Bay Area Stadium",
+    "Lincoln Financial Field": "Philadelphia Stadium",
+    "Lumen Field": "Seattle Stadium",
+    "Mercedes-Benz Stadium": "Atlanta Stadium",
+    "MetLife Stadium": "New York New Jersey Stadium",
+    "NRG Stadium": "Houston Stadium",
+    "SoFi Stadium": "Los Angeles Stadium",
+}
+
+OFFICIAL_HOST_LOCATIONS = {
+    "AT&T Stadium": "Dallas",
+    "Arrowhead Stadium": "Kansas City",
+    "BC Place": "Vancouver",
+    "BMO Field": "Toronto",
+    "Estadio Akron": "Guadalajara",
+    "Estadio Azteca": "Mexico City",
+    "Estadio BBVA": "Monterrey",
+    "Gillette Stadium": "Boston",
+    "Hard Rock Stadium": "Miami",
+    "Levi's Stadium": "San Francisco Bay Area",
+    "Lincoln Financial Field": "Philadelphia",
+    "Lumen Field": "Seattle",
+    "Mercedes-Benz Stadium": "Atlanta",
+    "MetLife Stadium": "New York New Jersey",
+    "NRG Stadium": "Houston",
+    "SoFi Stadium": "Los Angeles",
+}
+
+OFFICIAL_HOST_LOCATIONS.update(
+    {official_stadium: OFFICIAL_HOST_LOCATIONS[commercial_stadium] for commercial_stadium, official_stadium in OFFICIAL_STADIUM_NAMES.items()}
+)
+
+
+def official_stadium_name(stadium: str | None) -> str:
+    if not stadium:
+        return ""
+    return OFFICIAL_STADIUM_NAMES.get(stadium, stadium)
+
+
+def official_host_location(stadium: str | None, city: str | None) -> str:
+    if stadium and stadium in OFFICIAL_HOST_LOCATIONS:
+        return OFFICIAL_HOST_LOCATIONS[stadium]
+    return city or ""
+
+
 def enrich_score(result: dict) -> dict:
     home = TEAM_BY_CODE[result["home"]]
     away = TEAM_BY_CODE[result["away"]]
+    stadium = official_stadium_name(result.get("stadium", ""))
     return {
         **result,
+        "stadium": stadium,
+        "city": official_host_location(stadium, result.get("city", "")),
         "group_name": f"Grupo {result['group']}",
         "home_team": home,
         "away_team": away,
@@ -360,7 +418,9 @@ def merge_scores(local_scores: list[dict], external_scores: list[dict]) -> list[
         local_score = merged.get(key, {})
         enriched_score = enrich_score(score)
         enriched_score["stadium"] = enriched_score.get("stadium") or local_score.get("stadium", "")
+        enriched_score["stadium"] = official_stadium_name(enriched_score.get("stadium", ""))
         enriched_score["city"] = enriched_score.get("city") or local_score.get("city", "")
+        enriched_score["city"] = official_host_location(enriched_score.get("stadium", ""), enriched_score.get("city", ""))
         merged[key] = enriched_score
     return sorted(
         merged.values(),

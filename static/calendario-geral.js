@@ -6,7 +6,7 @@ const calendarTotalCount = document.querySelector("#calendarTotalCount");
 const calendarUpdatedAt = document.querySelector("#calendarUpdatedAt");
 const calendarFilterButtons = document.querySelectorAll("[data-calendar-filter]");
 
-const CALENDAR_VERSION = "20260627-calendario-dia-estadio";
+const CALENDAR_VERSION = "20260627-locais-oficiais";
 const CALENDAR_POLL_INTERVAL_MS = 60000;
 
 let calendarState = {
@@ -18,11 +18,11 @@ let calendarState = {
 
 const roundOf32 = [
   { id: 73, date: "2026-06-28", time: "16:00 BRT", phase: "16 avos de final", a: { type: "R", group: "A" }, b: { type: "R", group: "B" } },
-  { id: 76, date: "2026-06-29", time: "14:00 BRT", phase: "16 avos de final", a: { type: "W", group: "C" }, b: { type: "R", group: "F" } },
+  { id: 76, date: "2026-06-29", time: "14:00 BRT", phase: "16 avos de final", stadium: "Houston Stadium", a: { type: "W", group: "C" }, b: { type: "R", group: "F" } },
   { id: 74, date: "2026-06-29", time: "17:30 BRT", phase: "16 avos de final", a: { type: "W", group: "E" }, b: { type: "T", groups: ["A", "B", "C", "D", "F"] } },
   { id: 75, date: "2026-06-29", time: "22:00 BRT", phase: "16 avos de final", a: { type: "W", group: "F" }, b: { type: "R", group: "C" } },
   { id: 78, date: "2026-06-30", time: "14:00 BRT", phase: "16 avos de final", a: { type: "R", group: "E" }, b: { type: "R", group: "I" } },
-  { id: 77, date: "2026-06-30", time: "18:00 BRT", phase: "16 avos de final", a: { type: "W", group: "I" }, b: { type: "T", groups: ["C", "D", "F", "G", "H"] } },
+  { id: 77, date: "2026-06-30", time: "18:00 BRT", phase: "16 avos de final", stadium: "New York New Jersey Stadium", a: { type: "W", group: "I" }, b: { type: "T", groups: ["C", "D", "F", "G", "H"] } },
   { id: 79, date: "2026-06-30", time: "22:00 BRT", phase: "16 avos de final", a: { type: "W", group: "A" }, b: { type: "T", groups: ["C", "E", "F", "H", "I"] } },
   { id: 80, date: "2026-07-01", time: "13:00 BRT", phase: "16 avos de final", a: { type: "W", group: "L" }, b: { type: "T", groups: ["E", "H", "I", "J", "K"] } },
   { id: 82, date: "2026-07-01", time: "17:00 BRT", phase: "16 avos de final", a: { type: "W", group: "G" }, b: { type: "T", groups: ["A", "E", "H", "I", "J"] } },
@@ -31,7 +31,7 @@ const roundOf32 = [
   { id: 83, date: "2026-07-02", time: "20:00 BRT", phase: "16 avos de final", a: { type: "R", group: "K" }, b: { type: "R", group: "L" } },
   { id: 85, date: "2026-07-03", time: "00:00 BRT", phase: "16 avos de final", a: { type: "W", group: "B" }, b: { type: "T", groups: ["E", "F", "G", "I", "J"] } },
   { id: 88, date: "2026-07-03", time: "15:00 BRT", phase: "16 avos de final", a: { type: "R", group: "D" }, b: { type: "R", group: "G" } },
-  { id: 86, date: "2026-07-03", time: "19:00 BRT", phase: "16 avos de final", a: { type: "W", group: "J" }, b: { type: "R", group: "H" } },
+  { id: 86, date: "2026-07-03", time: "19:00 BRT", phase: "16 avos de final", stadium: "Miami Stadium", a: { type: "W", group: "J" }, b: { type: "R", group: "H" } },
   { id: 87, date: "2026-07-03", time: "22:30 BRT", phase: "16 avos de final", a: { type: "W", group: "K" }, b: { type: "T", groups: ["D", "E", "I", "J", "L"] } },
 ];
 
@@ -78,11 +78,11 @@ const groupMatchday3Dates = {
 };
 
 const groupFixtureTimesBrt = {
-  "pa-gb-eng": {
+  "gb-eng-pa": {
     time: "17:00 BRT",
     source: "Agenda publicada para 27/06: 4pm ET convertido para Brasilia.",
   },
-  "hr-gh": {
+  "gh-hr": {
     time: "17:00 BRT",
     source: "Agenda publicada para 27/06: 4pm ET convertido para Brasilia.",
   },
@@ -94,14 +94,31 @@ const groupFixtureTimesBrt = {
     time: "19:30 BRT",
     source: "Agenda publicada para 27/06: 6:30pm ET convertido para Brasilia.",
   },
-  "dz-at": {
+  "at-dz": {
     time: "22:00 BRT",
     source: "Agenda publicada para 27/06: 9pm ET convertido para Brasilia.",
   },
-  "jo-ar": {
+  "ar-jo": {
     time: "22:00 BRT",
     source: "Agenda publicada para 27/06: 9pm ET convertido para Brasilia.",
   },
+};
+
+const groupFixtureStadiums = {
+  "au-py": "San Francisco Bay Area Stadium",
+  "tr-us": "Los Angeles Stadium",
+  "be-nz": "BC Place Vancouver",
+  "eg-ir": "Seattle Stadium",
+  "cv-sa": "Houston Stadium",
+  "es-uy": "Estadio Guadalajara",
+  "fr-no": "Boston Stadium",
+  "iq-sn": "Toronto Stadium",
+  "gb-eng-pa": "New York New Jersey Stadium",
+  "gh-hr": "Philadelphia Stadium",
+  "co-pt": "Miami Stadium",
+  "cd-uz": "Atlanta Stadium",
+  "at-dz": "Kansas City Stadium",
+  "ar-jo": "Dallas Stadium",
 };
 
 const weekdaysPt = ["domingo", "segunda-feira", "terca-feira", "quarta-feira", "quinta-feira", "sexta-feira", "sabado"];
@@ -284,7 +301,7 @@ function buildKnockoutMatches() {
       away_team: b.team,
       homeLabel: a.label,
       awayLabel: b.label,
-      stadium: "A definir",
+      stadium: match.stadium || "Estadio a definir",
     };
   });
   const future = futureRounds.flatMap((round) =>
@@ -323,7 +340,9 @@ function buildGroupFutureMatches() {
         const home = teams[homeIndex];
         const away = teams[awayIndex];
         if (!data.playedPairs.has(matchPairKey(home.code, away.code))) {
-          const fixtureTime = groupFixtureTimesBrt[matchPairKey(home.code, away.code)] || {};
+          const pairKey = matchPairKey(home.code, away.code);
+          const fixtureTime = groupFixtureTimesBrt[pairKey] || {};
+          const fixtureStadium = groupFixtureStadiums[pairKey] || "";
           pending.push({
             group,
             phase: `Grupo ${group}`,
@@ -333,7 +352,7 @@ function buildGroupFutureMatches() {
             status: "next",
             home_team: home,
             away_team: away,
-            stadium: "A definir",
+            stadium: fixtureStadium || "Estadio a definir",
           });
         }
       }

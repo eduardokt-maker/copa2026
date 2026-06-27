@@ -3128,6 +3128,7 @@ footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: 8px;
   border-bottom: 1px solid rgba(16, 32, 51, 0.08);
   padding-bottom: 7px;
@@ -3141,6 +3142,13 @@ footer {
 .knockout-match-meta span {
   color: #66758a;
   font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.knockout-match-meta small {
+  flex-basis: 100%;
+  color: #0f6d56;
+  font-size: 0.68rem;
   font-weight: 900;
 }
 
