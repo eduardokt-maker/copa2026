@@ -6,7 +6,7 @@ const calendarTotalCount = document.querySelector("#calendarTotalCount");
 const calendarUpdatedAt = document.querySelector("#calendarUpdatedAt");
 const calendarFilterButtons = document.querySelectorAll("[data-calendar-filter]");
 
-const CALENDAR_VERSION = "20260627-locais-oficiais";
+const CALENDAR_VERSION = "20260627-locais-oficiais-horario-encerrado";
 const CALENDAR_POLL_INTERVAL_MS = 60000;
 
 let calendarState = {
@@ -165,10 +165,12 @@ function formatDateWithWeekday(value) {
 }
 
 function timeLabel(match) {
+  if (isFinished(match) && !match.time) return "Encerrado";
   return match.time || "Aguardando horario oficial";
 }
 
 function timeSourceLabel(match) {
+  if (isFinished(match) && !match.time) return "Resultado final registrado";
   if (match.timeSource) return match.timeSource;
   if (match.time) return "Horario de Brasilia";
   return "Horario sera atualizado quando confirmado em fonte oficial";
@@ -267,12 +269,13 @@ function renderTeam(team, align = "") {
 function renderCalendarCard(match) {
   const finished = isFinished(match);
   const score = finished ? `${match.home_score} x ${match.away_score}` : "x";
+  const timeInfo = timeLabel(match);
   return `
     <article class="calendar-match ${finished ? "is-finished" : "is-future"}">
       <div class="calendar-match-meta">
         <span>${match.phase || `Grupo ${match.group}`}</span>
         <strong>${match.id ? `Jogo ${match.id}` : `Grupo ${match.group}`}</strong>
-        <small>${formatDateWithWeekday(match.date)} | ${timeLabel(match)}</small>
+        <small>${formatDateWithWeekday(match.date)} | ${timeInfo}</small>
       </div>
       <div class="calendar-match-line">
         ${renderTeam(match.home_team || { country: match.homeLabel }, "")}
@@ -281,7 +284,7 @@ function renderCalendarCard(match) {
       </div>
       <div class="calendar-match-footer">
         <span class="calendar-status">${finished ? "Encerrado" : "A acontecer"}</span>
-        <span>Horario: ${timeLabel(match)}</span>
+        <span>${finished && !match.time ? "Partida encerrada" : `Horario: ${timeInfo}`}</span>
         <span>${timeSourceLabel(match)}</span>
         <span>Estadio: ${match.stadium || "A definir"}</span>
       </div>
