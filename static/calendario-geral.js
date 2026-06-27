@@ -6,7 +6,7 @@ const calendarTotalCount = document.querySelector("#calendarTotalCount");
 const calendarUpdatedAt = document.querySelector("#calendarUpdatedAt");
 const calendarFilterButtons = document.querySelectorAll("[data-calendar-filter]");
 
-const CALENDAR_VERSION = "20260627-calendario-geral";
+const CALENDAR_VERSION = "20260627-calendario-desc";
 const CALENDAR_POLL_INTERVAL_MS = 60000;
 
 let calendarState = {
@@ -62,6 +62,21 @@ const futureRounds = [
   ] },
 ];
 
+const groupMatchday3Dates = {
+  A: "2026-06-24",
+  B: "2026-06-24",
+  C: "2026-06-24",
+  D: "2026-06-25",
+  E: "2026-06-25",
+  F: "2026-06-25",
+  G: "2026-06-26",
+  H: "2026-06-26",
+  I: "2026-06-26",
+  J: "2026-06-27",
+  K: "2026-06-27",
+  L: "2026-06-27",
+};
+
 function flagUrl(code) {
   return `https://flagcdn.com/w80/${code}.png`;
 }
@@ -70,6 +85,28 @@ function formatDate(value) {
   const [year, month, day] = String(value || "").split("-");
   if (!year || !month || !day) return String(value || "Data a definir");
   return `${day}/${month}/${year}`;
+}
+
+function dateSortKey(match) {
+  if (match.dateSortKey) return match.dateSortKey;
+  if (/^\d{4}-\d{2}-\d{2}$/.test(String(match.date || ""))) return match.date;
+
+  const dateText = String(match.date || "");
+  const dayMonthMatches = [...dateText.matchAll(/(\d{2})\/(\d{2})/g)];
+  if (dayMonthMatches.length) {
+    const [, day, month] = dayMonthMatches[dayMonthMatches.length - 1];
+    return `2026-${month}-${day}`;
+  }
+
+  return "0000-00-00";
+}
+
+function compareMatchesByDateDesc(a, b) {
+  const dateCompare = dateSortKey(b).localeCompare(dateSortKey(a));
+  if (dateCompare !== 0) return dateCompare;
+  const phaseCompare = String(b.phase || b.group || "").localeCompare(String(a.phase || a.group || ""));
+  if (phaseCompare !== 0) return phaseCompare;
+  return String(b.id || "").localeCompare(String(a.id || ""));
 }
 
 function hasFinalScore(match) {
@@ -185,6 +222,7 @@ function buildKnockoutMatches() {
       id: match.id,
       phase: match.label || round.phase,
       date: round.period,
+      dateSortKey: dateSortKey({ date: round.period }),
       status: "next",
       homeLabel: match.a,
       awayLabel: match.b,
@@ -219,7 +257,7 @@ function buildGroupFutureMatches() {
           pending.push({
             group,
             phase: `Grupo ${group}`,
-            date: "Data a definir",
+            date: groupMatchday3Dates[group] || "Data a definir",
             status: "next",
             home_team: home,
             away_team: away,
@@ -235,7 +273,7 @@ function buildGroupFutureMatches() {
 
 function renderGroupCalendar() {
   const visible = [...calendarState.scores, ...buildGroupFutureMatches()]
-    .sort((a, b) => (a.date === b.date ? String(a.group).localeCompare(String(b.group)) : a.date.localeCompare(b.date)))
+    .sort(compareMatchesByDateDesc)
     .filter(shouldShow);
   calendarGroupList.innerHTML = visible.length
     ? visible.map(renderCalendarCard).join("")
@@ -243,7 +281,7 @@ function renderGroupCalendar() {
 }
 
 function renderKnockoutCalendar() {
-  const visible = buildKnockoutMatches().filter(shouldShow);
+  const visible = buildKnockoutMatches().sort(compareMatchesByDateDesc).filter(shouldShow);
   calendarKnockoutList.innerHTML = visible.length
     ? visible.map(renderCalendarCard).join("")
     : `<div class="empty-state">Nenhum jogo futuro para este filtro.</div>`;
