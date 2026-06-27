@@ -406,6 +406,262 @@ const playerFeatures = {
     summary:
       "Resumo: meia-atacante canhoto, criativo e decisivo, forte no chute, no drible curto e na jogada por dentro.",
   },
+  11: {
+    tag: "Camisa 11 | Atacante",
+    title: "Maeda Daizen",
+    intro:
+      "A principal caracteristica de Maeda Daizen e a intensidade sem a bola, combinando velocidade, pressao alta e muito trabalho defensivo.",
+    bullets: [
+      "Atacante muito veloz, capaz de atacar espacos em profundidade.",
+      "Pressao constante na saida de bola adversaria.",
+      "Versatilidade para jogar aberto pela esquerda, pela direita ou centralizado.",
+      "Alta resistencia fisica para repetir sprints durante a partida.",
+      "Ajuda bastante na recomposicao defensiva do time.",
+      "Movimento agressivo para chegar na area e finalizar.",
+    ],
+    summary:
+      "Resumo: atacante de energia altissima, rapido e coletivo, muito util para pressionar, acelerar transicoes e incomodar a defesa adversaria.",
+  },
+  12: {
+    tag: "Camisa 12 | Goleiro",
+    title: "Osako Keisuke",
+    intro:
+      "A principal caracteristica de Osako Keisuke e a regularidade como goleiro de reflexo rapido e bom posicionamento.",
+    bullets: [
+      "Goleiro seguro em defesas de media e curta distancia.",
+      "Boa leitura de posicionamento para reduzir o angulo do atacante.",
+      "Experiencia no futebol japones e passagem pela selecao principal.",
+      "Agilidade para reagir em bolas desviadas dentro da area.",
+      "Comunicacao com a linha defensiva em situacoes de cruzamento.",
+      "Perfil confiavel para compor o grupo de goleiros da selecao.",
+    ],
+    summary:
+      "Resumo: goleiro equilibrado, agil e bem posicionado, importante como opcao segura no elenco japones.",
+  },
+  13: {
+    tag: "Camisa 13 | Ponta",
+    title: "Nakamura Keito",
+    intro:
+      "A principal caracteristica de Nakamura Keito e a finalizacao partindo da ponta esquerda, com chute forte e boa chegada a area.",
+    bullets: [
+      "Ponta esquerda com boa capacidade de cortar para finalizar.",
+      "Chute forte e colocado de media distancia.",
+      "Movimento agressivo para atacar o segundo pau.",
+      "Pode atuar tambem como atacante por dentro.",
+      "Boa relacao entre gols e participacao ofensiva pela selecao.",
+      "Experiencia no futebol frances, enfrentando marcacao fisica.",
+    ],
+    summary:
+      "Resumo: ponta finalizador, perigoso pelo lado esquerdo e capaz de transformar jogadas individuais em gols.",
+  },
+  14: {
+    tag: "Camisa 14 | Ponta",
+    title: "Ito Junya",
+    intro:
+      "A principal caracteristica de Ito Junya e a velocidade pelo corredor direito, usando arranque e cruzamento para quebrar defesas.",
+    bullets: [
+      "Ponta de muita velocidade e aceleracao.",
+      "Forte no um contra um quando tem campo para correr.",
+      "Cruzamentos perigosos para atacantes de area.",
+      "Experiencia internacional ampla pela selecao japonesa.",
+      "Pode jogar aberto para dar amplitude ao ataque.",
+      "Decisivo em transicoes rapidas e contra-ataques.",
+    ],
+    summary:
+      "Resumo: ponta veloz e direto, especialista em atacar o lado direito e criar chances com cruzamentos e arrancadas.",
+  },
+  15: {
+    tag: "Camisa 15 | Meio-campo",
+    title: "Kamada Daichi",
+    intro:
+      "A principal caracteristica de Kamada Daichi e a inteligencia entrelinhas, com passe, tecnica e chegada ofensiva.",
+    bullets: [
+      "Meio-campista tecnico, capaz de atuar como meia central ou armador.",
+      "Boa leitura para receber entre as linhas adversarias.",
+      "Passe vertical para acelerar jogadas pelo centro.",
+      "Experiencia em ligas fortes da Europa.",
+      "Chegada ofensiva para finalizar de media distancia ou dentro da area.",
+      "Calma com a bola para organizar ataques em ritmo controlado.",
+    ],
+    summary:
+      "Resumo: meia inteligente e tecnico, forte para conectar setores, criar chances e dar qualidade ao jogo posicional do Japao.",
+  },
+  16: {
+    tag: "Camisa 16 | Zagueiro",
+    title: "Watanabe Tsuyoshi",
+    intro:
+      "A principal caracteristica de Watanabe Tsuyoshi e a imposicao fisica como zagueiro central, com forca em duelos e bolas aereas.",
+    bullets: [
+      "Zagueiro de boa estatura e presenca fisica.",
+      "Forte em disputas aereas defensivas.",
+      "Boa experiencia em clubes europeus.",
+      "Pode defender em linha alta usando contato e antecipacao.",
+      "Oferece seguranca em jogos com cruzamentos constantes.",
+      "Mantem perfil simples e objetivo na saida de bola.",
+    ],
+    summary:
+      "Resumo: defensor fisico e dominante no jogo aereo, util para proteger a area e equilibrar duelos contra atacantes fortes.",
+  },
+  17: {
+    tag: "Camisa 17 | Meia-atacante",
+    title: "Suzuki Yuito",
+    intro:
+      "A principal caracteristica de Suzuki Yuito e a mobilidade ofensiva, atuando entre ponta e meia com chegada para finalizar.",
+    bullets: [
+      "Meia-atacante versatil, podendo jogar por dentro ou aberto.",
+      "Boa conducao de bola em espacos curtos.",
+      "Movimento para aparecer entre linhas e atacar a area.",
+      "Finalizacao em crescimento apos boa passagem pelo futebol europeu.",
+      "Capacidade de acelerar jogadas com drible e passe curto.",
+      "Perfil jovem, tecnico e dinamico para mudar ritmo no ataque.",
+    ],
+    summary:
+      "Resumo: jogador movel e criativo, forte para entrar entre linhas, conduzir a bola e oferecer alternativas ofensivas.",
+  },
+  18: {
+    tag: "Camisa 18 | Centroavante",
+    title: "Ueda Ayase",
+    intro:
+      "A principal caracteristica de Ueda Ayase e a finalizacao, combinando movimento de atacante, impulsao e presenca de area.",
+    bullets: [
+      "Centroavante com faro de gol e boa movimentacao dentro da area.",
+      "Finalizacao forte com os dois pes.",
+      "Boa impulsao e capacidade de atacar cruzamentos.",
+      "Agilidade para se desmarcar entre os zagueiros.",
+      "Forca para proteger a bola e jogar de costas quando necessario.",
+      "Experiencia na Europa, com numeros importantes por clubes e selecao.",
+    ],
+    summary:
+      "Resumo: atacante finalizador, tecnico e agressivo na area, uma das principais referencias de gol do Japao.",
+  },
+  19: {
+    tag: "Camisa 19 | Centroavante",
+    title: "Ogawa Koki",
+    intro:
+      "A principal caracteristica de Ogawa Koki e o instinto de artilheiro, com presenca fisica e boa capacidade de finalizar na area.",
+    bullets: [
+      "Centroavante alto, forte em disputas dentro da area.",
+      "Bom posicionamento para aproveitar rebotes e cruzamentos.",
+      "Finalizacao objetiva quando recebe perto do gol.",
+      "Historico de gols pela selecao em poucas oportunidades.",
+      "Capaz de servir como referencia para bolas diretas.",
+      "Experiencia no futebol holandes, com ritmo competitivo europeu.",
+    ],
+    summary:
+      "Resumo: atacante de area, forte fisicamente e oportunista, ideal para transformar volume ofensivo em gols.",
+  },
+  20: {
+    tag: "Camisa 20 | Zagueiro",
+    title: "Seko Ayumu",
+    intro:
+      "A principal caracteristica de Seko Ayumu e a solidez como zagueiro, com boa formacao defensiva e experiencia crescente na Europa.",
+    bullets: [
+      "Zagueiro central de boa estatura e imposicao.",
+      "Formado no Cerezo Osaka, com base defensiva consistente.",
+      "Experiencia em ligas europeias, incluindo Suica e Franca.",
+      "Boa leitura para defender cruzamentos e bolas longas.",
+      "Pode atuar em linha de tres ou dupla de zaga.",
+      "Perfil disciplinado para cumprir funcoes taticas.",
+    ],
+    summary:
+      "Resumo: zagueiro confiavel e disciplinado, forte para compor a defesa com jogo simples, fisico e posicional.",
+  },
+  21: {
+    tag: "Camisa 21 | Defensor",
+    title: "Ito Hiroki",
+    intro:
+      "A principal caracteristica de Ito Hiroki e ser um defensor canhoto moderno, capaz de atuar como zagueiro ou lateral-esquerdo.",
+    bullets: [
+      "Defensor canhoto com boa saida de bola.",
+      "Pode jogar como zagueiro pela esquerda ou lateral-esquerdo.",
+      "Passe vertical para iniciar ataques desde tras.",
+      "Boa leitura para coberturas defensivas pelo lado esquerdo.",
+      "Experiencia em clubes de alto nivel na Alemanha.",
+      "Importante para dar equilibrio a uma linha defensiva versatil.",
+    ],
+    summary:
+      "Resumo: defensor tecnico, canhoto e versatil, forte para construir desde a defesa e cobrir diferentes posicoes.",
+  },
+  22: {
+    tag: "Camisa 22 | Defensor",
+    title: "Tomiyasu Takehiro",
+    intro:
+      "A principal caracteristica de Tomiyasu Takehiro e a versatilidade defensiva, podendo atuar em praticamente toda a linha de defesa.",
+    bullets: [
+      "Pode jogar como lateral-direito, lateral-esquerdo ou zagueiro.",
+      "Forte fisicamente e seguro em duelos individuais.",
+      "Boa leitura de jogo para antecipar e cobrir espacos.",
+      "Qualidade tecnica para sair jogando sob pressao.",
+      "Experiencia em Premier League, Serie A e selecao japonesa.",
+      "Perfil moderno, inteligente e muito confiavel quando fisicamente bem.",
+    ],
+    summary:
+      "Resumo: defensor completo e versatil, forte no duelo, inteligente na leitura e valioso pela capacidade de cobrir varias funcoes.",
+  },
+  23: {
+    tag: "Camisa 23 | Goleiro",
+    title: "Hayakawa Tomoki",
+    intro:
+      "A principal caracteristica de Hayakawa Tomoki e a consistencia, com bom posicionamento e desempenho forte no futebol japones.",
+    bullets: [
+      "Goleiro seguro, com boa regularidade no Kashima Antlers.",
+      "Bom posicionamento para defesas de reflexo e bolas rasteiras.",
+      "Capacidade de organizar a defesa em bolas paradas.",
+      "Experiencia recente como titular em alto nivel no Japao.",
+      "Perfil confiavel para jogos de controle e pouca margem de erro.",
+      "Boa concentracao para responder em momentos decisivos.",
+    ],
+    summary:
+      "Resumo: goleiro consistente e bem posicionado, forte pela regularidade e pela seguranca em partidas equilibradas.",
+  },
+  24: {
+    tag: "Camisa 24 | Volante",
+    title: "Sano Kaishu",
+    intro:
+      "A principal caracteristica de Sano Kaishu e a recuperacao de bola, com intensidade defensiva e mobilidade no meio-campo.",
+    bullets: [
+      "Volante combativo, forte na marcacao e nos duelos.",
+      "Boa leitura para interceptar passes no meio.",
+      "Mobilidade para cobrir laterais e fechar espacos.",
+      "Passe simples para acelerar a transicao depois do desarme.",
+      "Experiencia na Bundesliga, em jogo de alta intensidade.",
+      "Perfil de equilibrio para proteger a defesa japonesa.",
+    ],
+    summary:
+      "Resumo: volante marcador e intenso, importante para recuperar bolas, proteger a zaga e sustentar o ritmo defensivo.",
+  },
+  25: {
+    tag: "Camisa 25 | Defensor",
+    title: "Suzuki Junnosuke",
+    intro:
+      "A principal caracteristica de Suzuki Junnosuke e a leitura de jogo, com origem como volante e evolucao para zagueiro moderno.",
+    bullets: [
+      "Pode atuar como zagueiro e volante defensivo.",
+      "Boa leitura para antecipar jogadas e conduzir a primeira construcao.",
+      "Passe e conducao acima da media para um defensor.",
+      "Estatura e imposicao para disputar duelos defensivos.",
+      "Perfil jovem, em desenvolvimento no futebol europeu.",
+      "Capacidade de defender e participar da organizacao ofensiva.",
+    ],
+    summary:
+      "Resumo: defensor jovem e tecnico, com boa leitura, passe e versatilidade para atuar na zaga ou no meio.",
+  },
+  26: {
+    tag: "Camisa 26 | Atacante",
+    title: "Shiogai Kento",
+    intro:
+      "A principal caracteristica de Shiogai Kento e o potencial ofensivo, com velocidade, presenca de area e faro de gol desde as categorias de base.",
+    bullets: [
+      "Atacante jovem, rapido e agressivo atacando espacos.",
+      "Boa presenca dentro da area para finalizar jogadas.",
+      "Historico de destaque em selecoes japonesas de base.",
+      "Movimento para receber entre zagueiros e atacar profundidade.",
+      "Finalizacao em evolucao no futebol europeu.",
+      "Perfil promissor para ganhar minutos e crescer na selecao.",
+    ],
+    summary:
+      "Resumo: atacante jovem e promissor, veloz, vertical e com boa capacidade de chegar para finalizar.",
+  },
 };
 
 function renderJapanAlbum() {
