@@ -477,6 +477,9 @@ def merge_scores(local_scores: list[dict], external_scores: list[dict]) -> list[
     for score in external_scores:
         key = result_key(score)
         local_score = merged.get(key, {})
+        if local_score and score_is_finished(local_score):
+            merged[key] = complete_score_location(enrich_score(local_score))
+            continue
         enriched_score = enrich_score(score)
         enriched_score = complete_score_location(enriched_score, local_score)
         merged[key] = enriched_score
