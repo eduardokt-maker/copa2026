@@ -343,6 +343,27 @@ def build_scores() -> list[dict]:
     return [enrich_score(result) for result in SCORE_RESULTS]
 
 
+KNOCKOUT_FIXTURE_SOURCE = {
+    "name": "FIFA World Cup 26 match schedule / confirmed match reports",
+    "last_verified": "2026-06-28",
+    "policy": "Backend fixture data is merged into every screen before rendering knockout cards.",
+}
+
+KNOCKOUT_ROUND_OF_32_FIXTURES = [
+    {"id": 73, "date": "2026-06-28", "time": "16:00 BRT", "stadium": "Los Angeles Stadium", "city": "Los Angeles", "source": "Canada v South Africa confirmed in Los Angeles."},
+    {"id": 76, "date": "2026-06-29", "time": "14:00 BRT", "stadium": "Houston Stadium", "city": "Houston", "source": "Brazil v Japan listed for Houston Stadium."},
+    {"id": 77, "date": "2026-06-30", "time": "18:00 BRT", "stadium": "New York New Jersey Stadium", "city": "New York New Jersey", "source": "Round of 32 venue confirmed in official schedule."},
+    {"id": 86, "date": "2026-07-03", "time": "19:00 BRT", "stadium": "Miami Stadium", "city": "Miami", "source": "Round of 32 venue confirmed in official schedule."},
+]
+
+
+def build_knockout_fixtures() -> dict:
+    return {
+        "source": KNOCKOUT_FIXTURE_SOURCE,
+        "round_of_32": KNOCKOUT_ROUND_OF_32_FIXTURES,
+    }
+
+
 TEAM_NAME_ALIASES = {
     "algeria": "dz",
     "argentina": "ar",
@@ -960,11 +981,15 @@ class CopaHandler(SimpleHTTPRequestHandler):
                         "groups": build_all_group_standings(scores),
                         "general": build_general_standings(scores),
                     },
+                    "knockout_fixtures": build_knockout_fixtures(),
                     "score_source": score_source,
                     "tiebreakers": TIEBREAKER_RULES,
                     "version": APP_VERSION,
                 }
             )
+            return
+        if path == "/api/knockout-fixtures":
+            self.send_json({"knockout_fixtures": build_knockout_fixtures(), "version": APP_VERSION})
             return
         if path == "/api/roster":
             query = parse_qs(parsed_url.query)

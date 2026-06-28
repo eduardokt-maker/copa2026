@@ -1,5 +1,5 @@
 const knockoutBoard = document.querySelector("#knockoutBoard");
-const KNOCKOUT_DATA_VERSION = "20260627-locais-oficiais";
+const KNOCKOUT_DATA_VERSION = "20260628-knockout-fixtures-api";
 
 const roundOf32 = [
   { id: 73, date: "28/06", time: "16:00 BRT", a: { type: "R", group: "A" }, b: { type: "R", group: "B" } },
@@ -19,6 +19,20 @@ const roundOf32 = [
   { id: 86, date: "03/07", time: "19:00 BRT", stadium: "Miami Stadium", a: { type: "W", group: "J" }, b: { type: "R", group: "H" } },
   { id: 87, date: "03/07", time: "22:30 BRT", a: { type: "W", group: "K" }, b: { type: "T", groups: ["D", "E", "I", "J", "L"] } },
 ];
+
+function applyOfficialKnockoutFixtures(payload) {
+  const fixtures = payload?.knockout_fixtures?.round_of_32 || [];
+  const byId = new Map(fixtures.map((fixture) => [Number(fixture.id), fixture]));
+  roundOf32.forEach((match) => {
+    const official = byId.get(Number(match.id));
+    if (!official) return;
+    match.dateIso = official.date || match.dateIso;
+    match.time = official.time || match.time;
+    match.stadium = official.stadium || match.stadium;
+    match.city = official.city || match.city;
+    match.venueSource = official.source || payload?.knockout_fixtures?.source?.name || "";
+  });
+}
 
 const futureRounds = [
   {
@@ -192,6 +206,7 @@ function renderFutureRounds() {
 }
 
 function renderBracket(payload) {
+  applyOfficialKnockoutFixtures(payload);
   knockoutBoard.innerHTML = `
     ${renderRoundOf32(payload.standings)}
     ${renderFutureRounds()}

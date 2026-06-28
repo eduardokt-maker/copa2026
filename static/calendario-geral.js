@@ -6,7 +6,7 @@ const calendarTotalCount = document.querySelector("#calendarTotalCount");
 const calendarUpdatedAt = document.querySelector("#calendarUpdatedAt");
 const calendarFilterButtons = document.querySelectorAll("[data-calendar-filter]");
 
-const CALENDAR_VERSION = "20260627-local-encerrado-obrigatorio";
+const CALENDAR_VERSION = "20260628-knockout-fixtures-api";
 const CALENDAR_POLL_INTERVAL_MS = 60000;
 
 let calendarState = {
@@ -34,6 +34,20 @@ const roundOf32 = [
   { id: 86, date: "2026-07-03", time: "19:00 BRT", phase: "16 avos de final", stadium: "Miami Stadium", a: { type: "W", group: "J" }, b: { type: "R", group: "H" } },
   { id: 87, date: "2026-07-03", time: "22:30 BRT", phase: "16 avos de final", a: { type: "W", group: "K" }, b: { type: "T", groups: ["D", "E", "I", "J", "L"] } },
 ];
+
+function applyOfficialKnockoutFixtures(payload) {
+  const fixtures = payload?.knockout_fixtures?.round_of_32 || [];
+  const byId = new Map(fixtures.map((fixture) => [Number(fixture.id), fixture]));
+  roundOf32.forEach((match) => {
+    const official = byId.get(Number(match.id));
+    if (!official) return;
+    match.date = official.date || match.date;
+    match.time = official.time || match.time;
+    match.stadium = official.stadium || match.stadium;
+    match.city = official.city || match.city;
+    match.venueSource = official.source || payload?.knockout_fixtures?.source?.name || "";
+  });
+}
 
 const futureRounds = [
   { phase: "Oitavas", period: "04/07 a 07/07", matches: [
@@ -394,6 +408,7 @@ function renderSummary() {
 }
 
 function renderCalendar(payload) {
+  applyOfficialKnockoutFixtures(payload);
   calendarState.scores = payload.scores || [];
   calendarState.standings = payload.standings || null;
   calendarUpdatedAt.textContent =
