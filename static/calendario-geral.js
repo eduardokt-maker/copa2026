@@ -6,7 +6,7 @@ const calendarTotalCount = document.querySelector("#calendarTotalCount");
 const calendarUpdatedAt = document.querySelector("#calendarUpdatedAt");
 const calendarFilterButtons = document.querySelectorAll("[data-calendar-filter]");
 
-const CALENDAR_VERSION = "20260628-fifa-source-v1";
+const CALENDAR_VERSION = "20260628-knockout-order-v1";
 const CALENDAR_POLL_INTERVAL_MS = 60000;
 
 let calendarState = {
@@ -212,6 +212,24 @@ function compareMatchesByDateDesc(a, b) {
   return String(b.id || "").localeCompare(String(a.id || ""));
 }
 
+function knockoutPhaseOrder(match) {
+  const phase = String(match.phase || "").toLowerCase();
+  if (phase.includes("16 avos")) return 1;
+  if (phase.includes("oitavas")) return 2;
+  if (phase.includes("quartas")) return 3;
+  if (phase.includes("semifinais")) return 4;
+  if (phase.includes("finais") || phase.includes("final")) return 5;
+  return 99;
+}
+
+function compareKnockoutMatchesByPhase(a, b) {
+  const phaseCompare = knockoutPhaseOrder(a) - knockoutPhaseOrder(b);
+  if (phaseCompare !== 0) return phaseCompare;
+  const dateCompare = dateSortKey(a).localeCompare(dateSortKey(b));
+  if (dateCompare !== 0) return dateCompare;
+  return Number(a.id || 0) - Number(b.id || 0);
+}
+
 function hasFinalScore(match) {
   return Number.isFinite(Number(match.home_score)) && Number.isFinite(Number(match.away_score));
 }
@@ -393,7 +411,7 @@ function renderGroupCalendar() {
 }
 
 function renderKnockoutCalendar() {
-  const visible = buildKnockoutMatches().sort(compareMatchesByDateDesc).filter(shouldShow);
+  const visible = buildKnockoutMatches().sort(compareKnockoutMatchesByPhase).filter(shouldShow);
   calendarKnockoutList.innerHTML = visible.length
     ? visible.map(renderCalendarCard).join("")
     : `<div class="empty-state">Nenhum jogo futuro para este filtro.</div>`;
