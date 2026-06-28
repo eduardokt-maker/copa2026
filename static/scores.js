@@ -4,7 +4,7 @@ const scoreTitle = document.querySelector("#scoreTitle");
 const groupStandings = document.querySelector("#groupStandings");
 const initialGroup = new URLSearchParams(window.location.search).get("group") || "";
 const isGroupMode = Boolean(initialGroup);
-const APP_DATA_VERSION = "20260628-fifa-source-v1";
+const APP_DATA_VERSION = "20260628-live-sync-v1";
 const POLL_INTERVAL_MS = 60000;
 
 const state = {
@@ -92,6 +92,12 @@ function hasFinalScore(match) {
 
 function isFinishedMatch(match) {
   return statusFor(match) === "finished" && hasFinalScore(match);
+}
+
+function nextPollIntervalMs(payload) {
+  const seconds = Number(payload?.score_source?.live_sync?.interval_seconds);
+  if (!Number.isFinite(seconds)) return POLL_INTERVAL_MS;
+  return Math.min(Math.max(seconds * 1000, 30000), 900000);
 }
 
 function finishedMatches(matches) {
@@ -340,7 +346,7 @@ async function bootScores() {
 
     render();
     window.clearTimeout(state.pollTimer);
-    state.pollTimer = window.setTimeout(bootScores, POLL_INTERVAL_MS);
+    state.pollTimer = window.setTimeout(bootScores, nextPollIntervalMs(payload));
   } catch (error) {
     scoresGrid.innerHTML = `<div class="empty-state">Nao foi possivel carregar os placares agora.</div>`;
   }

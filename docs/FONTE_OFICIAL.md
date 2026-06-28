@@ -11,11 +11,16 @@
 - Se a consulta externa falhar, retornar vazia ou a pagina oficial mudar, o sistema usa o banco local de jogos encerrados para preservar placares e recalcular a classificacao.
 - Um jogo encerrado ja gravado nao deve ser sobrescrito por dado externo vazio, parcial ou sem placar final.
 - Horarios exibidos ao usuario devem estar em horario de Brasilia. Quando o horario ainda nao estiver confirmado, mostrar estado de aguardando.
+- A rotina de atualizacao periodica usa intervalos dinamicos:
+  - 30 segundos quando existe jogo dentro da janela ao vivo.
+  - 5 minutos em dia de jogo ou quando ha partida nas proximas 24 horas.
+  - 15 minutos quando nao ha jogo imediato.
+- Dados de consulta temporaria ficam em `data/live_sync.json`; somente jogos encerrados confirmados entram no banco definitivo `data/final_matches.json`.
 - O album de figurinhas da selecao japonesa e uma excecao autorizada e pode manter fonte japonesa propria.
 
 ## Endpoints de verificacao
 
 - `/api/source-status`: mostra fonte primaria, URL oficial, quantidade de jogos no banco local e se fallback foi usado.
+- `/api/live-sync`: mostra modo atual da rotina (`live`, `matchday` ou `routine`), intervalo de proxima consulta e ultimo status da fonte.
 - `/api/scores`: retorna placares, classificacao, fixtures do mata-mata e status da fonte oficial.
 - `/api/groups`: retorna grupos com classificacao recalculada a partir dos jogos encerrados.
-

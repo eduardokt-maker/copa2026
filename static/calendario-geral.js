@@ -6,7 +6,7 @@ const calendarTotalCount = document.querySelector("#calendarTotalCount");
 const calendarUpdatedAt = document.querySelector("#calendarUpdatedAt");
 const calendarFilterButtons = document.querySelectorAll("[data-calendar-filter]");
 
-const CALENDAR_VERSION = "20260628-knockout-order-v1";
+const CALENDAR_VERSION = "20260628-live-sync-v1";
 const CALENDAR_POLL_INTERVAL_MS = 60000;
 
 let calendarState = {
@@ -238,6 +238,12 @@ function isFinished(match) {
   return (match.status || "finished") === "finished" && hasFinalScore(match);
 }
 
+function nextPollIntervalMs(payload) {
+  const seconds = Number(payload?.score_source?.live_sync?.interval_seconds);
+  if (!Number.isFinite(seconds)) return CALENDAR_POLL_INTERVAL_MS;
+  return Math.min(Math.max(seconds * 1000, 30000), 900000);
+}
+
 function stadiumLabel(match) {
   if (match.stadium) return match.stadium;
   return isFinished(match) ? "Local oficial em atualizacao" : "Estadio a definir";
@@ -450,9 +456,10 @@ async function bootCalendar() {
     const response = await fetch(`/api/scores?v=${CALENDAR_VERSION}&fresh=1&t=${Date.now()}`, {
       cache: "no-store",
     });
-    renderCalendar(await response.json());
+    const payload = await response.json();
+    renderCalendar(payload);
     window.clearTimeout(calendarState.pollTimer);
-    calendarState.pollTimer = window.setTimeout(bootCalendar, CALENDAR_POLL_INTERVAL_MS);
+    calendarState.pollTimer = window.setTimeout(bootCalendar, nextPollIntervalMs(payload));
   } catch (error) {
     renderMessage("Nao foi possivel carregar o calendario agora.");
   }

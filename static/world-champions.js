@@ -6,7 +6,7 @@ const worldFinishedCount = document.querySelector("#worldFinishedCount");
 const worldUpdatedAt = document.querySelector("#worldUpdatedAt");
 
 const WORLD_POLL_INTERVAL_MS = 60000;
-const WORLD_DATA_VERSION = "20260628-fifa-source-v1";
+const WORLD_DATA_VERSION = "20260628-live-sync-v1";
 let worldPollTimer = null;
 
 function flagUrl(code) {
@@ -25,6 +25,12 @@ function hasFinalScore(match) {
 
 function isFinished(match) {
   return (match.status || "finished") === "finished" && hasFinalScore(match);
+}
+
+function nextPollIntervalMs(payload) {
+  const seconds = Number(payload?.score_source?.live_sync?.interval_seconds);
+  if (!Number.isFinite(seconds)) return WORLD_POLL_INTERVAL_MS;
+  return Math.min(Math.max(seconds * 1000, 30000), 900000);
 }
 
 function venueText(match, field) {
@@ -262,7 +268,7 @@ async function bootWorldChampions() {
     const payload = await response.json();
     renderWorld(payload);
     window.clearTimeout(worldPollTimer);
-    worldPollTimer = window.setTimeout(bootWorldChampions, WORLD_POLL_INTERVAL_MS);
+    worldPollTimer = window.setTimeout(bootWorldChampions, nextPollIntervalMs(payload));
   } catch (error) {
     renderMessage("Nao foi possivel carregar os placares agora.");
   }

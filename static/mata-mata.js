@@ -1,5 +1,7 @@
 const knockoutBoard = document.querySelector("#knockoutBoard");
-const KNOCKOUT_DATA_VERSION = "20260628-fifa-source-v1";
+const KNOCKOUT_DATA_VERSION = "20260628-live-sync-v1";
+const KNOCKOUT_POLL_INTERVAL_MS = 60000;
+let knockoutPollTimer = null;
 
 const roundOf32 = [
   { id: 73, date: "28/06", time: "16:00 BRT", a: { type: "R", group: "A" }, b: { type: "R", group: "B" } },
@@ -213,6 +215,12 @@ function renderBracket(payload) {
   `;
 }
 
+function nextPollIntervalMs(payload) {
+  const seconds = Number(payload?.score_source?.live_sync?.interval_seconds);
+  if (!Number.isFinite(seconds)) return KNOCKOUT_POLL_INTERVAL_MS;
+  return Math.min(Math.max(seconds * 1000, 30000), 900000);
+}
+
 async function bootKnockout() {
   knockoutBoard.innerHTML = `<div class="empty-state">Carregando calendario do mata-mata...</div>`;
   try {
@@ -221,6 +229,8 @@ async function bootKnockout() {
     });
     const payload = await response.json();
     renderBracket(payload);
+    window.clearTimeout(knockoutPollTimer);
+    knockoutPollTimer = window.setTimeout(bootKnockout, nextPollIntervalMs(payload));
   } catch (error) {
     knockoutBoard.innerHTML = `<div class="empty-state">Nao foi possivel carregar o mata-mata agora.</div>`;
   }

@@ -1,5 +1,6 @@
 const groupsGrid = document.querySelector("#groupsGrid");
 const GROUPS_POLL_INTERVAL_MS = 60000;
+const GROUPS_DATA_VERSION = "20260628-live-sync-v1";
 let groupsPollTimer = null;
 
 function flagUrl(code) {
@@ -55,6 +56,12 @@ function renderGroupStandings(group) {
   `;
 }
 
+function nextPollIntervalMs(payload) {
+  const seconds = Number(payload?.score_source?.live_sync?.interval_seconds);
+  if (!Number.isFinite(seconds)) return GROUPS_POLL_INTERVAL_MS;
+  return Math.min(Math.max(seconds * 1000, 30000), 900000);
+}
+
 function renderGroups(groups) {
   groupsGrid.innerHTML = "";
 
@@ -97,7 +104,7 @@ async function bootGroups() {
   }
 
   try {
-  const response = await fetch(`/api/groups?v=20260628-fifa-source-v1&fresh=1&t=${Date.now()}`, {
+  const response = await fetch(`/api/groups?v=${GROUPS_DATA_VERSION}&fresh=1&t=${Date.now()}`, {
       cache: "no-store",
     });
     const payload = await response.json();
@@ -107,7 +114,7 @@ async function bootGroups() {
     }
     renderGroups(payload.groups);
     window.clearTimeout(groupsPollTimer);
-    groupsPollTimer = window.setTimeout(bootGroups, GROUPS_POLL_INTERVAL_MS);
+    groupsPollTimer = window.setTimeout(bootGroups, nextPollIntervalMs(payload));
   } catch (error) {
     renderMessage("Nao foi possivel carregar os grupos agora.");
   }

@@ -6,24 +6,30 @@ import re
 import time
 import unicodedata
 import urllib.request
+from datetime import datetime, timedelta, timezone
 from html.parser import HTMLParser
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
+from zoneinfo import ZoneInfo
 
 
 APP_NAME = "copa2026"
-APP_VERSION = "2026.06.28-fifa-source-v1"
+APP_VERSION = "2026.06.28-live-sync-v1"
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
 DATA_DIR = BASE_DIR / "data"
 FINAL_MATCHES_DB = DATA_DIR / "final_matches.json"
+LIVE_SYNC_DB = DATA_DIR / "live_sync.json"
 FIFA_TOURNAMENT_URL = "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026"
 FIFA_SCORES_SOURCE_URL = f"{FIFA_TOURNAMENT_URL}/scores-fixtures"
 FIFA_TEAMS_SOURCE_URL = f"{FIFA_TOURNAMENT_URL}/teams"
 SQUAD_SOURCE_URL = FIFA_TEAMS_SOURCE_URL
 SCORES_SOURCE_URL = FIFA_SCORES_SOURCE_URL
-SCORES_CACHE_SECONDS = 60
+LIVE_POLL_SECONDS = 30
+MATCHDAY_POLL_SECONDS = 300
+DEFAULT_POLL_SECONDS = 900
+SCORES_CACHE_SECONDS = DEFAULT_POLL_SECONDS
 TIEBREAKER_RULES = {
     "group": [
         "points",
@@ -441,6 +447,105 @@ def build_knockout_fixtures() -> dict:
     }
 
 
+def brt_now() -> datetime:
+    return datetime.now(ZoneInfo("America/Fortaleza"))
+
+
+def iso_utc_now() -> str:
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def parse_brt_match_start(date_value: str, time_value: str) -> datetime | None:
+    match = re.search(r"(\d{1,2}):(\d{2})", time_value or "")
+    if not match:
+        return None
+    try:
+        hour = int(match.group(1))
+        minute = int(match.group(2))
+        year, month, day = [int(part) for part in date_value.split("-")]
+        return datetime(year, month, day, hour, minute, tzinfo=ZoneInfo("America/Fortaleza"))
+    except (ValueError, AttributeError):
+        return None
+
+
+def scheduled_sync_matches() -> list[dict]:
+    matches = []
+    for fixture in KNOCKOUT_ROUND_OF_32_FIXTURES:
+        starts_at = parse_brt_match_start(fixture.get("date", ""), fixture.get("time", ""))
+        if not starts_at:
+            continue
+        matches.append(
+            {
+                "id": fixture.get("id"),
+                "date": fixture.get("date"),
+                "time": fixture.get("time"),
+                "stadium": fixture.get("stadium", ""),
+                "starts_at_brt": starts_at.isoformat(),
+                "starts_at": starts_at,
+            }
+        )
+    return matches
+
+
+def build_live_sync_policy(now: datetime | None = None) -> dict:
+    now = now or brt_now()
+    active_matches = []
+    today_matches = []
+    upcoming_matches = []
+
+    for match in scheduled_sync_matches():
+        starts_at = match["starts_at"]
+        if starts_at - timedelta(minutes=15) <= now <= starts_at + timedelta(minutes=150):
+            active_matches.append(match)
+        if starts_at.date() == now.date():
+            today_matches.append(match)
+        if starts_at >= now:
+            upcoming_matches.append(match)
+
+    if active_matches:
+        interval_seconds = LIVE_POLL_SECONDS
+        mode = "live"
+        reason = "Jogo em andamento ou dentro da janela de atualizacao ao vivo."
+    elif today_matches or (upcoming_matches and upcoming_matches[0]["starts_at"] - now <= timedelta(hours=24)):
+        interval_seconds = MATCHDAY_POLL_SECONDS
+        mode = "matchday"
+        reason = "Dia de jogo ou partida dentro das proximas 24 horas."
+    else:
+        interval_seconds = DEFAULT_POLL_SECONDS
+        mode = "routine"
+        reason = "Sem jogo imediato; consulta em ritmo de rotina."
+
+    next_match = upcoming_matches[0] if upcoming_matches else None
+    serializable_active = [{key: value for key, value in match.items() if key != "starts_at"} for match in active_matches]
+    serializable_next = {key: value for key, value in next_match.items() if key != "starts_at"} if next_match else None
+    return {
+        "mode": mode,
+        "reason": reason,
+        "interval_seconds": interval_seconds,
+        "now_brt": now.isoformat(),
+        "active_matches": serializable_active,
+        "next_match": serializable_next,
+        "source": FIFA_SCORES_SOURCE_URL,
+    }
+
+
+def save_live_sync_status(status: dict) -> None:
+    DATA_DIR.mkdir(exist_ok=True)
+    temporary_path = LIVE_SYNC_DB.with_suffix(".json.tmp")
+    temporary_path.write_text(json.dumps(status, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    temporary_path.replace(LIVE_SYNC_DB)
+
+
+def load_live_sync_status() -> dict:
+    if not LIVE_SYNC_DB.exists():
+        return {}
+    try:
+        payload = json.loads(LIVE_SYNC_DB.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+    return payload if isinstance(payload, dict) else {}
+
+
 def build_official_source_status(score_source: dict | None = None) -> dict:
     final_db = load_final_matches_db()
     return {
@@ -450,6 +555,7 @@ def build_official_source_status(score_source: dict | None = None) -> dict:
         "album_exception": "Album de figurinhas da selecao japonesa mantem fonte japonesa propria.",
         "final_db": str(FINAL_MATCHES_DB.relative_to(BASE_DIR)),
         "final_db_count": len(final_db.get("matches", [])),
+        "live_sync": load_live_sync_status(),
         "score_source": score_source or {},
     }
 
@@ -648,8 +754,13 @@ def parse_external_scores_from_text(lines: list[str]) -> list[dict]:
 
 def fetch_external_scores(force_refresh: bool = False) -> tuple[list[dict], bool, str]:
     now = time.time()
+    sync_policy = build_live_sync_policy()
+    interval_seconds = int(sync_policy["interval_seconds"])
     cached_scores = SCORES_CACHE.get("scores")
-    if not force_refresh and cached_scores is not None and now < float(SCORES_CACHE["expires_at"]):
+    cached_policy = SCORES_CACHE.get("sync_policy") if isinstance(SCORES_CACHE.get("sync_policy"), dict) else {}
+    mode_changed = cached_policy.get("mode") and cached_policy.get("mode") != sync_policy["mode"]
+    interval_got_shorter = int(cached_policy.get("interval_seconds") or interval_seconds) > interval_seconds
+    if cached_scores is not None and now < float(SCORES_CACHE["expires_at"]) and not mode_changed and not interval_got_shorter:
         return cached_scores, bool(SCORES_CACHE["source_ok"]), str(SCORES_CACHE.get("error") or "")
 
     try:
@@ -662,10 +773,51 @@ def fetch_external_scores(force_refresh: bool = False) -> tuple[list[dict], bool
         parser = TextExtractor()
         parser.feed(html)
         scores = parse_external_scores_from_text(parser.parts)
-        SCORES_CACHE.update({"expires_at": now + SCORES_CACHE_SECONDS, "scores": scores, "source_ok": True, "error": ""})
+        status = {
+            **sync_policy,
+            "ok": True,
+            "error": "",
+            "last_checked": iso_utc_now(),
+            "last_success": iso_utc_now(),
+            "external_count": len(scores),
+            "fallback_used": not bool(scores),
+            "next_check_seconds": interval_seconds,
+            "force_refresh_requested": force_refresh,
+        }
+        save_live_sync_status(status)
+        SCORES_CACHE.update(
+            {
+                "expires_at": now + interval_seconds,
+                "scores": scores,
+                "source_ok": True,
+                "error": "",
+                "sync_policy": status,
+            }
+        )
         return scores, True, ""
     except Exception as exc:
-        SCORES_CACHE.update({"expires_at": now + 60, "scores": [], "source_ok": False, "error": str(exc)})
+        previous_status = load_live_sync_status()
+        status = {
+            **sync_policy,
+            "ok": False,
+            "error": str(exc),
+            "last_checked": iso_utc_now(),
+            "last_success": previous_status.get("last_success", ""),
+            "external_count": 0,
+            "fallback_used": True,
+            "next_check_seconds": min(interval_seconds, 60),
+            "force_refresh_requested": force_refresh,
+        }
+        save_live_sync_status(status)
+        SCORES_CACHE.update(
+            {
+                "expires_at": now + min(interval_seconds, 60),
+                "scores": [],
+                "source_ok": False,
+                "error": str(exc),
+                "sync_policy": status,
+            }
+        )
         return [], False, str(exc)
 
 
@@ -677,6 +829,7 @@ def build_current_scores(force_refresh: bool = False) -> tuple[list[dict], dict]
     if external_scores:
         save_final_matches_db(finished_scores)
     final_db = load_final_matches_db()
+    live_sync = load_live_sync_status()
     return scores, {
         "name": "FIFA.com",
         "url": FIFA_SCORES_SOURCE_URL,
@@ -688,7 +841,8 @@ def build_current_scores(force_refresh: bool = False) -> tuple[list[dict], dict]
         "final_db_count": len(final_db.get("matches", [])),
         "fallback_used": not bool(external_scores),
         "fallback_reason": "Banco local de jogos encerrados usado para preservar dados oficiais." if not external_scores else "",
-        "cache_seconds": SCORES_CACHE_SECONDS,
+        "cache_seconds": live_sync.get("interval_seconds", DEFAULT_POLL_SECONDS),
+        "live_sync": live_sync,
         "force_refresh": force_refresh,
     }
 
@@ -1099,6 +1253,19 @@ class CopaHandler(SimpleHTTPRequestHandler):
                 {
                     "ok": True,
                     "official_source": build_official_source_status(score_source),
+                    "finished_count": len([score for score in scores if score_is_finished(score)]),
+                    "version": APP_VERSION,
+                }
+            )
+            return
+        if path == "/api/live-sync":
+            scores, score_source = build_current_scores(force_refresh=self.should_force_refresh(parsed_url))
+            live_sync = score_source.get("live_sync") or load_live_sync_status() or build_live_sync_policy()
+            self.send_json(
+                {
+                    "ok": True,
+                    "live_sync": live_sync,
+                    "score_source": score_source,
                     "finished_count": len([score for score in scores if score_is_finished(score)]),
                     "version": APP_VERSION,
                 }

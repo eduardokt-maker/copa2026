@@ -11,3 +11,4 @@ build/
 Thumbs.db
 server.out.log
 server.err.log
+data/live_sync.json
