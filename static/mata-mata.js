@@ -1,5 +1,5 @@
 const knockoutBoard = document.querySelector("#knockoutBoard");
-const KNOCKOUT_DATA_VERSION = "20260628-live-sync-v1";
+const KNOCKOUT_DATA_VERSION = "20260628-third-slots-v1";
 const KNOCKOUT_POLL_INTERVAL_MS = 60000;
 let knockoutPollTimer = null;
 
@@ -79,6 +79,19 @@ const futureRounds = [
   },
 ];
 
+const thirdPlaceAssignmentsByQualifiedGroups = {
+  "B,D,E,F,I,J,K,L": {
+    74: "D",
+    77: "F",
+    79: "E",
+    80: "K",
+    81: "B",
+    82: "J",
+    85: "I",
+    87: "L",
+  },
+};
+
 function flagUrl(code) {
   return `https://flagcdn.com/w80/${code}.png`;
 }
@@ -105,13 +118,22 @@ function bestThirdRows(standings) {
     .slice(0, 8);
 }
 
+function qualifiedThirdGroupsKey(bestThird) {
+  return bestThird.map((row) => row.groupId).sort().join(",");
+}
+
+function assignedThirdGroupForMatch(matchId, bestThird) {
+  const assignments = thirdPlaceAssignmentsByQualifiedGroups[qualifiedThirdGroupsKey(bestThird)];
+  return assignments?.[Number(matchId)] || "";
+}
+
 function slotFallback(slot) {
   if (slot.type === "W") return `1o Grupo ${slot.group}`;
   if (slot.type === "R") return `2o Grupo ${slot.group}`;
   return `Melhor 3o ${slot.groups.join("/")}`;
 }
 
-function resolveSlot(slot, standings, bestThird) {
+function resolveSlot(slot, standings, bestThird, matchId = 0) {
   if (slot.type === "W" || slot.type === "R") {
     const position = slot.type === "W" ? 1 : 2;
     const row = standings?.groups?.[slot.group]?.find((item) => item.position === position);
@@ -119,6 +141,15 @@ function resolveSlot(slot, standings, bestThird) {
   }
 
   const candidates = bestThird.filter((row) => slot.groups.includes(row.groupId));
+  const assignedGroup = assignedThirdGroupForMatch(matchId, bestThird);
+  const assigned = candidates.find((row) => row.groupId === assignedGroup);
+  if (assigned) {
+    return {
+      label: assigned.team.country,
+      team: assigned.team,
+      meta: `3o Grupo ${assigned.groupId}`,
+    };
+  }
   if (candidates.length === 1) {
     return {
       label: candidates[0].team.country,
@@ -159,8 +190,8 @@ function renderRoundOf32(standings) {
       </div>
       <div class="knockout-match-list">
         ${roundOf32.map((match) => {
-          const a = resolveSlot(match.a, standings, bestThird);
-          const b = resolveSlot(match.b, standings, bestThird);
+          const a = resolveSlot(match.a, standings, bestThird, match.id);
+          const b = resolveSlot(match.b, standings, bestThird, match.id);
           return `
             <article class="knockout-match">
               <div class="knockout-match-meta">
