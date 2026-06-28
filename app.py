@@ -434,6 +434,7 @@ KNOCKOUT_FIXTURE_SOURCE = {
 KNOCKOUT_ROUND_OF_32_FIXTURES = [
     {"id": 73, "date": "2026-06-28", "time": "16:00 BRT", "stadium": "Los Angeles Stadium", "city": "Los Angeles", "source": FIFA_SCORES_SOURCE_URL},
     {"id": 74, "date": "2026-06-29", "time": "17:30 BRT", "stadium": "Boston Stadium", "city": "Boston", "source": FIFA_SCORES_SOURCE_URL},
+    {"id": 75, "date": "2026-06-29", "time": "22:00 BRT", "stadium": "Monterrey Stadium", "city": "Monterrey", "source": FIFA_SCORES_SOURCE_URL},
     {"id": 76, "date": "2026-06-29", "time": "14:00 BRT", "stadium": "Houston Stadium", "city": "Houston", "source": FIFA_SCORES_SOURCE_URL},
     {"id": 77, "date": "2026-06-30", "time": "18:00 BRT", "stadium": "New York New Jersey Stadium", "city": "New York New Jersey", "source": FIFA_SCORES_SOURCE_URL},
     {"id": 86, "date": "2026-07-03", "time": "19:00 BRT", "stadium": "Miami Stadium", "city": "Miami", "source": FIFA_SCORES_SOURCE_URL},
