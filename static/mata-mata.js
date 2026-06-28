@@ -1,5 +1,5 @@
 const knockoutBoard = document.querySelector("#knockoutBoard");
-const KNOCKOUT_DATA_VERSION = "20260628-knockout-fixtures-api";
+const KNOCKOUT_DATA_VERSION = "20260628-fifa-source-v1";
 
 const roundOf32 = [
   { id: 73, date: "28/06", time: "16:00 BRT", a: { type: "R", group: "A" }, b: { type: "R", group: "B" } },

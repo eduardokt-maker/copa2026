@@ -4,7 +4,7 @@ const scoreTitle = document.querySelector("#scoreTitle");
 const groupStandings = document.querySelector("#groupStandings");
 const initialGroup = new URLSearchParams(window.location.search).get("group") || "";
 const isGroupMode = Boolean(initialGroup);
-const APP_DATA_VERSION = "20260627-local-encerrado-obrigatorio";
+const APP_DATA_VERSION = "20260628-fifa-source-v1";
 const POLL_INTERVAL_MS = 60000;
 
 const state = {

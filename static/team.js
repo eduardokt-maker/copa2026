@@ -72,7 +72,7 @@ async function bootTeamPage() {
   renderRosterMessage("Carregando elenco...");
 
   try {
-    const response = await fetch(`/api/roster?code=${encodeURIComponent(code)}&v=20260626-auto-refresh&fresh=1&t=${Date.now()}`, {
+    const response = await fetch(`/api/roster?code=${encodeURIComponent(code)}&v=20260628-fifa-source-v1&fresh=1&t=${Date.now()}`, {
       cache: "no-store",
     });
     const payload = await response.json();

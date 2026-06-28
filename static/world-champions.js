@@ -6,7 +6,7 @@ const worldFinishedCount = document.querySelector("#worldFinishedCount");
 const worldUpdatedAt = document.querySelector("#worldUpdatedAt");
 
 const WORLD_POLL_INTERVAL_MS = 60000;
-const WORLD_DATA_VERSION = "20260627-local-encerrado-obrigatorio";
+const WORLD_DATA_VERSION = "20260628-fifa-source-v1";
 let worldPollTimer = null;
 
 function flagUrl(code) {

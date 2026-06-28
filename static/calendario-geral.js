@@ -6,7 +6,7 @@ const calendarTotalCount = document.querySelector("#calendarTotalCount");
 const calendarUpdatedAt = document.querySelector("#calendarUpdatedAt");
 const calendarFilterButtons = document.querySelectorAll("[data-calendar-filter]");
 
-const CALENDAR_VERSION = "20260628-knockout-fixtures-api";
+const CALENDAR_VERSION = "20260628-fifa-source-v1";
 const CALENDAR_POLL_INTERVAL_MS = 60000;
 
 let calendarState = {

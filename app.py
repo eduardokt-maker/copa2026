@@ -13,11 +13,16 @@ from urllib.parse import parse_qs, urlparse
 
 
 APP_NAME = "copa2026"
-APP_VERSION = "2026.06.26-bridge-eagle-v1"
+APP_VERSION = "2026.06.28-fifa-source-v1"
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
-SQUAD_SOURCE_URL = "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_squads"
-SCORES_SOURCE_URL = "https://www.sbnation.com/soccer/1117905/world-cup-standings-updated-full-list-of-teams"
+DATA_DIR = BASE_DIR / "data"
+FINAL_MATCHES_DB = DATA_DIR / "final_matches.json"
+FIFA_TOURNAMENT_URL = "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026"
+FIFA_SCORES_SOURCE_URL = f"{FIFA_TOURNAMENT_URL}/scores-fixtures"
+FIFA_TEAMS_SOURCE_URL = f"{FIFA_TOURNAMENT_URL}/teams"
+SQUAD_SOURCE_URL = FIFA_TEAMS_SOURCE_URL
+SCORES_SOURCE_URL = FIFA_SCORES_SOURCE_URL
 SCORES_CACHE_SECONDS = 60
 TIEBREAKER_RULES = {
     "group": [
@@ -339,22 +344,93 @@ def enrich_score(result: dict) -> dict:
     }
 
 
+def final_match_db_template() -> dict:
+    return {
+        "source": {
+            "name": "FIFA.com",
+            "url": FIFA_SCORES_SOURCE_URL,
+            "last_seeded": "2026-06-28",
+            "policy": "Jogos encerrados confirmados ficam gravados neste banco local versionado.",
+        },
+        "matches": SCORE_RESULTS,
+    }
+
+
+def normalize_finished_match_record(match: dict) -> dict:
+    return {
+        "group": match["group"],
+        "date": match["date"],
+        "home": match["home"],
+        "home_score": int(match["home_score"]),
+        "away_score": int(match["away_score"]),
+        "away": match["away"],
+        "stadium": official_stadium_name(match.get("stadium", "")),
+        "city": official_host_location(match.get("stadium", ""), match.get("city", "")),
+        "status": "finished",
+        "source": match.get("source") or FIFA_SCORES_SOURCE_URL,
+        "verified_by": match.get("verified_by") or "FIFA.com",
+    }
+
+
+def load_final_matches_db() -> dict:
+    if not FINAL_MATCHES_DB.exists():
+        return final_match_db_template()
+    try:
+        payload = json.loads(FINAL_MATCHES_DB.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return final_match_db_template()
+    if not isinstance(payload, dict) or not isinstance(payload.get("matches"), list):
+        return final_match_db_template()
+    payload.setdefault("source", final_match_db_template()["source"])
+    return payload
+
+
+def save_final_matches_db(matches: list[dict]) -> None:
+    DATA_DIR.mkdir(exist_ok=True)
+    payload = {
+        "source": {
+            "name": "FIFA.com",
+            "url": FIFA_SCORES_SOURCE_URL,
+            "last_saved": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "policy": "Banco local de jogos encerrados: preserva resultados oficiais ja concluidos caso a pagina da FIFA mude ou fique indisponivel.",
+        },
+        "matches": [normalize_finished_match_record(match) for match in matches],
+    }
+    temporary_path = FINAL_MATCHES_DB.with_suffix(".json.tmp")
+    temporary_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    temporary_path.replace(FINAL_MATCHES_DB)
+
+
+def load_finished_match_records() -> list[dict]:
+    payload = load_final_matches_db()
+    records: list[dict] = []
+    for match in payload.get("matches", []):
+        if not isinstance(match, dict):
+            continue
+        try:
+            records.append(normalize_finished_match_record(match))
+        except (KeyError, TypeError, ValueError):
+            continue
+    return records
+
+
 def build_scores() -> list[dict]:
-    return [enrich_score(result) for result in SCORE_RESULTS]
+    return [enrich_score(result) for result in load_finished_match_records()]
 
 
 KNOCKOUT_FIXTURE_SOURCE = {
-    "name": "FIFA World Cup 26 match schedule / confirmed match reports",
+    "name": "FIFA.com",
+    "url": FIFA_SCORES_SOURCE_URL,
     "last_verified": "2026-06-28",
-    "policy": "Backend fixture data is merged into every screen before rendering knockout cards.",
+    "policy": "Calendario oficial FIFA como fonte primaria; banco local preserva jogos encerrados e locais ja confirmados.",
 }
 
 KNOCKOUT_ROUND_OF_32_FIXTURES = [
-    {"id": 73, "date": "2026-06-28", "time": "16:00 BRT", "stadium": "Los Angeles Stadium", "city": "Los Angeles", "source": "Canada v South Africa confirmed in Los Angeles."},
-    {"id": 74, "date": "2026-06-29", "time": "17:30 BRT", "stadium": "Boston Stadium", "city": "Boston", "source": "Germany listed for June 29 Round of 32 match in Boston."},
-    {"id": 76, "date": "2026-06-29", "time": "14:00 BRT", "stadium": "Houston Stadium", "city": "Houston", "source": "Brazil v Japan listed for Houston Stadium."},
-    {"id": 77, "date": "2026-06-30", "time": "18:00 BRT", "stadium": "New York New Jersey Stadium", "city": "New York New Jersey", "source": "Round of 32 venue confirmed in official schedule."},
-    {"id": 86, "date": "2026-07-03", "time": "19:00 BRT", "stadium": "Miami Stadium", "city": "Miami", "source": "Round of 32 venue confirmed in official schedule."},
+    {"id": 73, "date": "2026-06-28", "time": "16:00 BRT", "stadium": "Los Angeles Stadium", "city": "Los Angeles", "source": FIFA_SCORES_SOURCE_URL},
+    {"id": 74, "date": "2026-06-29", "time": "17:30 BRT", "stadium": "Boston Stadium", "city": "Boston", "source": FIFA_SCORES_SOURCE_URL},
+    {"id": 76, "date": "2026-06-29", "time": "14:00 BRT", "stadium": "Houston Stadium", "city": "Houston", "source": FIFA_SCORES_SOURCE_URL},
+    {"id": 77, "date": "2026-06-30", "time": "18:00 BRT", "stadium": "New York New Jersey Stadium", "city": "New York New Jersey", "source": FIFA_SCORES_SOURCE_URL},
+    {"id": 86, "date": "2026-07-03", "time": "19:00 BRT", "stadium": "Miami Stadium", "city": "Miami", "source": FIFA_SCORES_SOURCE_URL},
 ]
 
 
@@ -362,6 +438,19 @@ def build_knockout_fixtures() -> dict:
     return {
         "source": KNOCKOUT_FIXTURE_SOURCE,
         "round_of_32": KNOCKOUT_ROUND_OF_32_FIXTURES,
+    }
+
+
+def build_official_source_status(score_source: dict | None = None) -> dict:
+    final_db = load_final_matches_db()
+    return {
+        "primary": "FIFA.com",
+        "scores_url": FIFA_SCORES_SOURCE_URL,
+        "teams_url": FIFA_TEAMS_SOURCE_URL,
+        "album_exception": "Album de figurinhas da selecao japonesa mantem fonte japonesa propria.",
+        "final_db": str(FINAL_MATCHES_DB.relative_to(BASE_DIR)),
+        "final_db_count": len(final_db.get("matches", [])),
+        "score_source": score_source or {},
     }
 
 
@@ -565,8 +654,8 @@ def fetch_external_scores(force_refresh: bool = False) -> tuple[list[dict], bool
 
     try:
         request = urllib.request.Request(
-            SCORES_SOURCE_URL,
-            headers={"User-Agent": f"{APP_NAME}/{APP_VERSION} score updater"},
+            FIFA_SCORES_SOURCE_URL,
+            headers={"User-Agent": f"{APP_NAME}/{APP_VERSION} fifa official source monitor"},
         )
         with urllib.request.urlopen(request, timeout=8) as response:
             html = response.read().decode("utf-8", errors="replace")
@@ -584,11 +673,21 @@ def build_current_scores(force_refresh: bool = False) -> tuple[list[dict], dict]
     local_scores = build_scores()
     external_scores, source_ok, source_error = fetch_external_scores(force_refresh=force_refresh)
     scores = merge_scores(local_scores, external_scores) if external_scores else local_scores
+    finished_scores = [score for score in scores if score_is_finished(score)]
+    if external_scores:
+        save_final_matches_db(finished_scores)
+    final_db = load_final_matches_db()
     return scores, {
-        "url": SCORES_SOURCE_URL,
+        "name": "FIFA.com",
+        "url": FIFA_SCORES_SOURCE_URL,
+        "primary": "fifa.com",
         "ok": source_ok,
         "error": source_error,
         "external_count": len(external_scores),
+        "final_db": str(FINAL_MATCHES_DB.relative_to(BASE_DIR)),
+        "final_db_count": len(final_db.get("matches", [])),
+        "fallback_used": not bool(external_scores),
+        "fallback_reason": "Banco local de jogos encerrados usado para preservar dados oficiais." if not external_scores else "",
         "cache_seconds": SCORES_CACHE_SECONDS,
         "force_refresh": force_refresh,
     }
@@ -965,6 +1064,7 @@ class CopaHandler(SimpleHTTPRequestHandler):
                     "groups": groups,
                     "count": len(groups),
                     "score_source": score_source,
+                    "official_source": build_official_source_status(score_source),
                     "tiebreakers": TIEBREAKER_RULES,
                     "version": APP_VERSION,
                 }
@@ -984,6 +1084,7 @@ class CopaHandler(SimpleHTTPRequestHandler):
                     },
                     "knockout_fixtures": build_knockout_fixtures(),
                     "score_source": score_source,
+                    "official_source": build_official_source_status(score_source),
                     "tiebreakers": TIEBREAKER_RULES,
                     "version": APP_VERSION,
                 }
@@ -991,6 +1092,17 @@ class CopaHandler(SimpleHTTPRequestHandler):
             return
         if path == "/api/knockout-fixtures":
             self.send_json({"knockout_fixtures": build_knockout_fixtures(), "version": APP_VERSION})
+            return
+        if path == "/api/source-status":
+            scores, score_source = build_current_scores(force_refresh=self.should_force_refresh(parsed_url))
+            self.send_json(
+                {
+                    "ok": True,
+                    "official_source": build_official_source_status(score_source),
+                    "finished_count": len([score for score in scores if score_is_finished(score)]),
+                    "version": APP_VERSION,
+                }
+            )
             return
         if path == "/api/roster":
             query = parse_qs(parsed_url.query)
