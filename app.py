@@ -188,6 +188,7 @@ GROUP_DEFINITIONS = [
     {"id": "K", "teams": ["pt", "cd", "uz", "co"]},
     {"id": "L", "teams": ["gb-eng", "hr", "gh", "pa"]},
 ]
+GROUP_IDS = {group["id"] for group in GROUP_DEFINITIONS}
 
 SCORE_RESULTS = [
     {"group": "A", "date": "2026-06-11", "home": "mx", "home_score": 2, "away_score": 0, "away": "za", "stadium": "Estadio Azteca", "city": "Mexico City"},
@@ -342,11 +343,12 @@ def enrich_score(result: dict) -> dict:
     home = TEAM_BY_CODE[result["home"]]
     away = TEAM_BY_CODE[result["away"]]
     stadium = official_stadium_name(result.get("stadium", ""))
+    group = result.get("group", "KO")
     return {
         **result,
         "stadium": stadium,
         "city": official_host_location(stadium, result.get("city", "")),
-        "group_name": f"Grupo {result['group']}",
+        "group_name": f"Grupo {group}" if group in GROUP_IDS else "Mata-mata",
         "home_team": home,
         "away_team": away,
     }
@@ -365,8 +367,8 @@ def final_match_db_template() -> dict:
 
 
 def normalize_finished_match_record(match: dict) -> dict:
-    return {
-        "group": match["group"],
+    record = {
+        "group": match.get("group", "KO"),
         "date": match["date"],
         "home": match["home"],
         "home_score": int(match["home_score"]),
@@ -378,6 +380,12 @@ def normalize_finished_match_record(match: dict) -> dict:
         "source": match.get("source") or FIFA_SCORES_SOURCE_URL,
         "verified_by": match.get("verified_by") or "FIFA.com",
     }
+    if match.get("match_id") is not None:
+        match_id = int(match["match_id"])
+        record["match_id"] = match_id
+        record["phase"] = knockout_phase_for_match(match_id)
+        record["group_name"] = "Mata-mata"
+    return record
 
 
 def load_final_matches_db() -> dict:
@@ -487,6 +495,36 @@ KNOCKOUT_FIXTURES_BY_PHASE = {
     "semifinals": KNOCKOUT_SEMIFINAL_FIXTURES,
     "finals": KNOCKOUT_FINAL_FIXTURES,
 }
+KNOCKOUT_FIXTURE_BY_ID = {
+    int(fixture["id"]): {**fixture, "phase": phase}
+    for phase, fixtures in KNOCKOUT_FIXTURES_BY_PHASE.items()
+    for fixture in fixtures
+}
+KNOCKOUT_MATCH_IDS = set(KNOCKOUT_FIXTURE_BY_ID)
+
+
+def knockout_phase_for_match(match_id: int) -> str:
+    return KNOCKOUT_FIXTURE_BY_ID.get(int(match_id), {}).get("phase", "knockout")
+
+
+def build_knockout_results(scores: list[dict]) -> dict:
+    results = {}
+    for score in scores:
+        match_id = score.get("match_id")
+        if match_id is None:
+            continue
+        try:
+            match_id = int(match_id)
+        except (TypeError, ValueError):
+            continue
+        if match_id not in KNOCKOUT_MATCH_IDS:
+            continue
+        results[str(match_id)] = {
+            **score,
+            "match_id": match_id,
+            "phase": score.get("phase") or knockout_phase_for_match(match_id),
+        }
+    return results
 
 
 def build_knockout_fixtures() -> dict:
@@ -687,9 +725,11 @@ def code_from_source_team_name(name: str) -> str | None:
     return TEAM_NAME_ALIASES.get(normalize_key(name))
 
 
-def result_key(result: dict) -> tuple[str, str, str]:
+def result_key(result: dict) -> tuple[object, ...]:
+    if result.get("match_id") is not None:
+        return ("match", int(result["match_id"]))
     teams = sorted([result["home"], result["away"]])
-    return (result["group"], teams[0], teams[1])
+    return ("group", result["group"], teams[0], teams[1])
 
 
 SCHEDULED_MATCH_LOCATIONS = {
@@ -719,7 +759,13 @@ UNKNOWN_FINISHED_CITY = "Fonte oficial em verificacao"
 
 
 def scheduled_match_location(result: dict) -> tuple[str, str] | None:
-    return SCHEDULED_MATCH_LOCATIONS.get(result_key(result))
+    match_id = result.get("match_id")
+    if match_id is not None:
+        fixture = KNOCKOUT_FIXTURE_BY_ID.get(int(match_id))
+        if fixture:
+            return fixture.get("stadium", ""), fixture.get("city", "")
+    teams = sorted([result["home"], result["away"]])
+    return SCHEDULED_MATCH_LOCATIONS.get((result.get("group", ""), teams[0], teams[1]))
 
 
 def complete_score_location(score: dict, local_score: dict | None = None) -> dict:
@@ -752,7 +798,7 @@ def merge_scores(local_scores: list[dict], external_scores: list[dict]) -> list[
         merged[key] = enriched_score
     return sorted(
         merged.values(),
-        key=lambda score: (score["group"], score.get("date", ""), score["home"], score["away"]),
+        key=lambda score: (score.get("group", "KO"), score.get("date", ""), int(score.get("match_id") or 0), score["home"], score["away"]),
     )
 
 
@@ -1024,14 +1070,14 @@ def build_group_standings(group: dict, scores: list[dict] | None = None) -> list
     table = {code: empty_standing(TEAM_BY_CODE[code]) for code in group["teams"]}
 
     for score in scores:
-        if score["group"] != group["id"] or not score_is_finished(score):
+        if score.get("group") != group["id"] or not score_is_finished(score):
             continue
         home_row = table[score["home"]]
         away_row = table[score["away"]]
         apply_score_to_standing(home_row, score["home_score"], score["away_score"])
         apply_score_to_standing(away_row, score["away_score"], score["home_score"])
 
-    group_scores = [score for score in scores if score["group"] == group["id"]]
+    group_scores = [score for score in scores if score.get("group") == group["id"]]
     return sort_group_standings(list(table.values()), group_scores)
 
 
@@ -1287,6 +1333,7 @@ class CopaHandler(SimpleHTTPRequestHandler):
                         "general": build_general_standings(scores),
                     },
                     "knockout_fixtures": build_knockout_fixtures(),
+                    "knockout_results": build_knockout_results(scores),
                     "score_source": score_source,
                     "official_source": build_official_source_status(score_source),
                     "tiebreakers": TIEBREAKER_RULES,

@@ -3217,6 +3217,48 @@ footer {
   font-weight: 950;
 }
 
+.knockout-score {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border: 1px solid rgba(16, 32, 51, 0.1);
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 7px 9px;
+}
+
+.knockout-score strong {
+  color: #0e4a69;
+  font-size: 1rem;
+  font-weight: 950;
+}
+
+.knockout-score span {
+  color: #66758a;
+  font-size: 0.68rem;
+  font-weight: 900;
+  text-align: right;
+}
+
+.knockout-score.is-live {
+  border-color: rgba(180, 28, 28, 0.35);
+  background: #fff5f5;
+}
+
+.knockout-score.is-live span {
+  color: #b41c1c;
+}
+
+.knockout-score.is-finished {
+  border-color: rgba(15, 109, 86, 0.28);
+  background: #eefbf6;
+}
+
+.knockout-score.is-finished span {
+  color: #0f6d56;
+}
+
 .knockout-team {
   min-height: 44px;
   display: grid;

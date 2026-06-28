@@ -1,5 +1,5 @@
 const knockoutBoard = document.querySelector("#knockoutBoard");
-const KNOCKOUT_DATA_VERSION = "20260628-full-knockout-sync-v1";
+const KNOCKOUT_DATA_VERSION = "20260628-knockout-live-results-v2";
 const KNOCKOUT_POLL_INTERVAL_MS = 60000;
 let knockoutPollTimer = null;
 
@@ -190,6 +190,72 @@ function renderTeamSlot(slot) {
   `;
 }
 
+function knockoutResultsById(payload) {
+  return payload?.knockout_results || {};
+}
+
+function resultForMatch(matchId, resultsById) {
+  return resultsById?.[String(matchId)] || null;
+}
+
+function isFinishedResult(result) {
+  return result?.status === "finished" && Number.isInteger(result.home_score) && Number.isInteger(result.away_score);
+}
+
+function resultWinnerCode(result) {
+  if (!isFinishedResult(result)) return "";
+  if (result.winner) return result.winner;
+  if (result.home_score > result.away_score) return result.home;
+  if (result.away_score > result.home_score) return result.away;
+  return "";
+}
+
+function resultLoserCode(result) {
+  const winnerCode = resultWinnerCode(result);
+  if (!winnerCode) return "";
+  return winnerCode === result.home ? result.away : result.home;
+}
+
+function teamSlotFromResult(result, code, fallbackLabel) {
+  const team = code === result?.home ? result.home_team : code === result?.away ? result.away_team : null;
+  return {
+    label: team?.country || fallbackLabel,
+    meta: isFinishedResult(result) ? "Definido pelo placar oficial" : "Aguardando fim da partida",
+    team,
+  };
+}
+
+function resolveFutureTeamSlot(label, resultsById) {
+  const dependency = String(label).match(/^(Vencedor|Perdedor) (\d+)$/);
+  if (!dependency) return { label, meta: "A definir", team: null };
+  const result = resultForMatch(dependency[2], resultsById);
+  if (!result) return { label, meta: "A definir", team: null };
+  const code = dependency[1] === "Vencedor" ? resultWinnerCode(result) : resultLoserCode(result);
+  if (!code) return { label, meta: "Aguardando definicao", team: null };
+  return teamSlotFromResult(result, code, label);
+}
+
+function resultStatusLabel(match, result, liveSync) {
+  if (isFinishedResult(result)) return "Encerrada - placar salvo";
+  const activeIds = (liveSync?.active_matches || []).map((item) => Number(item.id));
+  if (activeIds.includes(Number(match.id))) return "Ao vivo - atualizando";
+  if (result && Number.isInteger(result.home_score) && Number.isInteger(result.away_score)) return "Em andamento";
+  return "Aguardando inicio";
+}
+
+function renderScoreline(match, result, liveSync) {
+  const statusLabel = resultStatusLabel(match, result, liveSync);
+  if (!result || !Number.isInteger(result.home_score) || !Number.isInteger(result.away_score)) {
+    return `<div class="knockout-score is-pending"><span>${statusLabel}</span></div>`;
+  }
+  return `
+    <div class="knockout-score ${isFinishedResult(result) ? "is-finished" : "is-live"}">
+      <strong>${result.home_score} x ${result.away_score}</strong>
+      <span>${statusLabel}</span>
+    </div>
+  `;
+}
+
 function formatFixtureDate(dateIso) {
   if (!dateIso) return "";
   const [year, month, day] = dateIso.split("-");
@@ -197,7 +263,7 @@ function formatFixtureDate(dateIso) {
   return `${day}/${month}`;
 }
 
-function renderRoundOf32(standings) {
+function renderRoundOf32(standings, resultsById, liveSync) {
   const bestThird = bestThirdRows(standings);
   return `
     <section class="knockout-round is-round32">
@@ -208,17 +274,19 @@ function renderRoundOf32(standings) {
       </div>
       <div class="knockout-match-list">
         ${roundOf32.map((match) => {
-          const a = resolveSlot(match.a, standings, bestThird, match.id);
-          const b = resolveSlot(match.b, standings, bestThird, match.id);
+          const result = resultForMatch(match.id, resultsById);
+          const a = result?.home_team ? { label: result.home_team.country, meta: "Mandante oficial", team: result.home_team } : resolveSlot(match.a, standings, bestThird, match.id);
+          const b = result?.away_team ? { label: result.away_team.country, meta: "Visitante oficial", team: result.away_team } : resolveSlot(match.b, standings, bestThird, match.id);
           return `
             <article class="knockout-match">
               <div class="knockout-match-meta">
                 <strong>Jogo ${match.id}</strong>
-                <span>${match.date} | ${match.time}</span>
+                <span>${formatFixtureDate(match.dateIso) || match.date} | ${match.time}</span>
                 <small>${match.stadium || "Estadio a definir"}</small>
               </div>
               ${renderTeamSlot(a)}
               ${renderTeamSlot(b)}
+              ${renderScoreline(match, result, liveSync)}
               ${
                 match.id === 76
                   ? `<a class="knockout-album-link" href="/japao-album.html" aria-label="Abrir album de figurinha da selecao japonesa">Album de figurinha</a>`
@@ -232,7 +300,7 @@ function renderRoundOf32(standings) {
   `;
 }
 
-function renderFutureRounds() {
+function renderFutureRounds(resultsById, liveSync) {
   return futureRounds.map((round) => `
     <section class="knockout-round">
       <div class="knockout-round-head">
@@ -241,19 +309,25 @@ function renderFutureRounds() {
         <small>${round.period}</small>
       </div>
       <div class="knockout-match-list">
-        ${round.matches.map((match) => `
-          <article class="knockout-match is-future">
-            <div class="knockout-match-meta">
-              <strong>${match.label || `Jogo ${match.id}`}</strong>
-              <span>${match.time ? `${formatFixtureDate(match.dateIso)} · ${match.time}` : round.period}</span>
-            </div>
-            ${renderTeamSlot({ label: match.a, meta: "A definir", team: null })}
-            ${renderTeamSlot({ label: match.b, meta: "A definir", team: null })}
-            <div class="knockout-match-venue">
-              <small>${match.stadium || "Estadio a definir"}</small>
-            </div>
-          </article>
-        `).join("")}
+        ${round.matches.map((match) => {
+          const result = resultForMatch(match.id, resultsById);
+          const a = result?.home_team ? { label: result.home_team.country, meta: "Mandante oficial", team: result.home_team } : resolveFutureTeamSlot(match.a, resultsById);
+          const b = result?.away_team ? { label: result.away_team.country, meta: "Visitante oficial", team: result.away_team } : resolveFutureTeamSlot(match.b, resultsById);
+          return `
+            <article class="knockout-match ${result ? "" : "is-future"}">
+              <div class="knockout-match-meta">
+                <strong>${match.label || `Jogo ${match.id}`}</strong>
+                <span>${match.time ? `${formatFixtureDate(match.dateIso)} - ${match.time}` : round.period}</span>
+              </div>
+              ${renderTeamSlot(a)}
+              ${renderTeamSlot(b)}
+              ${renderScoreline(match, result, liveSync)}
+              <div class="knockout-match-venue">
+                <small>${match.stadium || "Estadio a definir"}</small>
+              </div>
+            </article>
+          `;
+        }).join("")}
       </div>
     </section>
   `).join("");
@@ -261,9 +335,11 @@ function renderFutureRounds() {
 
 function renderBracket(payload) {
   applyOfficialKnockoutFixtures(payload);
+  const resultsById = knockoutResultsById(payload);
+  const liveSync = payload?.score_source?.live_sync || payload?.official_source?.live_sync || {};
   knockoutBoard.innerHTML = `
-    ${renderRoundOf32(payload.standings)}
-    ${renderFutureRounds()}
+    ${renderRoundOf32(payload.standings, resultsById, liveSync)}
+    ${renderFutureRounds(resultsById, liveSync)}
   `;
 }
 
