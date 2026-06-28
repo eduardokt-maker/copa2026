@@ -294,22 +294,64 @@
 }
 
 .score-home-groups .calendar-home-button {
+  position: relative;
+  overflow: hidden;
+  justify-content: center;
   color: #f8fffb;
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.24), transparent 34%),
-    linear-gradient(145deg, #08715e 0%, #0d91a3 50%, #f3c75f 128%);
-  border-color: rgba(255, 255, 255, 0.72);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.48), 0 18px 40px rgba(0, 0, 0, 0.3);
-  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.32);
+    linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent 32%),
+    linear-gradient(145deg, #082f49 0%, #0f766e 58%, #16a34a 118%);
+  border-color: rgba(210, 252, 239, 0.82);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.42),
+    inset 0 -1px 0 rgba(2, 44, 34, 0.44),
+    0 18px 40px rgba(0, 0, 0, 0.32),
+    0 0 0 1px rgba(34, 197, 94, 0.18);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.38);
+}
+
+.score-home-groups .calendar-home-button::before {
+  content: "";
+  position: relative;
+  z-index: 1;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  border-top-width: 5px;
+  border-radius: 5px;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.18);
+}
+
+.score-home-groups .calendar-home-button::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.18) 46%, transparent 72%),
+    radial-gradient(circle at 84% 18%, rgba(255, 255, 255, 0.2), transparent 24%);
+  pointer-events: none;
+}
+
+.score-home-groups .calendar-home-button span {
+  position: relative;
+  z-index: 1;
+  color: #ffffff;
+  font-size: 0.9rem;
+  letter-spacing: 0;
 }
 
 .score-home-groups .calendar-home-button:hover,
 .score-home-groups .calendar-home-button:focus-visible {
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.3), transparent 34%),
-    linear-gradient(145deg, #099173 0%, #0fabc0 48%, #ffd96d 128%);
-  border-color: rgba(255, 255, 255, 0.88);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.56), 0 22px 48px rgba(0, 0, 0, 0.34);
+    linear-gradient(135deg, rgba(255, 255, 255, 0.24), transparent 32%),
+    linear-gradient(145deg, #0c4a6e 0%, #0d9488 56%, #22c55e 118%);
+  border-color: rgba(236, 253, 245, 0.96);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.52),
+    inset 0 -1px 0 rgba(2, 44, 34, 0.36),
+    0 24px 52px rgba(0, 0, 0, 0.36),
+    0 0 0 1px rgba(34, 197, 94, 0.26);
 }
 
 .score-home-groups h1 {
