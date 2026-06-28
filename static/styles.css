@@ -3205,6 +3205,18 @@ footer {
   font-weight: 900;
 }
 
+.knockout-match-venue {
+  border-top: 1px solid rgba(16, 32, 51, 0.08);
+  padding-top: 7px;
+}
+
+.knockout-match-venue small {
+  display: block;
+  color: #0f6d56;
+  font-size: 0.72rem;
+  font-weight: 950;
+}
+
 .knockout-team {
   min-height: 44px;
   display: grid;

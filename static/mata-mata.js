@@ -1,5 +1,5 @@
 const knockoutBoard = document.querySelector("#knockoutBoard");
-const KNOCKOUT_DATA_VERSION = "20260628-official-venues-v1";
+const KNOCKOUT_DATA_VERSION = "20260628-full-knockout-sync-v1";
 const KNOCKOUT_POLL_INTERVAL_MS = 60000;
 let knockoutPollTimer = null;
 
@@ -23,7 +23,7 @@ const roundOf32 = [
 ];
 
 function applyOfficialKnockoutFixtures(payload) {
-  const fixtures = payload?.knockout_fixtures?.round_of_32 || [];
+  const fixtures = payload?.knockout_fixtures?.all || payload?.knockout_fixtures?.round_of_32 || [];
   const byId = new Map(fixtures.map((fixture) => [Number(fixture.id), fixture]));
   roundOf32.forEach((match) => {
     const official = byId.get(Number(match.id));
@@ -34,6 +34,17 @@ function applyOfficialKnockoutFixtures(payload) {
     match.city = official.city || match.city;
     match.venueSource = official.source || payload?.knockout_fixtures?.source?.name || "";
   });
+  futureRounds.forEach((round) => {
+    round.matches.forEach((match) => {
+      const official = byId.get(Number(match.id));
+      if (!official) return;
+      match.dateIso = official.date || match.dateIso;
+      match.time = official.time || match.time;
+      match.stadium = official.stadium || match.stadium;
+      match.city = official.city || match.city;
+      match.venueSource = official.source || payload?.knockout_fixtures?.source?.name || "";
+    });
+  });
 }
 
 const futureRounds = [
@@ -41,8 +52,8 @@ const futureRounds = [
     title: "Oitavas",
     period: "04/07 a 07/07",
     matches: [
-      { id: 89, a: "Vencedor 73", b: "Vencedor 75" },
-      { id: 90, a: "Vencedor 74", b: "Vencedor 77" },
+      { id: 90, a: "Vencedor 73", b: "Vencedor 75" },
+      { id: 89, a: "Vencedor 74", b: "Vencedor 77" },
       { id: 91, a: "Vencedor 76", b: "Vencedor 78" },
       { id: 92, a: "Vencedor 79", b: "Vencedor 80" },
       { id: 93, a: "Vencedor 83", b: "Vencedor 84" },
@@ -179,6 +190,13 @@ function renderTeamSlot(slot) {
   `;
 }
 
+function formatFixtureDate(dateIso) {
+  if (!dateIso) return "";
+  const [year, month, day] = dateIso.split("-");
+  if (!year || !month || !day) return dateIso;
+  return `${day}/${month}`;
+}
+
 function renderRoundOf32(standings) {
   const bestThird = bestThirdRows(standings);
   return `
@@ -227,10 +245,13 @@ function renderFutureRounds() {
           <article class="knockout-match is-future">
             <div class="knockout-match-meta">
               <strong>${match.label || `Jogo ${match.id}`}</strong>
-              <span>${match.label ? `Jogo ${match.id}` : round.period}</span>
+              <span>${match.time ? `${formatFixtureDate(match.dateIso)} · ${match.time}` : round.period}</span>
             </div>
             ${renderTeamSlot({ label: match.a, meta: "A definir", team: null })}
             ${renderTeamSlot({ label: match.b, meta: "A definir", team: null })}
+            <div class="knockout-match-venue">
+              <small>${match.stadium || "Estadio a definir"}</small>
+            </div>
           </article>
         `).join("")}
       </div>

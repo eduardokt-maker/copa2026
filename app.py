@@ -15,7 +15,7 @@ from zoneinfo import ZoneInfo
 
 
 APP_NAME = "copa2026"
-APP_VERSION = "2026.06.28-official-venues-v1"
+APP_VERSION = "2026.06.28-full-knockout-sync-v1"
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
 DATA_DIR = BASE_DIR / "data"
@@ -430,7 +430,7 @@ KNOCKOUT_FIXTURE_SOURCE = {
     "name": "FIFA.com",
     "url": FIFA_SCORES_SOURCE_URL,
     "last_verified": "2026-06-28",
-    "policy": "Calendario oficial FIFA como fonte primaria; todos os cards do mata-mata recebem data, horario de Brasilia e estadio oficial normalizado pela API.",
+    "policy": "Calendario oficial FIFA como fonte primaria; todos os cards do mata-mata ate a final recebem data, horario de Brasilia e estadio oficial normalizado pela API.",
 }
 
 KNOCKOUT_ROUND_OF_32_FIXTURES = [
@@ -452,11 +452,48 @@ KNOCKOUT_ROUND_OF_32_FIXTURES = [
     {"id": 87, "date": "2026-07-03", "time": "22:30 BRT", "stadium": "Kansas City Stadium", "city": "Kansas City", "source": FIFA_SCORES_SOURCE_URL},
 ]
 
+KNOCKOUT_ROUND_OF_16_FIXTURES = [
+    {"id": 90, "date": "2026-07-04", "time": "14:00 BRT", "stadium": "Houston Stadium", "city": "Houston", "source": FIFA_SCORES_SOURCE_URL},
+    {"id": 89, "date": "2026-07-04", "time": "18:00 BRT", "stadium": "Philadelphia Stadium", "city": "Philadelphia", "source": FIFA_SCORES_SOURCE_URL},
+    {"id": 91, "date": "2026-07-05", "time": "17:00 BRT", "stadium": "New York New Jersey Stadium", "city": "New York New Jersey", "source": FIFA_SCORES_SOURCE_URL},
+    {"id": 92, "date": "2026-07-05", "time": "21:00 BRT", "stadium": "Mexico City Stadium", "city": "Mexico City", "source": FIFA_SCORES_SOURCE_URL},
+    {"id": 93, "date": "2026-07-06", "time": "16:00 BRT", "stadium": "Dallas Stadium", "city": "Dallas", "source": FIFA_SCORES_SOURCE_URL},
+    {"id": 94, "date": "2026-07-06", "time": "21:00 BRT", "stadium": "Seattle Stadium", "city": "Seattle", "source": FIFA_SCORES_SOURCE_URL},
+    {"id": 95, "date": "2026-07-07", "time": "13:00 BRT", "stadium": "Atlanta Stadium", "city": "Atlanta", "source": FIFA_SCORES_SOURCE_URL},
+    {"id": 96, "date": "2026-07-07", "time": "17:00 BRT", "stadium": "BC Place Vancouver", "city": "Vancouver", "source": FIFA_SCORES_SOURCE_URL},
+]
+
+KNOCKOUT_QUARTERFINAL_FIXTURES = [
+    {"id": 97, "date": "2026-07-09", "time": "17:00 BRT", "stadium": "Boston Stadium", "city": "Boston", "source": FIFA_SCORES_SOURCE_URL},
+    {"id": 98, "date": "2026-07-10", "time": "16:00 BRT", "stadium": "Los Angeles Stadium", "city": "Los Angeles", "source": FIFA_SCORES_SOURCE_URL},
+    {"id": 99, "date": "2026-07-11", "time": "18:00 BRT", "stadium": "Miami Stadium", "city": "Miami", "source": FIFA_SCORES_SOURCE_URL},
+    {"id": 100, "date": "2026-07-11", "time": "22:00 BRT", "stadium": "Kansas City Stadium", "city": "Kansas City", "source": FIFA_SCORES_SOURCE_URL},
+]
+
+KNOCKOUT_SEMIFINAL_FIXTURES = [
+    {"id": 101, "date": "2026-07-14", "time": "16:00 BRT", "stadium": "Dallas Stadium", "city": "Dallas", "source": FIFA_SCORES_SOURCE_URL},
+    {"id": 102, "date": "2026-07-15", "time": "16:00 BRT", "stadium": "Atlanta Stadium", "city": "Atlanta", "source": FIFA_SCORES_SOURCE_URL},
+]
+
+KNOCKOUT_FINAL_FIXTURES = [
+    {"id": 103, "date": "2026-07-18", "time": "18:00 BRT", "stadium": "Miami Stadium", "city": "Miami", "source": FIFA_SCORES_SOURCE_URL},
+    {"id": 104, "date": "2026-07-19", "time": "16:00 BRT", "stadium": "New York New Jersey Stadium", "city": "New York New Jersey", "source": FIFA_SCORES_SOURCE_URL},
+]
+
+KNOCKOUT_FIXTURES_BY_PHASE = {
+    "round_of_32": KNOCKOUT_ROUND_OF_32_FIXTURES,
+    "round_of_16": KNOCKOUT_ROUND_OF_16_FIXTURES,
+    "quarterfinals": KNOCKOUT_QUARTERFINAL_FIXTURES,
+    "semifinals": KNOCKOUT_SEMIFINAL_FIXTURES,
+    "finals": KNOCKOUT_FINAL_FIXTURES,
+}
+
 
 def build_knockout_fixtures() -> dict:
     return {
         "source": KNOCKOUT_FIXTURE_SOURCE,
-        "round_of_32": KNOCKOUT_ROUND_OF_32_FIXTURES,
+        **KNOCKOUT_FIXTURES_BY_PHASE,
+        "all": [fixture for fixtures in KNOCKOUT_FIXTURES_BY_PHASE.values() for fixture in fixtures],
     }
 
 
@@ -483,7 +520,7 @@ def parse_brt_match_start(date_value: str, time_value: str) -> datetime | None:
 
 def scheduled_sync_matches() -> list[dict]:
     matches = []
-    for fixture in KNOCKOUT_ROUND_OF_32_FIXTURES:
+    for fixture in build_knockout_fixtures()["all"]:
         starts_at = parse_brt_match_start(fixture.get("date", ""), fixture.get("time", ""))
         if not starts_at:
             continue

@@ -15,6 +15,13 @@
   - 30 segundos quando existe jogo dentro da janela ao vivo.
   - 5 minutos em dia de jogo ou quando ha partida nas proximas 24 horas.
   - 15 minutos quando nao ha jogo imediato.
+- A agenda de monitoramento do mata-mata deve considerar todas as fases, nao apenas os 16 avos:
+  - 16 avos de final: jogos 73 a 88.
+  - Oitavas de final: jogos 89 a 96.
+  - Quartas de final: jogos 97 a 100.
+  - Semifinais: jogos 101 e 102.
+  - Terceiro lugar e final: jogos 103 e 104.
+- Quando a FIFA publicar ou alterar data, horario ou estadio de uma fase futura, o backend deve ser a origem unica para sobrescrever os cards da tela Mata-mata e do Calendario Geral.
 - Dados de consulta temporaria ficam em `data/live_sync.json`; somente jogos encerrados confirmados entram no banco definitivo `data/final_matches.json`.
 - O album de figurinhas da selecao japonesa e uma excecao autorizada e pode manter fonte japonesa propria.
 

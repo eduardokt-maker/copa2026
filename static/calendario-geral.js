@@ -6,7 +6,7 @@ const calendarTotalCount = document.querySelector("#calendarTotalCount");
 const calendarUpdatedAt = document.querySelector("#calendarUpdatedAt");
 const calendarFilterButtons = document.querySelectorAll("[data-calendar-filter]");
 
-const CALENDAR_VERSION = "20260628-official-venues-v1";
+const CALENDAR_VERSION = "20260628-full-knockout-sync-v1";
 const CALENDAR_POLL_INTERVAL_MS = 60000;
 
 let calendarState = {
@@ -36,7 +36,7 @@ const roundOf32 = [
 ];
 
 function applyOfficialKnockoutFixtures(payload) {
-  const fixtures = payload?.knockout_fixtures?.round_of_32 || [];
+  const fixtures = payload?.knockout_fixtures?.all || payload?.knockout_fixtures?.round_of_32 || [];
   const byId = new Map(fixtures.map((fixture) => [Number(fixture.id), fixture]));
   roundOf32.forEach((match) => {
     const official = byId.get(Number(match.id));
@@ -47,12 +47,23 @@ function applyOfficialKnockoutFixtures(payload) {
     match.city = official.city || match.city;
     match.venueSource = official.source || payload?.knockout_fixtures?.source?.name || "";
   });
+  futureRounds.forEach((round) => {
+    round.matches.forEach((match) => {
+      const official = byId.get(Number(match.id));
+      if (!official) return;
+      match.date = official.date || match.date;
+      match.time = official.time || match.time;
+      match.stadium = official.stadium || match.stadium;
+      match.city = official.city || match.city;
+      match.venueSource = official.source || payload?.knockout_fixtures?.source?.name || "";
+    });
+  });
 }
 
 const futureRounds = [
   { phase: "Oitavas", period: "04/07 a 07/07", matches: [
-    { id: 89, a: "Vencedor 73", b: "Vencedor 75" },
-    { id: 90, a: "Vencedor 74", b: "Vencedor 77" },
+    { id: 90, a: "Vencedor 73", b: "Vencedor 75" },
+    { id: 89, a: "Vencedor 74", b: "Vencedor 77" },
     { id: 91, a: "Vencedor 76", b: "Vencedor 78" },
     { id: 92, a: "Vencedor 79", b: "Vencedor 80" },
     { id: 93, a: "Vencedor 83", b: "Vencedor 84" },
@@ -381,12 +392,15 @@ function buildKnockoutMatches() {
     round.matches.map((match) => ({
       id: match.id,
       phase: match.label || round.phase,
-      date: round.period,
-      dateSortKey: dateSortKey({ date: round.period }),
+      date: match.date || round.period,
+      time: match.time || "",
+      dateSortKey: dateSortKey({ date: match.date || round.period }),
       status: "next",
       homeLabel: match.a,
       awayLabel: match.b,
-      stadium: "A definir",
+      stadium: match.stadium || "Estadio a definir",
+      city: match.city || "",
+      venueSource: match.venueSource || "",
     })),
   );
   return [...firstRound, ...future];
