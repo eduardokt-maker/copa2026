@@ -294,11 +294,22 @@
 }
 
 .score-home-groups .calendar-home-button {
-  color: #ffffff;
+  color: #f8fffb;
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.13), transparent 38%),
-    linear-gradient(145deg, #102033 0%, #174f87 52%, #bc002d 120%);
-  border-color: rgba(255, 255, 255, 0.5);
+    linear-gradient(135deg, rgba(255, 255, 255, 0.24), transparent 34%),
+    linear-gradient(145deg, #08715e 0%, #0d91a3 50%, #f3c75f 128%);
+  border-color: rgba(255, 255, 255, 0.72);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.48), 0 18px 40px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.32);
+}
+
+.score-home-groups .calendar-home-button:hover,
+.score-home-groups .calendar-home-button:focus-visible {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.3), transparent 34%),
+    linear-gradient(145deg, #099173 0%, #0fabc0 48%, #ffd96d 128%);
+  border-color: rgba(255, 255, 255, 0.88);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.56), 0 22px 48px rgba(0, 0, 0, 0.34);
 }
 
 .score-home-groups h1 {
