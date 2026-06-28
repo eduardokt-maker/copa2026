@@ -15,7 +15,7 @@ from zoneinfo import ZoneInfo
 
 
 APP_NAME = "copa2026"
-APP_VERSION = "2026.06.28-live-sync-v1"
+APP_VERSION = "2026.06.28-official-venues-v1"
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
 DATA_DIR = BASE_DIR / "data"
@@ -288,7 +288,8 @@ OFFICIAL_STADIUM_NAMES = {
     "BMO Field": "Toronto Stadium",
     "Estadio Akron": "Estadio Guadalajara",
     "Estadio Azteca": "Mexico City Stadium",
-    "Estadio BBVA": "Monterrey Stadium",
+    "Estadio BBVA": "Estadio Monterrey",
+    "Monterrey Stadium": "Estadio Monterrey",
     "Gillette Stadium": "Boston Stadium",
     "Hard Rock Stadium": "Miami Stadium",
     "Levi's Stadium": "San Francisco Bay Area Stadium",
@@ -308,6 +309,7 @@ OFFICIAL_HOST_LOCATIONS = {
     "Estadio Akron": "Guadalajara",
     "Estadio Azteca": "Mexico City",
     "Estadio BBVA": "Monterrey",
+    "Monterrey Stadium": "Monterrey",
     "Gillette Stadium": "Boston",
     "Hard Rock Stadium": "Miami",
     "Levi's Stadium": "San Francisco Bay Area",
@@ -428,16 +430,26 @@ KNOCKOUT_FIXTURE_SOURCE = {
     "name": "FIFA.com",
     "url": FIFA_SCORES_SOURCE_URL,
     "last_verified": "2026-06-28",
-    "policy": "Calendario oficial FIFA como fonte primaria; banco local preserva jogos encerrados e locais ja confirmados.",
+    "policy": "Calendario oficial FIFA como fonte primaria; todos os cards do mata-mata recebem data, horario de Brasilia e estadio oficial normalizado pela API.",
 }
 
 KNOCKOUT_ROUND_OF_32_FIXTURES = [
     {"id": 73, "date": "2026-06-28", "time": "16:00 BRT", "stadium": "Los Angeles Stadium", "city": "Los Angeles", "source": FIFA_SCORES_SOURCE_URL},
-    {"id": 74, "date": "2026-06-29", "time": "17:30 BRT", "stadium": "Boston Stadium", "city": "Boston", "source": FIFA_SCORES_SOURCE_URL},
-    {"id": 75, "date": "2026-06-29", "time": "22:00 BRT", "stadium": "Monterrey Stadium", "city": "Monterrey", "source": FIFA_SCORES_SOURCE_URL},
     {"id": 76, "date": "2026-06-29", "time": "14:00 BRT", "stadium": "Houston Stadium", "city": "Houston", "source": FIFA_SCORES_SOURCE_URL},
+    {"id": 74, "date": "2026-06-29", "time": "17:30 BRT", "stadium": "Boston Stadium", "city": "Boston", "source": FIFA_SCORES_SOURCE_URL},
+    {"id": 75, "date": "2026-06-29", "time": "22:00 BRT", "stadium": "Estadio Monterrey", "city": "Monterrey", "source": FIFA_SCORES_SOURCE_URL},
+    {"id": 78, "date": "2026-06-30", "time": "14:00 BRT", "stadium": "Dallas Stadium", "city": "Dallas", "source": FIFA_SCORES_SOURCE_URL},
     {"id": 77, "date": "2026-06-30", "time": "18:00 BRT", "stadium": "New York New Jersey Stadium", "city": "New York New Jersey", "source": FIFA_SCORES_SOURCE_URL},
+    {"id": 79, "date": "2026-06-30", "time": "22:00 BRT", "stadium": "Mexico City Stadium", "city": "Mexico City", "source": FIFA_SCORES_SOURCE_URL},
+    {"id": 80, "date": "2026-07-01", "time": "13:00 BRT", "stadium": "Atlanta Stadium", "city": "Atlanta", "source": FIFA_SCORES_SOURCE_URL},
+    {"id": 82, "date": "2026-07-01", "time": "17:00 BRT", "stadium": "Seattle Stadium", "city": "Seattle", "source": FIFA_SCORES_SOURCE_URL},
+    {"id": 81, "date": "2026-07-01", "time": "21:00 BRT", "stadium": "San Francisco Bay Area Stadium", "city": "San Francisco Bay Area", "source": FIFA_SCORES_SOURCE_URL},
+    {"id": 84, "date": "2026-07-02", "time": "16:00 BRT", "stadium": "Los Angeles Stadium", "city": "Los Angeles", "source": FIFA_SCORES_SOURCE_URL},
+    {"id": 83, "date": "2026-07-02", "time": "20:00 BRT", "stadium": "Toronto Stadium", "city": "Toronto", "source": FIFA_SCORES_SOURCE_URL},
+    {"id": 85, "date": "2026-07-03", "time": "00:00 BRT", "stadium": "BC Place Vancouver", "city": "Vancouver", "source": FIFA_SCORES_SOURCE_URL},
+    {"id": 88, "date": "2026-07-03", "time": "15:00 BRT", "stadium": "Dallas Stadium", "city": "Dallas", "source": FIFA_SCORES_SOURCE_URL},
     {"id": 86, "date": "2026-07-03", "time": "19:00 BRT", "stadium": "Miami Stadium", "city": "Miami", "source": FIFA_SCORES_SOURCE_URL},
+    {"id": 87, "date": "2026-07-03", "time": "22:30 BRT", "stadium": "Kansas City Stadium", "city": "Kansas City", "source": FIFA_SCORES_SOURCE_URL},
 ]
 
 

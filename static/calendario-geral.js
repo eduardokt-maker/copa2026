@@ -6,7 +6,7 @@ const calendarTotalCount = document.querySelector("#calendarTotalCount");
 const calendarUpdatedAt = document.querySelector("#calendarUpdatedAt");
 const calendarFilterButtons = document.querySelectorAll("[data-calendar-filter]");
 
-const CALENDAR_VERSION = "20260628-third-slots-v1";
+const CALENDAR_VERSION = "20260628-official-venues-v1";
 const CALENDAR_POLL_INTERVAL_MS = 60000;
 
 let calendarState = {
@@ -17,22 +17,22 @@ let calendarState = {
 };
 
 const roundOf32 = [
-  { id: 73, date: "2026-06-28", time: "16:00 BRT", phase: "16 avos de final", a: { type: "R", group: "A" }, b: { type: "R", group: "B" } },
+  { id: 73, date: "2026-06-28", time: "16:00 BRT", phase: "16 avos de final", stadium: "Los Angeles Stadium", a: { type: "R", group: "A" }, b: { type: "R", group: "B" } },
   { id: 76, date: "2026-06-29", time: "14:00 BRT", phase: "16 avos de final", stadium: "Houston Stadium", a: { type: "W", group: "C" }, b: { type: "R", group: "F" } },
-  { id: 74, date: "2026-06-29", time: "17:30 BRT", phase: "16 avos de final", a: { type: "W", group: "E" }, b: { type: "T", groups: ["A", "B", "C", "D", "F"] } },
-  { id: 75, date: "2026-06-29", time: "22:00 BRT", phase: "16 avos de final", a: { type: "W", group: "F" }, b: { type: "R", group: "C" } },
-  { id: 78, date: "2026-06-30", time: "14:00 BRT", phase: "16 avos de final", a: { type: "R", group: "E" }, b: { type: "R", group: "I" } },
+  { id: 74, date: "2026-06-29", time: "17:30 BRT", phase: "16 avos de final", stadium: "Boston Stadium", a: { type: "W", group: "E" }, b: { type: "T", groups: ["A", "B", "C", "D", "F"] } },
+  { id: 75, date: "2026-06-29", time: "22:00 BRT", phase: "16 avos de final", stadium: "Estadio Monterrey", a: { type: "W", group: "F" }, b: { type: "R", group: "C" } },
+  { id: 78, date: "2026-06-30", time: "14:00 BRT", phase: "16 avos de final", stadium: "Dallas Stadium", a: { type: "R", group: "E" }, b: { type: "R", group: "I" } },
   { id: 77, date: "2026-06-30", time: "18:00 BRT", phase: "16 avos de final", stadium: "New York New Jersey Stadium", a: { type: "W", group: "I" }, b: { type: "T", groups: ["C", "D", "F", "G", "H"] } },
-  { id: 79, date: "2026-06-30", time: "22:00 BRT", phase: "16 avos de final", a: { type: "W", group: "A" }, b: { type: "T", groups: ["C", "E", "F", "H", "I"] } },
-  { id: 80, date: "2026-07-01", time: "13:00 BRT", phase: "16 avos de final", a: { type: "W", group: "L" }, b: { type: "T", groups: ["E", "H", "I", "J", "K"] } },
-  { id: 82, date: "2026-07-01", time: "17:00 BRT", phase: "16 avos de final", a: { type: "W", group: "G" }, b: { type: "T", groups: ["A", "E", "H", "I", "J"] } },
-  { id: 81, date: "2026-07-01", time: "21:00 BRT", phase: "16 avos de final", a: { type: "W", group: "D" }, b: { type: "T", groups: ["B", "E", "F", "I", "J"] } },
-  { id: 84, date: "2026-07-02", time: "16:00 BRT", phase: "16 avos de final", a: { type: "W", group: "H" }, b: { type: "R", group: "J" } },
-  { id: 83, date: "2026-07-02", time: "20:00 BRT", phase: "16 avos de final", a: { type: "R", group: "K" }, b: { type: "R", group: "L" } },
-  { id: 85, date: "2026-07-03", time: "00:00 BRT", phase: "16 avos de final", a: { type: "W", group: "B" }, b: { type: "T", groups: ["E", "F", "G", "I", "J"] } },
-  { id: 88, date: "2026-07-03", time: "15:00 BRT", phase: "16 avos de final", a: { type: "R", group: "D" }, b: { type: "R", group: "G" } },
+  { id: 79, date: "2026-06-30", time: "22:00 BRT", phase: "16 avos de final", stadium: "Mexico City Stadium", a: { type: "W", group: "A" }, b: { type: "T", groups: ["C", "E", "F", "H", "I"] } },
+  { id: 80, date: "2026-07-01", time: "13:00 BRT", phase: "16 avos de final", stadium: "Atlanta Stadium", a: { type: "W", group: "L" }, b: { type: "T", groups: ["E", "H", "I", "J", "K"] } },
+  { id: 82, date: "2026-07-01", time: "17:00 BRT", phase: "16 avos de final", stadium: "Seattle Stadium", a: { type: "W", group: "G" }, b: { type: "T", groups: ["A", "E", "H", "I", "J"] } },
+  { id: 81, date: "2026-07-01", time: "21:00 BRT", phase: "16 avos de final", stadium: "San Francisco Bay Area Stadium", a: { type: "W", group: "D" }, b: { type: "T", groups: ["B", "E", "F", "I", "J"] } },
+  { id: 84, date: "2026-07-02", time: "16:00 BRT", phase: "16 avos de final", stadium: "Los Angeles Stadium", a: { type: "W", group: "H" }, b: { type: "R", group: "J" } },
+  { id: 83, date: "2026-07-02", time: "20:00 BRT", phase: "16 avos de final", stadium: "Toronto Stadium", a: { type: "R", group: "K" }, b: { type: "R", group: "L" } },
+  { id: 85, date: "2026-07-03", time: "00:00 BRT", phase: "16 avos de final", stadium: "BC Place Vancouver", a: { type: "W", group: "B" }, b: { type: "T", groups: ["E", "F", "G", "I", "J"] } },
+  { id: 88, date: "2026-07-03", time: "15:00 BRT", phase: "16 avos de final", stadium: "Dallas Stadium", a: { type: "R", group: "D" }, b: { type: "R", group: "G" } },
   { id: 86, date: "2026-07-03", time: "19:00 BRT", phase: "16 avos de final", stadium: "Miami Stadium", a: { type: "W", group: "J" }, b: { type: "R", group: "H" } },
-  { id: 87, date: "2026-07-03", time: "22:30 BRT", phase: "16 avos de final", a: { type: "W", group: "K" }, b: { type: "T", groups: ["D", "E", "I", "J", "L"] } },
+  { id: 87, date: "2026-07-03", time: "22:30 BRT", phase: "16 avos de final", stadium: "Kansas City Stadium", a: { type: "W", group: "K" }, b: { type: "T", groups: ["D", "E", "I", "J", "L"] } },
 ];
 
 function applyOfficialKnockoutFixtures(payload) {

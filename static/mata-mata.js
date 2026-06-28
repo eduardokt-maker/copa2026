@@ -1,25 +1,25 @@
 const knockoutBoard = document.querySelector("#knockoutBoard");
-const KNOCKOUT_DATA_VERSION = "20260628-third-slots-v1";
+const KNOCKOUT_DATA_VERSION = "20260628-official-venues-v1";
 const KNOCKOUT_POLL_INTERVAL_MS = 60000;
 let knockoutPollTimer = null;
 
 const roundOf32 = [
-  { id: 73, date: "28/06", time: "16:00 BRT", a: { type: "R", group: "A" }, b: { type: "R", group: "B" } },
+  { id: 73, date: "28/06", time: "16:00 BRT", stadium: "Los Angeles Stadium", a: { type: "R", group: "A" }, b: { type: "R", group: "B" } },
   { id: 76, date: "29/06", time: "14:00 BRT", stadium: "Houston Stadium", a: { type: "W", group: "C" }, b: { type: "R", group: "F" } },
-  { id: 74, date: "29/06", time: "17:30 BRT", a: { type: "W", group: "E" }, b: { type: "T", groups: ["A", "B", "C", "D", "F"] } },
-  { id: 75, date: "29/06", time: "22:00 BRT", a: { type: "W", group: "F" }, b: { type: "R", group: "C" } },
-  { id: 78, date: "30/06", time: "14:00 BRT", a: { type: "R", group: "E" }, b: { type: "R", group: "I" } },
+  { id: 74, date: "29/06", time: "17:30 BRT", stadium: "Boston Stadium", a: { type: "W", group: "E" }, b: { type: "T", groups: ["A", "B", "C", "D", "F"] } },
+  { id: 75, date: "29/06", time: "22:00 BRT", stadium: "Estadio Monterrey", a: { type: "W", group: "F" }, b: { type: "R", group: "C" } },
+  { id: 78, date: "30/06", time: "14:00 BRT", stadium: "Dallas Stadium", a: { type: "R", group: "E" }, b: { type: "R", group: "I" } },
   { id: 77, date: "30/06", time: "18:00 BRT", stadium: "New York New Jersey Stadium", a: { type: "W", group: "I" }, b: { type: "T", groups: ["C", "D", "F", "G", "H"] } },
-  { id: 79, date: "30/06", time: "22:00 BRT", a: { type: "W", group: "A" }, b: { type: "T", groups: ["C", "E", "F", "H", "I"] } },
-  { id: 80, date: "01/07", time: "13:00 BRT", a: { type: "W", group: "L" }, b: { type: "T", groups: ["E", "H", "I", "J", "K"] } },
-  { id: 82, date: "01/07", time: "17:00 BRT", a: { type: "W", group: "G" }, b: { type: "T", groups: ["A", "E", "H", "I", "J"] } },
-  { id: 81, date: "01/07", time: "21:00 BRT", a: { type: "W", group: "D" }, b: { type: "T", groups: ["B", "E", "F", "I", "J"] } },
-  { id: 84, date: "02/07", time: "16:00 BRT", a: { type: "W", group: "H" }, b: { type: "R", group: "J" } },
-  { id: 83, date: "02/07", time: "20:00 BRT", a: { type: "R", group: "K" }, b: { type: "R", group: "L" } },
-  { id: 85, date: "03/07", time: "00:00 BRT", a: { type: "W", group: "B" }, b: { type: "T", groups: ["E", "F", "G", "I", "J"] } },
-  { id: 88, date: "03/07", time: "15:00 BRT", a: { type: "R", group: "D" }, b: { type: "R", group: "G" } },
+  { id: 79, date: "30/06", time: "22:00 BRT", stadium: "Mexico City Stadium", a: { type: "W", group: "A" }, b: { type: "T", groups: ["C", "E", "F", "H", "I"] } },
+  { id: 80, date: "01/07", time: "13:00 BRT", stadium: "Atlanta Stadium", a: { type: "W", group: "L" }, b: { type: "T", groups: ["E", "H", "I", "J", "K"] } },
+  { id: 82, date: "01/07", time: "17:00 BRT", stadium: "Seattle Stadium", a: { type: "W", group: "G" }, b: { type: "T", groups: ["A", "E", "H", "I", "J"] } },
+  { id: 81, date: "01/07", time: "21:00 BRT", stadium: "San Francisco Bay Area Stadium", a: { type: "W", group: "D" }, b: { type: "T", groups: ["B", "E", "F", "I", "J"] } },
+  { id: 84, date: "02/07", time: "16:00 BRT", stadium: "Los Angeles Stadium", a: { type: "W", group: "H" }, b: { type: "R", group: "J" } },
+  { id: 83, date: "02/07", time: "20:00 BRT", stadium: "Toronto Stadium", a: { type: "R", group: "K" }, b: { type: "R", group: "L" } },
+  { id: 85, date: "03/07", time: "00:00 BRT", stadium: "BC Place Vancouver", a: { type: "W", group: "B" }, b: { type: "T", groups: ["E", "F", "G", "I", "J"] } },
+  { id: 88, date: "03/07", time: "15:00 BRT", stadium: "Dallas Stadium", a: { type: "R", group: "D" }, b: { type: "R", group: "G" } },
   { id: 86, date: "03/07", time: "19:00 BRT", stadium: "Miami Stadium", a: { type: "W", group: "J" }, b: { type: "R", group: "H" } },
-  { id: 87, date: "03/07", time: "22:30 BRT", a: { type: "W", group: "K" }, b: { type: "T", groups: ["D", "E", "I", "J", "L"] } },
+  { id: 87, date: "03/07", time: "22:30 BRT", stadium: "Kansas City Stadium", a: { type: "W", group: "K" }, b: { type: "T", groups: ["D", "E", "I", "J", "L"] } },
 ];
 
 function applyOfficialKnockoutFixtures(payload) {
