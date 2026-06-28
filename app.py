@@ -351,6 +351,7 @@ KNOCKOUT_FIXTURE_SOURCE = {
 
 KNOCKOUT_ROUND_OF_32_FIXTURES = [
     {"id": 73, "date": "2026-06-28", "time": "16:00 BRT", "stadium": "Los Angeles Stadium", "city": "Los Angeles", "source": "Canada v South Africa confirmed in Los Angeles."},
+    {"id": 74, "date": "2026-06-29", "time": "17:30 BRT", "stadium": "Boston Stadium", "city": "Boston", "source": "Germany listed for June 29 Round of 32 match in Boston."},
     {"id": 76, "date": "2026-06-29", "time": "14:00 BRT", "stadium": "Houston Stadium", "city": "Houston", "source": "Brazil v Japan listed for Houston Stadium."},
     {"id": 77, "date": "2026-06-30", "time": "18:00 BRT", "stadium": "New York New Jersey Stadium", "city": "New York New Jersey", "source": "Round of 32 venue confirmed in official schedule."},
     {"id": 86, "date": "2026-07-03", "time": "19:00 BRT", "stadium": "Miami Stadium", "city": "Miami", "source": "Round of 32 venue confirmed in official schedule."},
