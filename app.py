@@ -15,7 +15,7 @@ from zoneinfo import ZoneInfo
 
 
 APP_NAME = "copa2026"
-APP_VERSION = "2026.06.28-knockout-business-rules-v2"
+APP_VERSION = "2026.06.28-match-centre-results-v3"
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
 DATA_DIR = BASE_DIR / "data"
@@ -497,6 +497,24 @@ KNOCKOUT_FINAL_FIXTURES = [
     {"id": 104, "date": "2026-07-19", "time": "16:00 BRT", "stadium": "New York New Jersey Stadium", "city": "New York New Jersey", "source": FIFA_SCORES_SOURCE_URL},
 ]
 
+FIFA_MATCH_CENTRE_RESULTS = [
+    {
+        "match_id": 73,
+        "group": "KO",
+        "date": "2026-06-28",
+        "home": "za",
+        "home_score": 0,
+        "away_score": 1,
+        "away": "ca",
+        "winner": "ca",
+        "stadium": "Los Angeles Stadium",
+        "city": "Los Angeles",
+        "status": "finished",
+        "source": "https://www.fifa.com/en/match-centre/match/17/285023/289287/400021518",
+        "verified_by": "FIFA.com Match Centre",
+    },
+]
+
 KNOCKOUT_FIXTURES_BY_PHASE = {
     "round_of_32": KNOCKOUT_ROUND_OF_32_FIXTURES,
     "round_of_16": KNOCKOUT_ROUND_OF_16_FIXTURES,
@@ -886,6 +904,10 @@ def parse_external_scores_from_text(lines: list[str]) -> list[dict]:
     return scores
 
 
+def official_match_centre_results() -> list[dict]:
+    return [normalize_finished_match_record(match) for match in FIFA_MATCH_CENTRE_RESULTS]
+
+
 def fetch_external_scores(force_refresh: bool = False) -> tuple[list[dict], bool, str]:
     now = time.time()
     sync_policy = build_live_sync_policy()
@@ -906,7 +928,7 @@ def fetch_external_scores(force_refresh: bool = False) -> tuple[list[dict], bool
             html = response.read().decode("utf-8", errors="replace")
         parser = TextExtractor()
         parser.feed(html)
-        scores = parse_external_scores_from_text(parser.parts)
+        scores = merge_scores(parse_external_scores_from_text(parser.parts), official_match_centre_results())
         status = {
             **sync_policy,
             "ok": True,

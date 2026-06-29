@@ -2,7 +2,7 @@
   "source": {
     "name": "FIFA.com",
     "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-    "last_saved": "2026-06-28T06:20:29Z",
+    "last_saved": "2026-06-29T00:32:44Z",
     "policy": "Banco local de jogos encerrados: preserva resultados oficiais ja concluidos caso a pagina da FIFA mude ou fique indisponivel."
   },
   "matches": [
@@ -941,6 +941,23 @@
       "status": "finished",
       "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
       "verified_by": "FIFA.com"
+    },
+    {
+      "group": "KO",
+      "date": "2026-06-28",
+      "home": "za",
+      "home_score": 0,
+      "away_score": 1,
+      "away": "ca",
+      "stadium": "Los Angeles Stadium",
+      "city": "Los Angeles",
+      "status": "finished",
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289287/400021518",
+      "verified_by": "FIFA.com Match Centre",
+      "match_id": 73,
+      "phase": "round_of_32",
+      "group_name": "Mata-mata",
+      "winner": "ca"
     }
   ]
 }
