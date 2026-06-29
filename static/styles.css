@@ -3070,6 +3070,15 @@ footer {
 .knockout-share-button {
   cursor: pointer;
   font: inherit;
+  width: 44px;
+  min-width: 44px;
+  padding-inline: 0;
+}
+
+.knockout-share-button svg {
+  width: 19px;
+  height: 19px;
+  fill: currentColor;
 }
 
 .knockout-hero h1 {

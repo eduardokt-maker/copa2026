@@ -7,6 +7,7 @@ import time
 import unicodedata
 import urllib.request
 from datetime import datetime, timedelta, timezone
+from html import escape
 from html.parser import HTMLParser
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -15,7 +16,7 @@ from zoneinfo import ZoneInfo
 
 
 APP_NAME = "copa2026"
-APP_VERSION = "2026.06.28-fifa-calendar-api-v4"
+APP_VERSION = "2026.06.29-knockout-share-v5"
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
 DATA_DIR = BASE_DIR / "data"
@@ -587,6 +588,159 @@ def build_knockout_fixtures() -> dict:
         **KNOCKOUT_FIXTURES_BY_PHASE,
         "all": [fixture for fixtures in KNOCKOUT_FIXTURES_BY_PHASE.values() for fixture in fixtures],
     }
+
+
+def team_country(code: str | None, fallback: str = "A definir") -> str:
+    return TEAM_BY_CODE.get(str(code or ""), {}).get("country", fallback)
+
+
+def format_brt_date(date_value: str | None) -> str:
+    if not date_value:
+        return ""
+    try:
+        parsed = datetime.strptime(date_value, "%Y-%m-%d")
+    except ValueError:
+        return str(date_value)
+    return parsed.strftime("%d/%m/%Y")
+
+
+def fixture_start_for_share(fixture: dict) -> datetime | None:
+    return parse_brt_match_start(str(fixture.get("date") or ""), str(fixture.get("time") or ""))
+
+
+def result_share_score(result: dict | None) -> str:
+    if not result:
+        return ""
+    home_score = result.get("home_score")
+    away_score = result.get("away_score")
+    if not isinstance(home_score, int) or not isinstance(away_score, int):
+        return ""
+    score = f"{home_score} x {away_score}"
+    if isinstance(result.get("home_penalties"), int) and isinstance(result.get("away_penalties"), int):
+        score = f"{score} ({result['home_penalties']} x {result['away_penalties']} pen.)"
+    return score
+
+
+def share_match_title(match: dict) -> str:
+    home = match.get("home_country") or "A definir"
+    away = match.get("away_country") or "A definir"
+    score = match.get("score") or ""
+    if score:
+        return f"{home} {score} {away} | Copa 2026"
+    return f"{home} x {away} | Copa 2026"
+
+
+def choose_knockout_share_match(scores: list[dict], score_source: dict) -> dict:
+    fixtures = build_knockout_fixtures()["all"]
+    fixtures_by_id = {int(fixture["id"]): fixture for fixture in fixtures}
+    results = build_knockout_results(scores)
+    live_sync = score_source.get("live_sync") or load_live_sync_status() or build_live_sync_policy()
+    active_ids = [int(match.get("id")) for match in live_sync.get("active_matches", []) if str(match.get("id", "")).isdigit()]
+    now = brt_now()
+
+    def context_from_fixture(fixture: dict, result: dict | None = None, state: str = "Agendada") -> dict:
+        home_code = result.get("home") if result else ""
+        away_code = result.get("away") if result else ""
+        return {
+            "id": int(fixture.get("id") or (result.get("match_id") if result else 0) or 0),
+            "state": state,
+            "date": fixture.get("date") or result.get("date") or "",
+            "time": fixture.get("time") or "",
+            "stadium": result.get("stadium") if result else fixture.get("stadium", ""),
+            "city": result.get("city") if result else fixture.get("city", ""),
+            "home_country": result.get("home_team", {}).get("country") if result else team_country(home_code),
+            "away_country": result.get("away_team", {}).get("country") if result else team_country(away_code),
+            "score": result_share_score(result),
+            "source": result.get("source") if result else fixture.get("source", FIFA_SCORES_SOURCE_URL),
+        }
+
+    for match_id in active_ids:
+        fixture = fixtures_by_id.get(match_id)
+        result = results.get(str(match_id))
+        if fixture:
+            return context_from_fixture(fixture, result, "Em andamento")
+
+    finished_results = [
+        result
+        for result in results.values()
+        if result.get("status") == "finished" and result.get("match_id") in KNOCKOUT_MATCH_IDS
+    ]
+    if finished_results:
+        latest_result = max(
+            finished_results,
+            key=lambda result: (str(result.get("date") or ""), int(result.get("match_id") or 0)),
+        )
+        fixture = fixtures_by_id.get(int(latest_result["match_id"]), {})
+        return context_from_fixture(fixture, latest_result, "Partida mais recente")
+
+    past_fixtures = [
+        fixture
+        for fixture in fixtures
+        if fixture_start_for_share(fixture) and fixture_start_for_share(fixture) <= now
+    ]
+    if past_fixtures:
+        latest_fixture = max(past_fixtures, key=lambda fixture: fixture_start_for_share(fixture) or now)
+        return context_from_fixture(latest_fixture, results.get(str(latest_fixture["id"])), "Partida mais recente")
+
+    upcoming_fixtures = [
+        fixture
+        for fixture in fixtures
+        if fixture_start_for_share(fixture) and fixture_start_for_share(fixture) >= now
+    ]
+    first_fixture = min(upcoming_fixtures, key=lambda fixture: fixture_start_for_share(fixture) or now) if upcoming_fixtures else fixtures[0]
+    return context_from_fixture(first_fixture, results.get(str(first_fixture["id"])), "Proxima partida")
+
+
+def render_knockout_share_html(match: dict) -> bytes:
+    base_url = "https://copa2026-c776.onrender.com"
+    share_url = f"{base_url}/share/mata-mata"
+    image_url = f"{base_url}/mata-mata-share-card.svg?v=20260629-share-v1"
+    title = share_match_title(match)
+    match_line = f"Jogo {match['id']} - {match['state']}"
+    when = " ".join(part for part in [format_brt_date(match.get("date")), match.get("time")] if part)
+    place = " - ".join(part for part in [match.get("stadium"), match.get("city")] if part)
+    description = f"{match_line}. {when}. {place}. Fonte FIFA.com. Desenv. EKT System."
+    html = f"""<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{escape(title)}</title>
+    <meta name="description" content="{escape(description)}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="EKT System" />
+    <meta property="og:title" content="{escape(title)}" />
+    <meta property="og:description" content="{escape(description)}" />
+    <meta property="og:url" content="{escape(share_url)}" />
+    <meta property="og:image" content="{escape(image_url)}" />
+    <meta property="og:image:secure_url" content="{escape(image_url)}" />
+    <meta property="og:image:type" content="image/svg+xml" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Arte Copa 2026 para compartilhamento do mata-mata" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="{escape(title)}" />
+    <meta name="twitter:description" content="{escape(description)}" />
+    <meta name="twitter:image" content="{escape(image_url)}" />
+    <link rel="canonical" href="{escape(share_url)}" />
+    <link rel="stylesheet" href="/styles.css?v=20260629-share-v1" />
+  </head>
+  <body class="share-card-page">
+    <main class="share-card-shell" aria-label="Compartilhamento do mata-mata">
+      <img src="/mata-mata-share-card.svg?v=20260629-share-v1" alt="Arte Copa 2026" />
+      <p>{escape(match_line)}</p>
+      <h1>{escape(title)}</h1>
+      <a href="/mata-mata.html">Abrir mata-mata</a>
+    </main>
+    <script>
+      window.setTimeout(() => {{
+        window.location.replace("/mata-mata.html");
+      }}, 900);
+    </script>
+  </body>
+</html>
+"""
+    return html.encode("utf-8")
 
 
 def brt_now() -> datetime:
@@ -1602,6 +1756,10 @@ class CopaHandler(SimpleHTTPRequestHandler):
                 }
             )
             return
+        if path in {"/share/mata-mata", "/share/mata-mata/"}:
+            scores, score_source = build_current_scores(force_refresh=self.should_force_refresh(parsed_url))
+            self.send_html(render_knockout_share_html(choose_knockout_share_match(scores, score_source)))
+            return
         if path == "/api/roster":
             query = parse_qs(parsed_url.query)
             code = query.get("code", [""])[0]
@@ -1646,6 +1804,13 @@ class CopaHandler(SimpleHTTPRequestHandler):
         body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
         self.send_response(status)
         self.send_header("Content-Type", "application/json; charset=utf-8")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def send_html(self, body: bytes, status: int = 200) -> None:
+        self.send_response(status)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
         self.send_header("Content-Length", str(len(body)))
         self.end_headers()
         self.wfile.write(body)
