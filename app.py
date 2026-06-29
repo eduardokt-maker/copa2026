@@ -16,7 +16,7 @@ from zoneinfo import ZoneInfo
 
 
 APP_NAME = "copa2026"
-APP_VERSION = "2026.06.29-knockout-share-v8"
+APP_VERSION = "2026.06.29-knockout-share-v9"
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
 DATA_DIR = BASE_DIR / "data"
@@ -693,7 +693,7 @@ def choose_knockout_share_match(scores: list[dict], score_source: dict) -> dict:
 
 def render_knockout_share_html(match: dict) -> bytes:
     base_url = "https://copa2026-c776.onrender.com"
-    share_url = f"{base_url}/share/mata-mata"
+    share_url = f"{base_url}/share/mata-mata?v=20260629-clickable-card-v1"
     image_url = f"{base_url}/mata-mata-share-card.png?v=20260629-share-v2"
     share_title = "Caminho ate a final da World Cup 2026. Desenv. EKT"
     title = share_match_title(match)
