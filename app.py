@@ -16,7 +16,7 @@ from zoneinfo import ZoneInfo
 
 
 APP_NAME = "copa2026"
-APP_VERSION = "2026.06.29-knockout-share-v6"
+APP_VERSION = "2026.06.29-knockout-share-v7"
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
 DATA_DIR = BASE_DIR / "data"
@@ -695,21 +695,22 @@ def render_knockout_share_html(match: dict) -> bytes:
     base_url = "https://copa2026-c776.onrender.com"
     share_url = f"{base_url}/share/mata-mata"
     image_url = f"{base_url}/mata-mata-share-card.png?v=20260629-share-v2"
+    share_title = "Caminho ate a final da World Cup 2026. Desenv. EKT"
     title = share_match_title(match)
     match_line = f"Jogo {match['id']} - {match['state']}"
     when = " ".join(part for part in [format_brt_date(match.get("date")), match.get("time")] if part)
     place = " - ".join(part for part in [match.get("stadium"), match.get("city")] if part)
-    description = f"{match_line}. {when}. {place}. Fonte FIFA.com. Desenv. EKT System."
+    description = f"{share_title}. {match_line}. {when}. {place}. Fonte FIFA.com."
     html = f"""<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{escape(title)}</title>
+    <title>{escape(share_title)}</title>
     <meta name="description" content="{escape(description)}" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="EKT System" />
-    <meta property="og:title" content="{escape(title)}" />
+    <meta property="og:title" content="{escape(share_title)}" />
     <meta property="og:description" content="{escape(description)}" />
     <meta property="og:url" content="{escape(share_url)}" />
     <meta property="og:image" content="{escape(image_url)}" />
@@ -719,7 +720,7 @@ def render_knockout_share_html(match: dict) -> bytes:
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Arte Copa 2026 para compartilhamento do mata-mata" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="{escape(title)}" />
+    <meta name="twitter:title" content="{escape(share_title)}" />
     <meta name="twitter:description" content="{escape(description)}" />
     <meta name="twitter:image" content="{escape(image_url)}" />
     <link rel="canonical" href="{escape(share_url)}" />
@@ -728,6 +729,7 @@ def render_knockout_share_html(match: dict) -> bytes:
   <body class="share-card-page">
     <main class="share-card-shell" aria-label="Compartilhamento do mata-mata">
       <img src="/mata-mata-share-card.png?v=20260629-share-v2" alt="Arte Copa 2026" />
+      <strong>{escape(share_title)}</strong>
       <p>{escape(match_line)}</p>
       <h1>{escape(title)}</h1>
       <a href="/mata-mata.html">Abrir mata-mata</a>
