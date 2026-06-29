@@ -15,7 +15,7 @@ from zoneinfo import ZoneInfo
 
 
 APP_NAME = "copa2026"
-APP_VERSION = "2026.06.28-match-centre-results-v3"
+APP_VERSION = "2026.06.28-fifa-calendar-api-v4"
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
 DATA_DIR = BASE_DIR / "data"
@@ -24,6 +24,7 @@ LIVE_SYNC_DB = DATA_DIR / "live_sync.json"
 FIFA_TOURNAMENT_URL = "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026"
 FIFA_SCORES_SOURCE_URL = f"{FIFA_TOURNAMENT_URL}/scores-fixtures"
 FIFA_TEAMS_SOURCE_URL = f"{FIFA_TOURNAMENT_URL}/teams"
+FIFA_CALENDAR_API_URL = "https://api.fifa.com/api/v3/calendar/matches?language=en&count=500&idCompetition=17&idSeason=285023"
 SQUAD_SOURCE_URL = FIFA_TEAMS_SOURCE_URL
 SCORES_SOURCE_URL = FIFA_SCORES_SOURCE_URL
 LIVE_POLL_SECONDS = 30
@@ -694,6 +695,7 @@ def build_official_source_status(score_source: dict | None = None) -> dict:
     final_db = load_final_matches_db()
     return {
         "primary": "FIFA.com",
+        "calendar_api_url": FIFA_CALENDAR_API_URL,
         "scores_url": FIFA_SCORES_SOURCE_URL,
         "teams_url": FIFA_TEAMS_SOURCE_URL,
         "album_exception": "Album de figurinhas da selecao japonesa mantem fonte japonesa propria.",
@@ -724,6 +726,7 @@ TEAM_NAME_ALIASES = {
     "czechia": "cz",
     "czech republic": "cz",
     "dr congo": "cd",
+    "congo dr": "cd",
     "ecuador": "ec",
     "egypt": "eg",
     "england": "gb-eng",
@@ -779,6 +782,141 @@ class TextExtractor(HTMLParser):
 
 def code_from_source_team_name(name: str) -> str | None:
     return TEAM_NAME_ALIASES.get(normalize_key(name))
+
+
+def localized_description(value: object) -> str:
+    if isinstance(value, list):
+        for item in value:
+            if not isinstance(item, dict):
+                continue
+            description = item.get("Description")
+            if description:
+                return str(description)
+        return ""
+    if isinstance(value, dict):
+        return str(value.get("Description") or value.get("Name") or "")
+    return str(value or "")
+
+
+def fifa_team_code(team: dict | None) -> str | None:
+    if not isinstance(team, dict):
+        return None
+    for value in (
+        localized_description(team.get("TeamName")),
+        team.get("ShortClubName"),
+        team.get("Abbreviation"),
+        team.get("IdCountry"),
+    ):
+        code = code_from_source_team_name(str(value or ""))
+        if code:
+            return code
+    return None
+
+
+def fifa_match_source_url(match: dict) -> str:
+    return "https://www.fifa.com/en/match-centre/match/{}/{}/{}/{}".format(
+        match.get("IdCompetition") or "17",
+        match.get("IdSeason") or "285023",
+        match.get("IdStage") or "289287",
+        match.get("IdMatch") or "",
+    )
+
+
+def fifa_match_date_brt(match: dict) -> str:
+    raw_date = str(match.get("Date") or match.get("LocalDate") or "")
+    if not raw_date:
+        return ""
+    try:
+        parsed = datetime.fromisoformat(raw_date.replace("Z", "+00:00"))
+    except ValueError:
+        return raw_date[:10]
+    return parsed.astimezone(ZoneInfo("America/Fortaleza")).date().isoformat()
+
+
+def fifa_match_status(match: dict, has_score: bool) -> str:
+    if not has_score:
+        return "scheduled"
+    result_type = match.get("ResultType")
+    match_status = match.get("MatchStatus")
+    if result_type not in (None, 0, "0") or match_status in (0, "0"):
+        return "finished"
+    return "live"
+
+
+def fifa_group_id(match: dict) -> str:
+    group_name = localized_description(match.get("GroupName"))
+    group_match = re.search(r"Group ([A-L])", group_name, flags=re.IGNORECASE)
+    return group_match.group(1).upper() if group_match else ""
+
+
+def parse_fifa_calendar_api_scores(payload: dict) -> list[dict]:
+    scores: list[dict] = []
+    for match in payload.get("Results", []):
+        if not isinstance(match, dict):
+            continue
+
+        home_score = match.get("HomeTeamScore", match.get("Home", {}).get("Score") if isinstance(match.get("Home"), dict) else None)
+        away_score = match.get("AwayTeamScore", match.get("Away", {}).get("Score") if isinstance(match.get("Away"), dict) else None)
+        has_score = isinstance(home_score, int) and isinstance(away_score, int)
+        if not has_score:
+            continue
+
+        home = fifa_team_code(match.get("Home"))
+        away = fifa_team_code(match.get("Away"))
+        if not home or not away:
+            continue
+
+        match_id = match.get("MatchNumber")
+        try:
+            match_id_int = int(match_id)
+        except (TypeError, ValueError):
+            match_id_int = 0
+
+        is_knockout = match_id_int in KNOCKOUT_MATCH_IDS
+        group_id = "KO" if is_knockout else fifa_group_id(match)
+        if not is_knockout and group_id not in GROUP_IDS:
+            continue
+
+        stadium = localized_description(match.get("Stadium", {}).get("Name") if isinstance(match.get("Stadium"), dict) else None)
+        city = localized_description(match.get("Stadium", {}).get("CityName") if isinstance(match.get("Stadium"), dict) else None)
+        status = fifa_match_status(match, has_score)
+        score = {
+            "group": group_id,
+            "date": fifa_match_date_brt(match),
+            "home": home,
+            "home_score": int(home_score),
+            "away_score": int(away_score),
+            "away": away,
+            "stadium": stadium,
+            "city": city,
+            "status": status,
+            "source": fifa_match_source_url(match),
+            "verified_by": "FIFA.com Calendar API",
+        }
+
+        if is_knockout:
+            score["match_id"] = match_id_int
+            score["phase"] = knockout_phase_for_match(match_id_int)
+            score["group_name"] = "Mata-mata"
+            winner_id = str(match.get("Winner") or "")
+            home_id = str(match.get("Home", {}).get("IdTeam") or "") if isinstance(match.get("Home"), dict) else ""
+            away_id = str(match.get("Away", {}).get("IdTeam") or "") if isinstance(match.get("Away"), dict) else ""
+            if winner_id and winner_id == home_id:
+                score["winner"] = home
+            elif winner_id and winner_id == away_id:
+                score["winner"] = away
+            else:
+                score["winner"] = knockout_winner_code(score)
+
+            home_penalties = match.get("HomeTeamPenaltyScore")
+            away_penalties = match.get("AwayTeamPenaltyScore")
+            if isinstance(home_penalties, int) and isinstance(away_penalties, int):
+                score["home_penalties"] = home_penalties
+                score["away_penalties"] = away_penalties
+                score["decided_by"] = "penalties"
+
+        scores.append(score)
+    return scores
 
 
 def result_key(result: dict) -> tuple[object, ...]:
@@ -846,7 +984,7 @@ def merge_scores(local_scores: list[dict], external_scores: list[dict]) -> list[
     for score in external_scores:
         key = result_key(score)
         local_score = merged.get(key, {})
-        if local_score and score_is_finished(local_score):
+        if local_score and score_is_finished(local_score) and not score_is_finished(score):
             merged[key] = complete_score_location(enrich_score(local_score))
             continue
         enriched_score = enrich_score(score)
@@ -908,6 +1046,30 @@ def official_match_centre_results() -> list[dict]:
     return [normalize_finished_match_record(match) for match in FIFA_MATCH_CENTRE_RESULTS]
 
 
+def fetch_fifa_calendar_api_scores() -> list[dict]:
+    request = urllib.request.Request(
+        FIFA_CALENDAR_API_URL,
+        headers={"User-Agent": f"{APP_NAME}/{APP_VERSION} fifa official calendar monitor"},
+    )
+    with urllib.request.urlopen(request, timeout=8) as response:
+        payload = json.loads(response.read().decode("utf-8", errors="replace"))
+    if not isinstance(payload, dict):
+        return []
+    return parse_fifa_calendar_api_scores(payload)
+
+
+def fetch_fifa_scores_page_scores() -> list[dict]:
+    request = urllib.request.Request(
+        FIFA_SCORES_SOURCE_URL,
+        headers={"User-Agent": f"{APP_NAME}/{APP_VERSION} fifa official source monitor"},
+    )
+    with urllib.request.urlopen(request, timeout=8) as response:
+        html = response.read().decode("utf-8", errors="replace")
+    parser = TextExtractor()
+    parser.feed(html)
+    return parse_external_scores_from_text(parser.parts)
+
+
 def fetch_external_scores(force_refresh: bool = False) -> tuple[list[dict], bool, str]:
     now = time.time()
     sync_policy = build_live_sync_policy()
@@ -920,25 +1082,36 @@ def fetch_external_scores(force_refresh: bool = False) -> tuple[list[dict], bool
         return cached_scores, bool(SCORES_CACHE["source_ok"]), str(SCORES_CACHE.get("error") or "")
 
     try:
-        request = urllib.request.Request(
-            FIFA_SCORES_SOURCE_URL,
-            headers={"User-Agent": f"{APP_NAME}/{APP_VERSION} fifa official source monitor"},
-        )
-        with urllib.request.urlopen(request, timeout=8) as response:
-            html = response.read().decode("utf-8", errors="replace")
-        parser = TextExtractor()
-        parser.feed(html)
-        scores = merge_scores(parse_external_scores_from_text(parser.parts), official_match_centre_results())
+        errors: list[str] = []
+        api_scores: list[dict] = []
+        page_scores: list[dict] = []
+        try:
+            api_scores = fetch_fifa_calendar_api_scores()
+        except Exception as api_exc:
+            errors.append(f"FIFA Calendar API: {api_exc}")
+        try:
+            page_scores = fetch_fifa_scores_page_scores()
+        except Exception as page_exc:
+            errors.append(f"FIFA Scores page: {page_exc}")
+
+        scores = merge_scores(merge_scores(page_scores, official_match_centre_results()), api_scores)
+        if not scores and errors:
+            raise RuntimeError("; ".join(errors))
+
         status = {
             **sync_policy,
             "ok": True,
-            "error": "",
+            "error": "; ".join(errors),
             "last_checked": iso_utc_now(),
             "last_success": iso_utc_now(),
             "external_count": len(scores),
-            "fallback_used": not bool(scores),
+            "api_count": len(api_scores),
+            "scores_page_count": len(page_scores),
+            "match_centre_fallback_count": len(official_match_centre_results()),
+            "fallback_used": not bool(api_scores),
             "next_check_seconds": interval_seconds,
             "force_refresh_requested": force_refresh,
+            "structured_source": FIFA_CALENDAR_API_URL,
         }
         save_live_sync_status(status)
         SCORES_CACHE.update(
@@ -946,11 +1119,11 @@ def fetch_external_scores(force_refresh: bool = False) -> tuple[list[dict], bool
                 "expires_at": now + interval_seconds,
                 "scores": scores,
                 "source_ok": True,
-                "error": "",
+                "error": "; ".join(errors),
                 "sync_policy": status,
             }
         )
-        return scores, True, ""
+        return scores, True, "; ".join(errors)
     except Exception as exc:
         previous_status = load_live_sync_status()
         status = {
@@ -989,6 +1162,7 @@ def build_current_scores(force_refresh: bool = False) -> tuple[list[dict], dict]
     return scores, {
         "name": "FIFA.com",
         "url": FIFA_SCORES_SOURCE_URL,
+        "structured_url": FIFA_CALENDAR_API_URL,
         "primary": "fifa.com",
         "ok": source_ok,
         "error": source_error,

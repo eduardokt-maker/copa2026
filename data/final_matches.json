@@ -2,10 +2,23 @@
   "source": {
     "name": "FIFA.com",
     "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-    "last_saved": "2026-06-29T00:32:44Z",
+    "last_saved": "2026-06-29T00:50:45Z",
     "policy": "Banco local de jogos encerrados: preserva resultados oficiais ja concluidos caso a pagina da FIFA mude ou fique indisponivel."
   },
   "matches": [
+    {
+      "group": "A",
+      "date": "2026-06-11",
+      "home": "kr",
+      "home_score": 2,
+      "away_score": 1,
+      "away": "cz",
+      "stadium": "Guadalajara Stadium",
+      "city": "Guadalajara",
+      "status": "finished",
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021441",
+      "verified_by": "FIFA.com Calendar API"
+    },
     {
       "group": "A",
       "date": "2026-06-11",
@@ -16,21 +29,8 @@
       "stadium": "Mexico City Stadium",
       "city": "Mexico City",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
-    },
-    {
-      "group": "A",
-      "date": "2026-06-11",
-      "home": "kr",
-      "home_score": 2,
-      "away_score": 1,
-      "away": "cz",
-      "stadium": "Estadio Guadalajara",
-      "city": "Guadalajara",
-      "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021443",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "A",
@@ -42,8 +42,8 @@
       "stadium": "Atlanta Stadium",
       "city": "Atlanta",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021440",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "A",
@@ -52,11 +52,24 @@
       "home_score": 1,
       "away_score": 0,
       "away": "kr",
-      "stadium": "Estadio Guadalajara",
+      "stadium": "Guadalajara Stadium",
       "city": "Guadalajara",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021442",
+      "verified_by": "FIFA.com Calendar API"
+    },
+    {
+      "group": "A",
+      "date": "2026-06-24",
+      "home": "cz",
+      "home_score": 0,
+      "away_score": 3,
+      "away": "mx",
+      "stadium": "Mexico City Stadium",
+      "city": "Mexico City",
+      "status": "finished",
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021444",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "A",
@@ -65,24 +78,11 @@
       "home_score": 1,
       "away_score": 0,
       "away": "kr",
-      "stadium": "Monterrey Stadium",
+      "stadium": "Estadio Monterrey",
       "city": "Monterrey",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
-    },
-    {
-      "group": "A",
-      "date": "2026-06-24",
-      "home": "mx",
-      "home_score": 3,
-      "away_score": 0,
-      "away": "cz",
-      "stadium": "Mexico City Stadium",
-      "city": "Mexico City",
-      "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021445",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "B",
@@ -94,8 +94,8 @@
       "stadium": "Toronto Stadium",
       "city": "Toronto",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021449",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "B",
@@ -107,21 +107,8 @@
       "stadium": "San Francisco Bay Area Stadium",
       "city": "San Francisco Bay Area",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
-    },
-    {
-      "group": "B",
-      "date": "2026-06-18",
-      "home": "ch",
-      "home_score": 4,
-      "away_score": 1,
-      "away": "ba",
-      "stadium": "Los Angeles Stadium",
-      "city": "Los Angeles",
-      "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021447",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "B",
@@ -133,21 +120,21 @@
       "stadium": "BC Place Vancouver",
       "city": "Vancouver",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021450",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "B",
-      "date": "2026-06-24",
+      "date": "2026-06-18",
       "home": "ch",
-      "home_score": 2,
+      "home_score": 4,
       "away_score": 1,
-      "away": "ca",
-      "stadium": "BC Place Vancouver",
-      "city": "Vancouver",
+      "away": "ba",
+      "stadium": "Los Angeles Stadium",
+      "city": "Los Angeles",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021446",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "B",
@@ -159,8 +146,21 @@
       "stadium": "Seattle Stadium",
       "city": "Seattle",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021448",
+      "verified_by": "FIFA.com Calendar API"
+    },
+    {
+      "group": "B",
+      "date": "2026-06-24",
+      "home": "ch",
+      "home_score": 2,
+      "away_score": 1,
+      "away": "ca",
+      "stadium": "BC Place Vancouver",
+      "city": "Vancouver",
+      "status": "finished",
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021451",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "C",
@@ -169,11 +169,11 @@
       "home_score": 1,
       "away_score": 1,
       "away": "ma",
-      "stadium": "New York New Jersey Stadium",
-      "city": "New York New Jersey",
+      "stadium": "New York/New Jersey Stadium",
+      "city": "New Jersey",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021456",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "C",
@@ -185,8 +185,21 @@
       "stadium": "Boston Stadium",
       "city": "Boston",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021453",
+      "verified_by": "FIFA.com Calendar API"
+    },
+    {
+      "group": "C",
+      "date": "2026-06-19",
+      "home": "br",
+      "home_score": 3,
+      "away_score": 0,
+      "away": "ht",
+      "stadium": "Philadelphia Stadium",
+      "city": "Philadelphia",
+      "status": "finished",
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021457",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "C",
@@ -198,21 +211,21 @@
       "stadium": "Boston Stadium",
       "city": "Boston",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021454",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "C",
-      "date": "2026-06-19",
-      "home": "br",
-      "home_score": 3,
-      "away_score": 0,
-      "away": "ht",
-      "stadium": "Philadelphia Stadium",
-      "city": "Philadelphia",
+      "date": "2026-06-24",
+      "home": "gb-sct",
+      "home_score": 0,
+      "away_score": 3,
+      "away": "br",
+      "stadium": "Miami Stadium",
+      "city": "Miami",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021455",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "C",
@@ -224,21 +237,8 @@
       "stadium": "Atlanta Stadium",
       "city": "Atlanta",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
-    },
-    {
-      "group": "C",
-      "date": "2026-06-24",
-      "home": "br",
-      "home_score": 3,
-      "away_score": 0,
-      "away": "gb-sct",
-      "stadium": "Miami Stadium",
-      "city": "Miami",
-      "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021452",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "D",
@@ -250,12 +250,12 @@
       "stadium": "Los Angeles Stadium",
       "city": "Los Angeles",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021458",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "D",
-      "date": "2026-06-13",
+      "date": "2026-06-14",
       "home": "au",
       "home_score": 2,
       "away_score": 0,
@@ -263,8 +263,8 @@
       "stadium": "BC Place Vancouver",
       "city": "Vancouver",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021463",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "D",
@@ -276,12 +276,12 @@
       "stadium": "Seattle Stadium",
       "city": "Seattle",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021462",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "D",
-      "date": "2026-06-19",
+      "date": "2026-06-20",
       "home": "tr",
       "home_score": 0,
       "away_score": 1,
@@ -289,21 +289,8 @@
       "stadium": "San Francisco Bay Area Stadium",
       "city": "San Francisco Bay Area",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
-    },
-    {
-      "group": "D",
-      "date": "2026-06-25",
-      "home": "tr",
-      "home_score": 3,
-      "away_score": 2,
-      "away": "us",
-      "stadium": "Los Angeles Stadium",
-      "city": "Los Angeles",
-      "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021460",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "D",
@@ -315,21 +302,21 @@
       "stadium": "San Francisco Bay Area Stadium",
       "city": "San Francisco Bay Area",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021461",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
-      "group": "E",
-      "date": "2026-06-14",
-      "home": "de",
-      "home_score": 7,
-      "away_score": 1,
-      "away": "cw",
-      "stadium": "Houston Stadium",
-      "city": "Houston",
+      "group": "D",
+      "date": "2026-06-25",
+      "home": "tr",
+      "home_score": 3,
+      "away_score": 2,
+      "away": "us",
+      "stadium": "Los Angeles Stadium",
+      "city": "Los Angeles",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021459",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "E",
@@ -341,8 +328,21 @@
       "stadium": "Philadelphia Stadium",
       "city": "Philadelphia",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021467",
+      "verified_by": "FIFA.com Calendar API"
+    },
+    {
+      "group": "E",
+      "date": "2026-06-14",
+      "home": "de",
+      "home_score": 7,
+      "away_score": 1,
+      "away": "cw",
+      "stadium": "Houston Stadium",
+      "city": "Houston",
+      "status": "finished",
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021464",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "E",
@@ -354,8 +354,8 @@
       "stadium": "Toronto Stadium",
       "city": "Toronto",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021469",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "E",
@@ -367,21 +367,21 @@
       "stadium": "Kansas City Stadium",
       "city": "Kansas City",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021465",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "E",
       "date": "2026-06-25",
-      "home": "ci",
-      "home_score": 2,
-      "away_score": 0,
-      "away": "cw",
+      "home": "cw",
+      "home_score": 0,
+      "away_score": 2,
+      "away": "ci",
       "stadium": "Philadelphia Stadium",
       "city": "Philadelphia",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021468",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "E",
@@ -390,11 +390,11 @@
       "home_score": 2,
       "away_score": 1,
       "away": "de",
-      "stadium": "New York New Jersey Stadium",
-      "city": "New York New Jersey",
+      "stadium": "New York/New Jersey Stadium",
+      "city": "New Jersey",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021466",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "F",
@@ -406,8 +406,8 @@
       "stadium": "Dallas Stadium",
       "city": "Dallas",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021470",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "F",
@@ -416,11 +416,11 @@
       "home_score": 5,
       "away_score": 1,
       "away": "tn",
-      "stadium": "Monterrey Stadium",
+      "stadium": "Estadio Monterrey",
       "city": "Monterrey",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021474",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "F",
@@ -432,21 +432,21 @@
       "stadium": "Houston Stadium",
       "city": "Houston",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021472",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "F",
-      "date": "2026-06-20",
+      "date": "2026-06-21",
       "home": "tn",
       "home_score": 0,
       "away_score": 4,
       "away": "jp",
-      "stadium": "Monterrey Stadium",
+      "stadium": "Estadio Monterrey",
       "city": "Monterrey",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021475",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "F",
@@ -458,21 +458,21 @@
       "stadium": "Dallas Stadium",
       "city": "Dallas",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021471",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "F",
       "date": "2026-06-25",
-      "home": "nl",
-      "home_score": 3,
-      "away_score": 1,
-      "away": "tn",
+      "home": "tn",
+      "home_score": 1,
+      "away_score": 3,
+      "away": "nl",
       "stadium": "Kansas City Stadium",
       "city": "Kansas City",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021473",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "G",
@@ -484,8 +484,8 @@
       "stadium": "Seattle Stadium",
       "city": "Seattle",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021478",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "G",
@@ -497,8 +497,8 @@
       "stadium": "Los Angeles Stadium",
       "city": "Los Angeles",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021476",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "G",
@@ -510,8 +510,8 @@
       "stadium": "Los Angeles Stadium",
       "city": "Los Angeles",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021477",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "G",
@@ -523,12 +523,12 @@
       "stadium": "BC Place Vancouver",
       "city": "Vancouver",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021480",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "G",
-      "date": "2026-06-26",
+      "date": "2026-06-27",
       "home": "eg",
       "home_score": 1,
       "away_score": 1,
@@ -536,12 +536,12 @@
       "stadium": "Seattle Stadium",
       "city": "Seattle",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021479",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "G",
-      "date": "2026-06-26",
+      "date": "2026-06-27",
       "home": "nz",
       "home_score": 1,
       "away_score": 5,
@@ -549,8 +549,8 @@
       "stadium": "BC Place Vancouver",
       "city": "Vancouver",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021481",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "H",
@@ -562,8 +562,8 @@
       "stadium": "Atlanta Stadium",
       "city": "Atlanta",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021482",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "H",
@@ -575,8 +575,8 @@
       "stadium": "Miami Stadium",
       "city": "Miami",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021486",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "H",
@@ -588,8 +588,8 @@
       "stadium": "Atlanta Stadium",
       "city": "Atlanta",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021483",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "H",
@@ -601,8 +601,8 @@
       "stadium": "Miami Stadium",
       "city": "Miami",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021487",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "H",
@@ -614,8 +614,8 @@
       "stadium": "Houston Stadium",
       "city": "Houston",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021485",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "H",
@@ -624,11 +624,11 @@
       "home_score": 0,
       "away_score": 1,
       "away": "es",
-      "stadium": "Estadio Guadalajara",
+      "stadium": "Guadalajara Stadium",
       "city": "Guadalajara",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021484",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "I",
@@ -637,11 +637,11 @@
       "home_score": 3,
       "away_score": 1,
       "away": "sn",
-      "stadium": "New York New Jersey Stadium",
-      "city": "New York New Jersey",
+      "stadium": "New York/New Jersey Stadium",
+      "city": "New Jersey",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021490",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "I",
@@ -653,8 +653,8 @@
       "stadium": "Boston Stadium",
       "city": "Boston",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021488",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "I",
@@ -666,8 +666,8 @@
       "stadium": "Philadelphia Stadium",
       "city": "Philadelphia",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021492",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "I",
@@ -676,11 +676,11 @@
       "home_score": 3,
       "away_score": 2,
       "away": "sn",
-      "stadium": "New York New Jersey Stadium",
-      "city": "New York New Jersey",
+      "stadium": "New York/New Jersey Stadium",
+      "city": "New Jersey",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021491",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "I",
@@ -692,8 +692,8 @@
       "stadium": "Boston Stadium",
       "city": "Boston",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021489",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "I",
@@ -705,8 +705,8 @@
       "stadium": "Toronto Stadium",
       "city": "Toronto",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021493",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "J",
@@ -718,12 +718,12 @@
       "stadium": "Kansas City Stadium",
       "city": "Kansas City",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021496",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "J",
-      "date": "2026-06-16",
+      "date": "2026-06-17",
       "home": "at",
       "home_score": 3,
       "away_score": 1,
@@ -731,8 +731,8 @@
       "stadium": "San Francisco Bay Area Stadium",
       "city": "San Francisco Bay Area",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021498",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "J",
@@ -744,21 +744,21 @@
       "stadium": "Dallas Stadium",
       "city": "Dallas",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021494",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "J",
-      "date": "2026-06-22",
-      "home": "dz",
-      "home_score": 2,
-      "away_score": 1,
-      "away": "jo",
+      "date": "2026-06-23",
+      "home": "jo",
+      "home_score": 1,
+      "away_score": 2,
+      "away": "dz",
       "stadium": "San Francisco Bay Area Stadium",
       "city": "San Francisco Bay Area",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021499",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "J",
@@ -770,8 +770,8 @@
       "stadium": "Kansas City Stadium",
       "city": "Kansas City",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021497",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "J",
@@ -783,8 +783,8 @@
       "stadium": "Dallas Stadium",
       "city": "Dallas",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021495",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "K",
@@ -796,8 +796,8 @@
       "stadium": "Houston Stadium",
       "city": "Houston",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021502",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "K",
@@ -809,8 +809,21 @@
       "stadium": "Mexico City Stadium",
       "city": "Mexico City",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021504",
+      "verified_by": "FIFA.com Calendar API"
+    },
+    {
+      "group": "K",
+      "date": "2026-06-23",
+      "home": "co",
+      "home_score": 1,
+      "away_score": 0,
+      "away": "cd",
+      "stadium": "Guadalajara Stadium",
+      "city": "Guadalajara",
+      "status": "finished",
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021501",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "K",
@@ -822,34 +835,8 @@
       "stadium": "Houston Stadium",
       "city": "Houston",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
-    },
-    {
-      "group": "K",
-      "date": "2026-06-23",
-      "home": "co",
-      "home_score": 1,
-      "away_score": 0,
-      "away": "cd",
-      "stadium": "Estadio Guadalajara",
-      "city": "Guadalajara",
-      "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
-    },
-    {
-      "group": "K",
-      "date": "2026-06-27",
-      "home": "co",
-      "home_score": 0,
-      "away_score": 0,
-      "away": "pt",
-      "stadium": "Miami Stadium",
-      "city": "Miami",
-      "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021503",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "K",
@@ -861,86 +848,21 @@
       "stadium": "Atlanta Stadium",
       "city": "Atlanta",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021500",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
-      "group": "L",
-      "date": "2026-06-17",
-      "home": "gb-eng",
-      "home_score": 4,
-      "away_score": 2,
-      "away": "hr",
-      "stadium": "Dallas Stadium",
-      "city": "Dallas",
-      "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
-    },
-    {
-      "group": "L",
-      "date": "2026-06-17",
-      "home": "gh",
-      "home_score": 1,
-      "away_score": 0,
-      "away": "pa",
-      "stadium": "Toronto Stadium",
-      "city": "Toronto",
-      "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
-    },
-    {
-      "group": "L",
-      "date": "2026-06-23",
-      "home": "gb-eng",
+      "group": "K",
+      "date": "2026-06-27",
+      "home": "co",
       "home_score": 0,
       "away_score": 0,
-      "away": "gh",
-      "stadium": "Boston Stadium",
-      "city": "Boston",
+      "away": "pt",
+      "stadium": "Miami Stadium",
+      "city": "Miami",
       "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
-    },
-    {
-      "group": "L",
-      "date": "2026-06-23",
-      "home": "hr",
-      "home_score": 1,
-      "away_score": 0,
-      "away": "pa",
-      "stadium": "Toronto Stadium",
-      "city": "Toronto",
-      "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
-    },
-    {
-      "group": "L",
-      "date": "2026-06-27",
-      "home": "pa",
-      "home_score": 0,
-      "away_score": 2,
-      "away": "gb-eng",
-      "stadium": "New York New Jersey Stadium",
-      "city": "New York New Jersey",
-      "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
-    },
-    {
-      "group": "L",
-      "date": "2026-06-27",
-      "home": "hr",
-      "home_score": 2,
-      "away_score": 1,
-      "away": "gh",
-      "stadium": "Philadelphia Stadium",
-      "city": "Philadelphia",
-      "status": "finished",
-      "source": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures",
-      "verified_by": "FIFA.com"
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021505",
+      "verified_by": "FIFA.com Calendar API"
     },
     {
       "group": "KO",
@@ -953,11 +875,89 @@
       "city": "Los Angeles",
       "status": "finished",
       "source": "https://www.fifa.com/en/match-centre/match/17/285023/289287/400021518",
-      "verified_by": "FIFA.com Match Centre",
+      "verified_by": "FIFA.com Calendar API",
       "match_id": 73,
       "phase": "round_of_32",
       "group_name": "Mata-mata",
       "winner": "ca"
+    },
+    {
+      "group": "L",
+      "date": "2026-06-17",
+      "home": "gb-eng",
+      "home_score": 4,
+      "away_score": 2,
+      "away": "hr",
+      "stadium": "Dallas Stadium",
+      "city": "Dallas",
+      "status": "finished",
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021507",
+      "verified_by": "FIFA.com Calendar API"
+    },
+    {
+      "group": "L",
+      "date": "2026-06-17",
+      "home": "gh",
+      "home_score": 1,
+      "away_score": 0,
+      "away": "pa",
+      "stadium": "Toronto Stadium",
+      "city": "Toronto",
+      "status": "finished",
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021510",
+      "verified_by": "FIFA.com Calendar API"
+    },
+    {
+      "group": "L",
+      "date": "2026-06-23",
+      "home": "gb-eng",
+      "home_score": 0,
+      "away_score": 0,
+      "away": "gh",
+      "stadium": "Boston Stadium",
+      "city": "Boston",
+      "status": "finished",
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021506",
+      "verified_by": "FIFA.com Calendar API"
+    },
+    {
+      "group": "L",
+      "date": "2026-06-23",
+      "home": "pa",
+      "home_score": 0,
+      "away_score": 1,
+      "away": "hr",
+      "stadium": "Toronto Stadium",
+      "city": "Toronto",
+      "status": "finished",
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021511",
+      "verified_by": "FIFA.com Calendar API"
+    },
+    {
+      "group": "L",
+      "date": "2026-06-27",
+      "home": "hr",
+      "home_score": 2,
+      "away_score": 1,
+      "away": "gh",
+      "stadium": "Philadelphia Stadium",
+      "city": "Philadelphia",
+      "status": "finished",
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021509",
+      "verified_by": "FIFA.com Calendar API"
+    },
+    {
+      "group": "L",
+      "date": "2026-06-27",
+      "home": "pa",
+      "home_score": 0,
+      "away_score": 2,
+      "away": "gb-eng",
+      "stadium": "New York/New Jersey Stadium",
+      "city": "New Jersey",
+      "status": "finished",
+      "source": "https://www.fifa.com/en/match-centre/match/17/285023/289273/400021508",
+      "verified_by": "FIFA.com Calendar API"
     }
   ]
 }
