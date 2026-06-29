@@ -1,5 +1,5 @@
 const knockoutBoard = document.querySelector("#knockoutBoard");
-const KNOCKOUT_DATA_VERSION = "20260628-knockout-live-results-v2";
+const KNOCKOUT_DATA_VERSION = "20260628-knockout-score-clarity-v3";
 const KNOCKOUT_POLL_INTERVAL_MS = 60000;
 let knockoutPollTimer = null;
 
@@ -178,14 +178,37 @@ function resolveSlot(slot, standings, bestThird, matchId = 0) {
   return { label: slotFallback(slot), team: null, meta: "Aguardando definicao dos melhores terceiros" };
 }
 
-function renderTeamSlot(slot) {
+function teamScoreForSide(result, side) {
+  if (!result || !Number.isInteger(result.home_score) || !Number.isInteger(result.away_score)) return "";
+  return side === "home" ? result.home_score : result.away_score;
+}
+
+function teamOutcomeForSide(result, side) {
+  if (!result || !Number.isInteger(result.home_score) || !Number.isInteger(result.away_score)) return "";
+  if (!isFinishedResult(result)) return "Em andamento";
+  const sideCode = side === "home" ? result.home : result.away;
+  return resultWinnerCode(result) === sideCode ? "Venceu" : "Eliminado";
+}
+
+function teamResultClass(result, side) {
+  const outcome = teamOutcomeForSide(result, side);
+  if (outcome === "Venceu") return "is-winner";
+  if (outcome === "Eliminado") return "is-loser";
+  if (outcome === "Em andamento") return "is-live-result";
+  return "";
+}
+
+function renderTeamSlot(slot, result = null, side = "") {
+  const score = teamScoreForSide(result, side);
+  const outcome = teamOutcomeForSide(result, side);
   return `
-    <div class="knockout-team ${slot.team ? "is-known" : ""}">
+    <div class="knockout-team ${slot.team ? "is-known" : ""} ${teamResultClass(result, side)}">
       ${slot.team ? `<img src="${flagUrl(slot.team.code)}" alt="Bandeira: ${slot.team.country}" loading="lazy" />` : `<span class="knockout-placeholder"></span>`}
-      <div>
+      <div class="knockout-team-text">
         <strong>${slot.label}</strong>
-        <small>${slot.meta}</small>
+        <small>${outcome || slot.meta}</small>
       </div>
+      ${score !== "" ? `<span class="knockout-team-score">${score}</span>` : ""}
     </div>
   `;
 }
@@ -250,15 +273,24 @@ function renderScoreline(match, result, liveSync) {
   if (!result || !Number.isInteger(result.home_score) || !Number.isInteger(result.away_score)) {
     return `<div class="knockout-score is-pending"><span>${statusLabel}</span></div>`;
   }
-  const regularScore = `${result.home_score} x ${result.away_score}`;
+  const homeLabel = result.home_team?.country || "Mandante";
+  const awayLabel = result.away_team?.country || "Visitante";
+  const regularScore = `${homeLabel} ${result.home_score} x ${result.away_score} ${awayLabel}`;
   const scoreText =
     Number.isFinite(Number(result.home_penalties)) && Number.isFinite(Number(result.away_penalties))
       ? `${regularScore} (${result.home_penalties} x ${result.away_penalties} pen.)`
       : regularScore;
+  const winnerCode = resultWinnerCode(result);
+  const winnerTeam =
+    winnerCode && winnerCode === result.home
+      ? result.home_team?.country
+      : winnerCode && winnerCode === result.away
+        ? result.away_team?.country
+        : "";
   return `
     <div class="knockout-score ${isFinishedResult(result) ? "is-finished" : "is-live"}">
       <strong>${scoreText}</strong>
-      <span>${statusLabel}</span>
+      <span>${winnerTeam ? `${winnerTeam} venceu` : statusLabel}</span>
     </div>
   `;
 }
@@ -291,8 +323,8 @@ function renderRoundOf32(standings, resultsById, liveSync) {
                 <span>${formatFixtureDate(match.dateIso) || match.date} | ${match.time}</span>
                 <small>${match.stadium || "Estadio a definir"}</small>
               </div>
-              ${renderTeamSlot(a)}
-              ${renderTeamSlot(b)}
+              ${renderTeamSlot(a, result, "home")}
+              ${renderTeamSlot(b, result, "away")}
               ${renderScoreline(match, result, liveSync)}
               ${
                 match.id === 76
@@ -326,8 +358,8 @@ function renderFutureRounds(resultsById, liveSync) {
                 <strong>${match.label || `Jogo ${match.id}`}</strong>
                 <span>${match.time ? `${formatFixtureDate(match.dateIso)} - ${match.time}` : round.period}</span>
               </div>
-              ${renderTeamSlot(a)}
-              ${renderTeamSlot(b)}
+              ${renderTeamSlot(a, result, "home")}
+              ${renderTeamSlot(b, result, "away")}
               ${renderScoreline(match, result, liveSync)}
               <div class="knockout-match-venue">
                 <small>${match.stadium || "Estadio a definir"}</small>

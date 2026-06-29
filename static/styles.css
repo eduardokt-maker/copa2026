@@ -3230,8 +3230,9 @@ footer {
 
 .knockout-score strong {
   color: #0e4a69;
-  font-size: 1rem;
+  font-size: 0.88rem;
   font-weight: 950;
+  line-height: 1.2;
 }
 
 .knockout-score span {
@@ -3262,7 +3263,7 @@ footer {
 .knockout-team {
   min-height: 44px;
   display: grid;
-  grid-template-columns: 34px minmax(0, 1fr);
+  grid-template-columns: 34px minmax(0, 1fr) auto;
   align-items: center;
   gap: 8px;
   border: 1px solid rgba(16, 32, 51, 0.08);
@@ -3273,6 +3274,22 @@ footer {
 
 .knockout-team.is-known {
   background: linear-gradient(180deg, #ffffff, #fff3c4);
+}
+
+.knockout-team.is-winner {
+  border-color: rgba(15, 109, 86, 0.45);
+  background: linear-gradient(180deg, #ffffff, #e6f8ef);
+  box-shadow: inset 3px 0 0 #0f6d56;
+}
+
+.knockout-team.is-loser {
+  background: #f5f7fa;
+  opacity: 0.72;
+}
+
+.knockout-team.is-live-result {
+  border-color: rgba(180, 28, 28, 0.32);
+  background: #fff8f8;
 }
 
 .knockout-team img,
@@ -3306,11 +3323,44 @@ footer {
   line-height: 1.1;
 }
 
+.knockout-team.is-winner strong {
+  color: #0f6d56;
+}
+
 .knockout-team small {
   margin-top: 2px;
   color: #66758a;
   font-size: 0.66rem;
   font-weight: 850;
+}
+
+.knockout-team.is-winner small {
+  color: #0f6d56;
+}
+
+.knockout-team-score {
+  min-width: 30px;
+  min-height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  color: #102033;
+  background: #ffffff;
+  box-shadow: inset 0 0 0 1px rgba(16, 32, 51, 0.12);
+  font-size: 1rem;
+  font-weight: 950;
+}
+
+.knockout-team.is-winner .knockout-team-score {
+  color: #ffffff;
+  background: #0f6d56;
+  box-shadow: none;
+}
+
+.knockout-team.is-loser .knockout-team-score {
+  color: #66758a;
+  background: #eef2f6;
 }
 
 .knockout-album-link {
@@ -4784,7 +4834,7 @@ footer {
 
   .knockout-team {
     min-height: 42px;
-    grid-template-columns: 30px minmax(0, 1fr);
+    grid-template-columns: 30px minmax(0, 1fr) auto;
     gap: 7px;
     padding: 7px;
   }
@@ -4802,6 +4852,21 @@ footer {
   .knockout-team small {
     font-size: 0.62rem;
     white-space: normal;
+  }
+
+  .knockout-score {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .knockout-score span {
+    text-align: left;
+  }
+
+  .knockout-team-score {
+    min-width: 28px;
+    min-height: 28px;
+    font-size: 0.92rem;
   }
 }
 
