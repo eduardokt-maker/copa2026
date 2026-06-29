@@ -6,7 +6,8 @@ const worldFinishedCount = document.querySelector("#worldFinishedCount");
 const worldUpdatedAt = document.querySelector("#worldUpdatedAt");
 
 const WORLD_POLL_INTERVAL_MS = 60000;
-const WORLD_DATA_VERSION = "20260628-live-sync-v1";
+const WORLD_DATA_VERSION = "20260628-knockout-business-rules-v2";
+const GROUP_IDS = new Set("ABCDEFGHIJKL".split(""));
 let worldPollTimer = null;
 
 function flagUrl(code) {
@@ -25,6 +26,10 @@ function hasFinalScore(match) {
 
 function isFinished(match) {
   return (match.status || "finished") === "finished" && hasFinalScore(match);
+}
+
+function isGroupScore(match) {
+  return GROUP_IDS.has(String(match.group || ""));
 }
 
 function nextPollIntervalMs(payload) {
@@ -234,7 +239,7 @@ function renderGroup(groupId, matches, leaders, qualifiedByGroup) {
 }
 
 function renderWorld(payload) {
-  const matches = payload.scores || [];
+  const matches = (payload.scores || []).filter(isGroupScore);
   const groupsById = groupMatches(matches);
   const leaders = groupLeaders(payload.standings);
   const qualifiedByGroup = qualificationMap(payload.standings, groupsById);

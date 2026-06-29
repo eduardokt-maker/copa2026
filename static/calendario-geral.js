@@ -6,11 +6,13 @@ const calendarTotalCount = document.querySelector("#calendarTotalCount");
 const calendarUpdatedAt = document.querySelector("#calendarUpdatedAt");
 const calendarFilterButtons = document.querySelectorAll("[data-calendar-filter]");
 
-const CALENDAR_VERSION = "20260628-full-knockout-sync-v1";
+const CALENDAR_VERSION = "20260628-knockout-business-rules-v2";
 const CALENDAR_POLL_INTERVAL_MS = 60000;
+const GROUP_IDS = new Set("ABCDEFGHIJKL".split(""));
 
 let calendarState = {
   scores: [],
+  knockoutResults: {},
   standings: null,
   filter: "all",
   pollTimer: null,
@@ -262,6 +264,54 @@ function isFinished(match) {
   return (match.status || "finished") === "finished" && hasFinalScore(match);
 }
 
+function isGroupScore(match) {
+  return GROUP_IDS.has(String(match.group || ""));
+}
+
+function resultForMatch(matchId) {
+  return calendarState.knockoutResults?.[String(matchId)] || null;
+}
+
+function resultWinnerCode(result) {
+  if (!isFinished(result)) return "";
+  if (result.winner) return result.winner;
+  if (Number(result.home_score) > Number(result.away_score)) return result.home;
+  if (Number(result.away_score) > Number(result.home_score)) return result.away;
+  if (Number(result.home_penalties) > Number(result.away_penalties)) return result.home;
+  if (Number(result.away_penalties) > Number(result.home_penalties)) return result.away;
+  return "";
+}
+
+function resultLoserCode(result) {
+  const winnerCode = resultWinnerCode(result);
+  if (!winnerCode) return "";
+  return winnerCode === result.home ? result.away : result.home;
+}
+
+function teamSlotFromResult(result, code, fallbackLabel) {
+  const team = code === result?.home ? result.home_team : code === result?.away ? result.away_team : null;
+  return { label: team?.country || fallbackLabel, team };
+}
+
+function resolveFutureTeamSlot(label) {
+  const dependency = String(label).match(/^(Vencedor|Perdedor) (\d+)$/);
+  if (!dependency) return { label, team: null };
+  const result = resultForMatch(dependency[2]);
+  if (!result) return { label, team: null };
+  const code = dependency[1] === "Vencedor" ? resultWinnerCode(result) : resultLoserCode(result);
+  if (!code) return { label, team: null };
+  return teamSlotFromResult(result, code, label);
+}
+
+function scoreLabel(match) {
+  if (!hasFinalScore(match)) return "x";
+  const regularScore = `${match.home_score} x ${match.away_score}`;
+  if (Number.isFinite(Number(match.home_penalties)) && Number.isFinite(Number(match.away_penalties))) {
+    return `${regularScore} (${match.home_penalties} x ${match.away_penalties} pen.)`;
+  }
+  return regularScore;
+}
+
 function nextPollIntervalMs(payload) {
   const seconds = Number(payload?.score_source?.live_sync?.interval_seconds);
   if (!Number.isFinite(seconds)) return CALENDAR_POLL_INTERVAL_MS;
@@ -349,7 +399,7 @@ function renderTeam(team, align = "") {
 
 function renderCalendarCard(match) {
   const finished = isFinished(match);
-  const score = finished ? `${match.home_score} x ${match.away_score}` : "x";
+  const score = finished ? scoreLabel(match) : "x";
   const timeInfo = timeLabel(match);
   return `
     <article class="calendar-match ${finished ? "is-finished" : "is-future"}">
@@ -376,32 +426,44 @@ function renderCalendarCard(match) {
 function buildKnockoutMatches() {
   const bestThird = bestThirdRows(calendarState.standings);
   const firstRound = roundOf32.map((match) => {
-    const a = resolveSlot(match.a, calendarState.standings, bestThird, match.id);
-    const b = resolveSlot(match.b, calendarState.standings, bestThird, match.id);
+    const result = resultForMatch(match.id);
+    const a = result?.home_team ? { label: result.home_team.country, team: result.home_team } : resolveSlot(match.a, calendarState.standings, bestThird, match.id);
+    const b = result?.away_team ? { label: result.away_team.country, team: result.away_team } : resolveSlot(match.b, calendarState.standings, bestThird, match.id);
     return {
       ...match,
-      status: "next",
+      ...(result || {}),
+      phase: match.phase,
+      status: result?.status || "next",
       home_team: a.team,
       away_team: b.team,
       homeLabel: a.label,
       awayLabel: b.label,
-      stadium: match.stadium || "Estadio a definir",
+      stadium: result?.stadium || match.stadium || "Estadio a definir",
+      city: result?.city || match.city || "",
     };
   });
   const future = futureRounds.flatMap((round) =>
-    round.matches.map((match) => ({
-      id: match.id,
-      phase: match.label || round.phase,
-      date: match.date || round.period,
-      time: match.time || "",
-      dateSortKey: dateSortKey({ date: match.date || round.period }),
-      status: "next",
-      homeLabel: match.a,
-      awayLabel: match.b,
-      stadium: match.stadium || "Estadio a definir",
-      city: match.city || "",
-      venueSource: match.venueSource || "",
-    })),
+    round.matches.map((match) => {
+      const result = resultForMatch(match.id);
+      const a = result?.home_team ? { label: result.home_team.country, team: result.home_team } : resolveFutureTeamSlot(match.a);
+      const b = result?.away_team ? { label: result.away_team.country, team: result.away_team } : resolveFutureTeamSlot(match.b);
+      return {
+        id: match.id,
+        date: match.date || round.period,
+        time: match.time || "",
+        dateSortKey: dateSortKey({ date: match.date || round.period }),
+        ...(result || {}),
+        phase: match.label || round.phase,
+        status: result?.status || "next",
+        home_team: a.team,
+        away_team: b.team,
+        homeLabel: a.label,
+        awayLabel: b.label,
+        stadium: result?.stadium || match.stadium || "Estadio a definir",
+        city: result?.city || match.city || "",
+        venueSource: match.venueSource || "",
+      };
+    }),
   );
   return [...firstRound, ...future];
 }
@@ -411,7 +473,7 @@ function matchPairKey(a, b) {
 }
 
 function buildGroupFutureMatches() {
-  const byGroup = calendarState.scores.reduce((groups, match) => {
+  const byGroup = calendarState.scores.filter(isGroupScore).reduce((groups, match) => {
     groups[match.group] = groups[match.group] || { teams: new Map(), playedPairs: new Set() };
     groups[match.group].teams.set(match.home_team.code, match.home_team);
     groups[match.group].teams.set(match.away_team.code, match.away_team);
@@ -449,7 +511,7 @@ function buildGroupFutureMatches() {
 }
 
 function renderGroupCalendar() {
-  const visible = [...calendarState.scores, ...buildGroupFutureMatches()]
+  const visible = [...calendarState.scores.filter(isGroupScore), ...buildGroupFutureMatches()]
     .sort(compareMatchesByDateDesc)
     .filter(shouldShow);
   calendarGroupList.innerHTML = visible.length
@@ -465,7 +527,7 @@ function renderKnockoutCalendar() {
 }
 
 function renderSummary() {
-  const allMatches = [...calendarState.scores, ...buildGroupFutureMatches(), ...buildKnockoutMatches()];
+  const allMatches = [...calendarState.scores.filter(isGroupScore), ...buildGroupFutureMatches(), ...buildKnockoutMatches()];
   const finished = allMatches.filter(isFinished).length;
   calendarFinishedCount.textContent = String(finished);
   calendarFutureCount.textContent = String(allMatches.length - finished);
@@ -475,6 +537,7 @@ function renderSummary() {
 function renderCalendar(payload) {
   applyOfficialKnockoutFixtures(payload);
   calendarState.scores = payload.scores || [];
+  calendarState.knockoutResults = payload.knockout_results || {};
   calendarState.standings = payload.standings || null;
   calendarUpdatedAt.textContent =
     "Atualizado automaticamente com jogos encerrados, classificacao recalculada e horarios futuros em Brasilia quando confirmados";

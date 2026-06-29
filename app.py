@@ -15,7 +15,7 @@ from zoneinfo import ZoneInfo
 
 
 APP_NAME = "copa2026"
-APP_VERSION = "2026.06.28-full-knockout-sync-v1"
+APP_VERSION = "2026.06.28-knockout-business-rules-v2"
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
 DATA_DIR = BASE_DIR / "data"
@@ -385,6 +385,12 @@ def normalize_finished_match_record(match: dict) -> dict:
         record["match_id"] = match_id
         record["phase"] = knockout_phase_for_match(match_id)
         record["group_name"] = "Mata-mata"
+        winner = match.get("winner")
+        if winner in {record["home"], record["away"]}:
+            record["winner"] = winner
+        for optional_field in ("home_penalties", "away_penalties", "decided_by"):
+            if match.get(optional_field) is not None:
+                record[optional_field] = match[optional_field]
     return record
 
 
@@ -402,7 +408,6 @@ def load_final_matches_db() -> dict:
 
 
 def save_final_matches_db(matches: list[dict]) -> None:
-    DATA_DIR.mkdir(exist_ok=True)
     payload = {
         "source": {
             "name": "FIFA.com",
@@ -412,9 +417,13 @@ def save_final_matches_db(matches: list[dict]) -> None:
         },
         "matches": [normalize_finished_match_record(match) for match in matches],
     }
-    temporary_path = FINAL_MATCHES_DB.with_suffix(".json.tmp")
-    temporary_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    temporary_path.replace(FINAL_MATCHES_DB)
+    try:
+        DATA_DIR.mkdir(exist_ok=True)
+        temporary_path = FINAL_MATCHES_DB.with_suffix(".json.tmp")
+        temporary_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        temporary_path.replace(FINAL_MATCHES_DB)
+    except OSError:
+        return
 
 
 def load_finished_match_records() -> list[dict]:
@@ -507,6 +516,31 @@ def knockout_phase_for_match(match_id: int) -> str:
     return KNOCKOUT_FIXTURE_BY_ID.get(int(match_id), {}).get("phase", "knockout")
 
 
+def knockout_winner_code(score: dict) -> str:
+    winner = score.get("winner")
+    if winner in {score.get("home"), score.get("away")}:
+        return winner
+    try:
+        home_score = int(score["home_score"])
+        away_score = int(score["away_score"])
+    except (KeyError, TypeError, ValueError):
+        return ""
+    if home_score > away_score:
+        return score.get("home", "")
+    if away_score > home_score:
+        return score.get("away", "")
+    try:
+        home_penalties = int(score["home_penalties"])
+        away_penalties = int(score["away_penalties"])
+    except (KeyError, TypeError, ValueError):
+        return ""
+    if home_penalties > away_penalties:
+        return score.get("home", "")
+    if away_penalties > home_penalties:
+        return score.get("away", "")
+    return ""
+
+
 def build_knockout_results(scores: list[dict]) -> dict:
     results = {}
     for score in scores:
@@ -523,6 +557,7 @@ def build_knockout_results(scores: list[dict]) -> dict:
             **score,
             "match_id": match_id,
             "phase": score.get("phase") or knockout_phase_for_match(match_id),
+            "winner": knockout_winner_code(score),
         }
     return results
 
@@ -618,10 +653,13 @@ def build_live_sync_policy(now: datetime | None = None) -> dict:
 
 
 def save_live_sync_status(status: dict) -> None:
-    DATA_DIR.mkdir(exist_ok=True)
-    temporary_path = LIVE_SYNC_DB.with_suffix(".json.tmp")
-    temporary_path.write_text(json.dumps(status, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    temporary_path.replace(LIVE_SYNC_DB)
+    try:
+        DATA_DIR.mkdir(exist_ok=True)
+        temporary_path = LIVE_SYNC_DB.with_suffix(".json.tmp")
+        temporary_path.write_text(json.dumps(status, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        temporary_path.replace(LIVE_SYNC_DB)
+    except OSError:
+        return
 
 
 def load_live_sync_status() -> dict:

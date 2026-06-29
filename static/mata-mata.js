@@ -207,6 +207,8 @@ function resultWinnerCode(result) {
   if (result.winner) return result.winner;
   if (result.home_score > result.away_score) return result.home;
   if (result.away_score > result.home_score) return result.away;
+  if (Number(result.home_penalties) > Number(result.away_penalties)) return result.home;
+  if (Number(result.away_penalties) > Number(result.home_penalties)) return result.away;
   return "";
 }
 
@@ -248,9 +250,14 @@ function renderScoreline(match, result, liveSync) {
   if (!result || !Number.isInteger(result.home_score) || !Number.isInteger(result.away_score)) {
     return `<div class="knockout-score is-pending"><span>${statusLabel}</span></div>`;
   }
+  const regularScore = `${result.home_score} x ${result.away_score}`;
+  const scoreText =
+    Number.isFinite(Number(result.home_penalties)) && Number.isFinite(Number(result.away_penalties))
+      ? `${regularScore} (${result.home_penalties} x ${result.away_penalties} pen.)`
+      : regularScore;
   return `
     <div class="knockout-score ${isFinishedResult(result) ? "is-finished" : "is-live"}">
-      <strong>${result.home_score} x ${result.away_score}</strong>
+      <strong>${scoreText}</strong>
       <span>${statusLabel}</span>
     </div>
   `;

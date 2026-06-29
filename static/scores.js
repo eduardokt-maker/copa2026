@@ -4,8 +4,9 @@ const scoreTitle = document.querySelector("#scoreTitle");
 const groupStandings = document.querySelector("#groupStandings");
 const initialGroup = new URLSearchParams(window.location.search).get("group") || "";
 const isGroupMode = Boolean(initialGroup);
-const APP_DATA_VERSION = "20260628-live-sync-v1";
+const APP_DATA_VERSION = "20260628-knockout-business-rules-v2";
 const POLL_INTERVAL_MS = 60000;
+const GROUP_IDS = new Set("ABCDEFGHIJKL".split(""));
 
 const state = {
   matches: [],
@@ -63,6 +64,10 @@ function searchable(match) {
     match.home_team?.name,
     match.away_team?.name,
   ].join(" "));
+}
+
+function isGroupScore(match) {
+  return GROUP_IDS.has(String(match.group || ""));
 }
 
 function enrichMatch(match, index) {
@@ -340,7 +345,7 @@ async function bootScores() {
       cache: "no-store",
     });
     const payload = await response.json();
-    state.matches = (payload.scores || []).map(enrichMatch);
+    state.matches = (payload.scores || []).filter(isGroupScore).map(enrichMatch);
     state.standings = payload.standings || null;
     state.updatedAt = new Date().toISOString();
 

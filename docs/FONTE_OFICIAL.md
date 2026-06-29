@@ -8,6 +8,9 @@
 - Ao abrir qualquer modulo importante, o frontend chama o backend com `fresh=1` e `cache: "no-store"`.
 - O backend tenta consultar a fonte oficial da FIFA e informa o status em `official_source`.
 - Jogos encerrados e confirmados ficam gravados em `data/final_matches.json`.
+- Jogos de grupos e jogos de mata-mata podem coexistir no banco definitivo, mas a classificacao de grupos deve considerar somente partidas dos grupos A a L.
+- Jogos de mata-mata devem ser identificados por `match_id` oficial, de 73 a 104, e expostos em `/api/scores` tambem no objeto `knockout_results`.
+- Em mata-mata, se o placar terminar empatado, o sistema deve preservar `winner` e, quando disponivel, `home_penalties` e `away_penalties`; o avancamento de fase deve usar esse vencedor oficial.
 - Se a consulta externa falhar, retornar vazia ou a pagina oficial mudar, o sistema usa o banco local de jogos encerrados para preservar placares e recalcular a classificacao.
 - Um jogo encerrado ja gravado nao deve ser sobrescrito por dado externo vazio, parcial ou sem placar final.
 - Horarios exibidos ao usuario devem estar em horario de Brasilia. Quando o horario ainda nao estiver confirmado, mostrar estado de aguardando.
