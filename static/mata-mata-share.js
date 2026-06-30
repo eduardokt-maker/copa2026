@@ -26,7 +26,6 @@ async function shareKnockoutImageAndLink() {
 
   const file = await buildKnockoutShareFile();
   const shareData = {
-    title: KNOCKOUT_SHARE_TEXT,
     text: knockoutShareMessage(),
     files: [file],
   };
