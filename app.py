@@ -16,7 +16,7 @@ from zoneinfo import ZoneInfo
 
 
 APP_NAME = "copa2026"
-APP_VERSION = "2026.06.29-knockout-share-v17"
+APP_VERSION = "2026.06.29-knockout-share-v18"
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
 DATA_DIR = BASE_DIR / "data"
@@ -694,7 +694,6 @@ def choose_knockout_share_match(scores: list[dict], score_source: dict) -> dict:
 def render_knockout_share_html(match: dict) -> bytes:
     base_url = "https://copa2026-c776.onrender.com"
     share_url = f"{base_url}/share/mata-mata"
-    image_url = f"{base_url}/mata-mata-share-card.png?v=20260629-share-v7"
     share_title = "Caminho ate a final da World Cup 2026. Desenv. EKT"
     title = share_match_title(match)
     match_line = f"Jogo {match['id']} - {match['state']}"
@@ -713,22 +712,14 @@ def render_knockout_share_html(match: dict) -> bytes:
     <meta property="og:title" content="{escape(share_title)}" />
     <meta property="og:description" content="{escape(description)}" />
     <meta property="og:url" content="{escape(share_url)}" />
-    <meta property="og:image" content="{escape(image_url)}" />
-    <meta property="og:image:secure_url" content="{escape(image_url)}" />
-    <meta property="og:image:type" content="image/png" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Arte Copa 2026 para compartilhamento do mata-mata" />
-    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="{escape(share_title)}" />
     <meta name="twitter:description" content="{escape(description)}" />
-    <meta name="twitter:image" content="{escape(image_url)}" />
     <link rel="canonical" href="{escape(share_url)}" />
     <link rel="stylesheet" href="/styles.css?v=20260629-share-v1" />
   </head>
   <body class="share-card-page">
     <main class="share-card-shell" aria-label="Compartilhamento do mata-mata">
-      <img src="/mata-mata-share-card.png?v=20260629-share-v7" alt="Arte Copa 2026" />
       <strong>{escape(share_title)}</strong>
       <p>{escape(match_line)}</p>
       <h1>{escape(title)}</h1>
