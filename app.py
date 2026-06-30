@@ -16,7 +16,7 @@ from zoneinfo import ZoneInfo
 
 
 APP_NAME = "copa2026"
-APP_VERSION = "2026.06.29-knockout-share-v11"
+APP_VERSION = "2026.06.29-knockout-share-v12"
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
 DATA_DIR = BASE_DIR / "data"
@@ -694,7 +694,7 @@ def choose_knockout_share_match(scores: list[dict], score_source: dict) -> dict:
 def render_knockout_share_html(match: dict) -> bytes:
     base_url = "https://copa2026-c776.onrender.com"
     share_url = f"{base_url}/share/mata-mata"
-    image_url = f"{base_url}/mata-mata-share-card.png?v=20260629-share-v4"
+    image_url = f"{base_url}/mata-mata-share-card.png?v=20260629-share-v5"
     share_title = "Caminho ate a final da World Cup 2026. Desenv. EKT"
     title = share_match_title(match)
     match_line = f"Jogo {match['id']} - {match['state']}"
@@ -728,7 +728,7 @@ def render_knockout_share_html(match: dict) -> bytes:
   </head>
   <body class="share-card-page">
     <main class="share-card-shell" aria-label="Compartilhamento do mata-mata">
-      <img src="/mata-mata-share-card.png?v=20260629-share-v4" alt="Arte Copa 2026" />
+      <img src="/mata-mata-share-card.png?v=20260629-share-v5" alt="Arte Copa 2026" />
       <strong>{escape(share_title)}</strong>
       <p>{escape(match_line)}</p>
       <h1>{escape(title)}</h1>

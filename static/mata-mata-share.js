@@ -2,7 +2,7 @@ const knockoutShareButton = document.querySelector(".knockout-share-button");
 
 const KNOCKOUT_SHARE_URL = "https://copa2026-c776.onrender.com/share/mata-mata";
 const KNOCKOUT_SHARE_TEXT = "Caminho ate a final da World Cup 2026. Desenv. EKT";
-const KNOCKOUT_SHARE_IMAGE_URL = "/mata-mata-share-card.png?v=20260629-share-v4";
+const KNOCKOUT_SHARE_IMAGE_URL = "/mata-mata-share-card.png?v=20260629-share-v5";
 const KNOCKOUT_SHARE_IMAGE_NAME = "copa-2026-caminho-ate-a-final.png";
 
 function knockoutShareMessage() {
