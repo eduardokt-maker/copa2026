@@ -26,7 +26,6 @@ async function shareKnockoutImageAndLink() {
 
   const file = await buildKnockoutShareFile();
   const shareData = {
-    text: knockoutShareMessage(),
     files: [file],
   };
 
@@ -39,7 +38,10 @@ async function shareKnockoutImageAndLink() {
 async function shareKnockoutStory() {
   if (navigator.share) {
     try {
-      if (await shareKnockoutImageAndLink()) return;
+      if (await shareKnockoutImageAndLink()) {
+        openKnockoutFallbackShare();
+        return;
+      }
     } catch (error) {
       if (error?.name === "AbortError") return;
     }
