@@ -6,7 +6,7 @@ const KNOCKOUT_SHARE_IMAGE_URL = "/mata-mata-share-card.png?v=20260629-share-v5"
 const KNOCKOUT_SHARE_IMAGE_NAME = "copa-2026-caminho-ate-a-final.png";
 
 function knockoutShareMessage() {
-  return `${KNOCKOUT_SHARE_TEXT}\n${KNOCKOUT_SHARE_URL}`;
+  return KNOCKOUT_SHARE_URL;
 }
 
 function openKnockoutFallbackShare() {
@@ -48,7 +48,7 @@ async function shareKnockoutStory() {
     try {
       await navigator.share({
         title: KNOCKOUT_SHARE_TEXT,
-        text: KNOCKOUT_SHARE_TEXT,
+        text: KNOCKOUT_SHARE_URL,
         url: KNOCKOUT_SHARE_URL,
       });
       return;
